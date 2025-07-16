@@ -71,7 +71,7 @@ const businessModelContent: any = {
   'tipis-kuat': {
     persona: "Pemain Skala Besar",
     analysis: "Manfaatkan brand yang dikenal untuk jaga volume. Kunci di efisiensi operasional.",
-    platforms: "Rekomendasi: Shopee Mall, Tokopedia."
+    platforms: "Shopee Mall, Tokopedia."
   },
   'tebal-baru': {
     persona: "Spesialis Niche",
@@ -113,8 +113,8 @@ const gmvComboData = [
 ];
 
 const gmvComboChartConfig = {
-    shopee: { label: 'Shopee', color: 'hsl(var(--chart-1))' },
-    tokopedia: { label: 'Tokopedia', color: 'hsl(var(--chart-2))' },
+    shopee: { label: 'Shopee', color: 'hsl(220, 84.8%, 60.2%)' },
+    tokopedia: { label: 'Tokopedia', color: 'hsl(158, 64.4%, 52.4%)' },
     average: { label: 'Rata-rata', color: 'hsl(var(--primary))' },
 } satisfies ChartConfig;
 
@@ -324,8 +324,8 @@ export default function AnalystPage() {
                                 <ComposedChart data={gmvComboData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                     <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
-                                    <Bar dataKey="tokopedia" barSize={20} fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
-                                    <Bar dataKey="shopee" barSize={20} fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="tokopedia" barSize={20} fill="var(--color-tokopedia)" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="shopee" barSize={20} fill="var(--color-shopee)" radius={[4, 4, 0, 0]} />
                                     <Line type="monotone" dataKey="average" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
                                 </ComposedChart>
                             </ChartContainer>
@@ -389,6 +389,7 @@ export default function AnalystPage() {
                                     axisLine={false}
                                     tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
                                     interval={0}
+                                    tickFormatter={(value) => value.replace(' & ', ' &\n')}
                                 />
                                 <YAxis hide />
                                 <RechartsTooltip 
@@ -473,33 +474,32 @@ export default function AnalystPage() {
                                         control={form.control}
                                         name={strategy.id as keyof FormData}
                                         render={({ field }) => (
-                                            <FormItem>
-                                                <FormControl>
-                                                    <div
-                                                        onClick={() => field.onChange(!field.value)}
-                                                        className={cn(
-                                                            "h-full p-4 flex flex-col items-start gap-2 text-left rounded-lg border cursor-pointer transition-all",
-                                                            field.value
-                                                                ? 'bg-primary text-primary-foreground border-primary'
-                                                                : 'bg-transparent hover:bg-accent'
-                                                        )}
-                                                    >
-                                                        <div className="flex justify-between w-full items-center">
-                                                           <strategy.icon className="w-6 h-6" />
-                                                           <Switch
-                                                                checked={field.value}
-                                                                className={cn(
-                                                                    "pointer-events-none data-[state=unchecked]:bg-input",
-                                                                     field.value ? 'data-[state=checked]:bg-green-500' : ''
-                                                                )}
-                                                            />
-                                                        </div>
-                                                        <div className="mt-2">
-                                                            <p className="font-semibold">{strategy.title}</p>
-                                                            <p className={cn("text-xs", field.value ? 'text-primary-foreground/80' : 'text-muted-foreground')}>{strategy.description}</p>
-                                                        </div>
-                                                    </div>
-                                                </FormControl>
+                                            <FormItem className={cn(
+                                                "h-full p-4 flex flex-col items-start gap-2 text-left rounded-lg border cursor-pointer transition-all",
+                                                field.value
+                                                    ? 'bg-primary text-primary-foreground border-primary'
+                                                    : 'bg-transparent hover:bg-accent'
+                                                )}
+                                            >
+                                                <div className="flex justify-between w-full items-center">
+                                                    <FormLabel className="cursor-pointer">
+                                                        <strategy.icon className="w-6 h-6" />
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Switch
+                                                            checked={field.value}
+                                                            onCheckedChange={field.onChange}
+                                                            className={cn(
+                                                                "pointer-events-none data-[state=unchecked]:bg-input",
+                                                                    field.value ? 'data-[state=checked]:bg-green-500' : ''
+                                                            )}
+                                                        />
+                                                    </FormControl>
+                                                </div>
+                                                <div className="mt-2" onClick={() => field.onChange(!field.value)}>
+                                                    <p className="font-semibold">{strategy.title}</p>
+                                                    <p className={cn("text-xs", field.value ? 'text-primary-foreground/80' : 'text-muted-foreground')}>{strategy.description}</p>
+                                                </div>
                                             </FormItem>
                                         )}
                                     />

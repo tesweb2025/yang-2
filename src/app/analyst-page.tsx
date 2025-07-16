@@ -17,7 +17,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import Image from 'next/image';
 import { runAnalysis } from './actions';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from '@/components/ui/chart';
-import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell, ComposedChart, PieChart, Pie, TooltipProps, Legend } from 'recharts';
+import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell, ComposedChart, PieChart, Pie, TooltipProps } from 'recharts';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -292,26 +292,19 @@ export default function AnalystPage() {
                         <CardDescription>Pasar mulai dewasa, fokus bergeser dari 'bakar uang' ke profitabilitas. Pertumbuhan melambat ke 5% (YoY).</CardDescription>
                     </CardHeader>
                     <CardContent className="p-0 mt-6 flex flex-col justify-between h-full">
-                        <div>
+                         <div>
                             <p className="text-5xl font-bold text-primary">US$56,5 M</p>
                         </div>
-                        <div className="h-24 w-full mt-4 -mb-4 -mx-2">
-                           <ResponsiveContainer width="100%" height="100%">
-                                <ComposedChart data={gmvTrendData}>
-                                    <Bar dataKey="value" barSize={12} radius={[4, 4, 0, 0]}>
-                                        {gmvTrendData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={'hsl(var(--primary))'} fillOpacity={0.4} />
-                                        ))}
-                                    </Bar>
-                                    <Bar dataKey="value" barSize={2} className="translate-y-[-1px]">
-                                        {gmvTrendData.map((entry, index) => (
-                                            <Cell key={`cell-stick-${index}`} fill={'hsl(var(--primary))'} />
-                                        ))}
-                                    </Bar>
-                                </ComposedChart>
-                            </ResponsiveContainer>
+                        <div className="relative h-32 w-full mt-4 -mb-4">
+                           <Image
+                                src="https://placehold.co/600x400.png"
+                                alt="Peta Pertumbuhan E-commerce Indonesia"
+                                layout="fill"
+                                objectFit="contain"
+                                data-ai-hint="indonesia map"
+                            />
                         </div>
-                        <p className="text-caption text-muted-foreground mt-2 text-center">Visualisasi tren volatilitas pasar bulanan</p>
+                        <p className="text-caption text-muted-foreground mt-2 text-center">Peta Sebaran Pertumbuhan E-Commerce di Indonesia</p>
                     </CardContent>
                 </Card>
                 <Card className="p-6">

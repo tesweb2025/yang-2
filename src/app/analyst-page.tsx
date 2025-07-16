@@ -868,8 +868,8 @@ export default function AnalystPage() {
                 <section id="rencana-aksi" className="mt-12">
                   <Card className="p-6 md:p-8">
                     <CardHeader className="p-0">
-                      <CardTitle className="text-h3 font-medium">Rencana Aksi Biar Cuan</CardTitle>
-                      <CardDescription>Rekomendasi taktis dari AI yang bisa langsung Anda terapkan.</CardDescription>
+                      <CardTitle className="text-h3 font-medium">🧭 Rute Strategi dari Petakan.ai</CardTitle>
+                      <CardDescription>Rekomendasi dari AI yang bisa langsung Anda terapkan.</CardDescription>
                     </CardHeader>
                     <CardContent className="p-0 mt-6">
                       <ul className="list-decimal list-outside space-y-3 pl-5 text-body">

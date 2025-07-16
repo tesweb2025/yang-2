@@ -387,7 +387,6 @@ export default function AnalystPage() {
                         </ChartContainer>
                     </div>
                      <div className="mt-8 space-y-4">
-                        <h3 className="font-semibold text-lg text-center">Analisis Medan Perang</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-4">
                            <div className="space-y-2">
                                 <p className="font-bold text-base">TikTok & Tokopedia</p>
@@ -731,4 +730,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-

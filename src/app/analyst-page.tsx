@@ -455,21 +455,33 @@ export default function AnalystPage() {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormControl>
-                                                    <Button
-                                                        type="button"
-                                                        variant={field.value ? 'default' : 'outline'}
+                                                    <div
                                                         onClick={() => field.onChange(!field.value)}
-                                                        className="h-full p-4 flex flex-col items-start gap-2 text-left"
+                                                        className={cn(
+                                                            "h-full p-4 flex flex-col items-start gap-2 text-left rounded-lg border cursor-pointer transition-all",
+                                                            field.value
+                                                                ? 'bg-primary text-primary-foreground border-primary'
+                                                                : 'bg-transparent hover:bg-accent'
+                                                        )}
                                                     >
                                                         <div className="flex justify-between w-full items-center">
                                                            <strategy.icon className="w-6 h-6" />
-                                                           <Switch checked={field.value} className="pointer-events-none" />
+                                                           <Switch
+                                                                checked={field.value}
+                                                                onCheckedChange={field.onChange}
+                                                                className={cn(
+                                                                    "data-[state=checked]:bg-primary-foreground data-[state=checked]:text-primary",
+                                                                    "data-[state=unchecked]:bg-input",
+                                                                    "pointer-events-auto"
+                                                                )}
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            />
                                                         </div>
                                                         <div className="mt-2">
                                                             <p className="font-semibold">{strategy.title}</p>
                                                             <p className={cn("text-xs", field.value ? 'text-primary-foreground/80' : 'text-muted-foreground')}>{strategy.description}</p>
                                                         </div>
-                                                    </Button>
+                                                    </div>
                                                 </FormControl>
                                             </FormItem>
                                         )}

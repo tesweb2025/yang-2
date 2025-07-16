@@ -113,8 +113,8 @@ const gmvComboData = [
 ];
 
 const gmvComboChartConfig = {
-  shopee: { label: 'Shopee', color: 'hsl(var(--chart-2))' },
-  tokopedia: { label: 'Tokopedia', color: 'hsl(var(--chart-1))' },
+  shopee: { label: 'Shopee', color: 'var(--color-chart-2)' },
+  tokopedia: { label: 'Tokopedia', color: 'var(--color-chart-1)' },
   average: { label: 'Rata-rata', color: 'hsl(var(--primary))' },
 } satisfies ChartConfig;
 
@@ -302,9 +302,9 @@ export default function AnalystPage() {
                          <div className='mb-4'>
                             <p className="text-5xl font-bold text-primary">US$56,5 M</p>
                         </div>
-                        <div className="relative h-60 w-full">
+                        <div className="relative h-60 w-full -ml-5">
                              <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
-                                <ComposedChart data={gmvComboData} margin={{ top: 5, right: 0, left: -20, bottom: 5 }}>
+                                <ComposedChart data={gmvComboData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                     <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `$${value / 1000}k`} />
                                     <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
@@ -365,7 +365,7 @@ export default function AnalystPage() {
                 <CardContent className="p-0 mt-8">
                      <div className="w-full h-[300px]">
                         <ChartContainer config={marketShareChartConfig} className="h-full w-full">
-                            <RechartsBarChart data={marketShareData} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
+                            <RechartsBarChart data={marketShareData} barCategoryGap="20%" margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                 <XAxis 
                                     dataKey="name" 

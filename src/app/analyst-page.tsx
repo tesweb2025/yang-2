@@ -470,8 +470,7 @@ export default function AnalystPage() {
                                                                 checked={field.value}
                                                                 onCheckedChange={field.onChange}
                                                                 className={cn(
-                                                                    "data-[state=checked]:bg-primary-foreground data-[state=checked]:text-primary",
-                                                                    "data-[state=unchecked]:bg-input",
+                                                                    "data-[state=checked]:bg-primary-foreground data-[state=unchecked]:bg-input",
                                                                     "pointer-events-auto"
                                                                 )}
                                                                 onClick={(e) => e.stopPropagation()}

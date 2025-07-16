@@ -178,7 +178,14 @@ export default function AnalystPage() {
     const monthlyRevenue = (sellPrice || 0) * (avgSalesPerMonth || 0);
 
     return { netProfitPerUnit, netProfitMargin, bepUnit, monthlyRevenue };
-  }, [watchedValues]);
+  }, [
+    watchedValues.sellPrice,
+    watchedValues.costOfGoods,
+    watchedValues.adCost,
+    watchedValues.otherCostsPercentage,
+    watchedValues.fixedCostsPerMonth,
+    watchedValues.avgSalesPerMonth,
+  ]);
 
     const budgetAllocation = useMemo(() => {
     const { totalMarketingBudget, useVideoContent, useKOLs, useDiscounts, useOtherChannels } = watchedValues;
@@ -194,7 +201,13 @@ export default function AnalystPage() {
     }
     const valuePerChannel = (totalMarketingBudget || 0) / activeChannels.length;
     return activeChannels.map(c => ({ name: c.name, value: valuePerChannel, fill: c.color }));
-  }, [watchedValues]);
+  }, [
+    watchedValues.totalMarketingBudget,
+    watchedValues.useVideoContent,
+    watchedValues.useKOLs,
+    watchedValues.useDiscounts,
+    watchedValues.useOtherChannels,
+  ]);
 
   const channelConfig = useMemo(() => {
     const { totalMarketingBudget, useVideoContent, useKOLs, useDiscounts, useOtherChannels } = watchedValues;
@@ -213,7 +226,13 @@ export default function AnalystPage() {
       budgetPerChannel,
       activeChannelsCount
     }
-  }, [watchedValues]);
+  }, [
+    watchedValues.totalMarketingBudget,
+    watchedValues.useVideoContent,
+    watchedValues.useKOLs,
+    watchedValues.useDiscounts,
+    watchedValues.useOtherChannels,
+  ]);
 
 
   const onSubmit = async (data: FormData) => {

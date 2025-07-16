@@ -17,7 +17,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import Image from 'next/image';
 import { runAnalysis } from './actions';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
-import { Pie, Label, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, PieChart as RechartsPieChart, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell } from 'recharts';
+import { Pie, Label, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, PieChart as RechartsPieChart, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell, ComposedChart } from 'recharts';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -86,8 +86,10 @@ const businessModelContent: any = {
 };
 
 const gmvData = [
-  { month: 'Jan', value: 3.1 }, { month: 'Feb', value: 3.2 }, { month: 'Mar', value: 3.5 },
-  { month: 'Apr', value: 3.4 }, { month: 'May', value: 3.6 }, { month: 'Jun', value: 3.8 }
+  { month: 'Jan', value: [2, 3] }, { month: 'Feb', value: [2.5, 4] }, { month: 'Mar', value: [3.5, 4.5] },
+  { month: 'Apr', value: [4, 2] }, { month: 'May', value: [1.5, 2.5] }, { month: 'Jun', value: [3, 5] },
+  { month: 'Jul', value: [4.8, 5] }, { month: 'Aug', value: [4.5, 3] }, { month: 'Sep', value: [2.5, 3.5] },
+  { month: 'Oct', value: [3.8, 4.8] }, { month: 'Nov', value: [5, 4] }, { month: 'Dec', value: [3.5, 2] }
 ];
 
 const marketShareData = [
@@ -275,17 +277,27 @@ export default function AnalystPage() {
         <section id="wawasan-pasar" className="space-y-4">
             <h2 className="text-3xl font-bold text-center">Wawasan Pasar E-Commerce Indonesia (2024)</h2>
             <div className="grid md:grid-cols-2 gap-8">
-                <Card>
+                 <Card>
                     <CardHeader>
-                        <CardTitle>Proyeksi Nilai Pasar (GMV)</CardTitle>
-                        <CardDescription>Pasar mulai dewasa, fokus bergeser dari 'bakar uang' ke profitabilitas.</CardDescription>
+                        <CardTitle>Proyeksi Gross Merchandise Value (GMV)</CardTitle>
+                        <CardDescription>Pasar mulai dewasa dengan pertumbuhan 5% (YoY), fokus bergeser dari 'bakar uang' ke profitabilitas.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-4xl font-bold text-primary mb-4">US$56,5 Miliar</p>
-                        <div className="text-center mt-4 bg-muted p-4 rounded-lg">
-                            <p className="font-semibold text-muted-foreground">Pertumbuhan Tahunan (YoY)</p>
-                            <p className="text-3xl font-bold">5%</p>
-                            <p className="text-xs text-muted-foreground">Moderasi signifikan seiring konsolidasi pasar.</p>
+                        <p className="text-4xl font-bold text-primary mb-4">US$4 Miliar</p>
+                        <div className="h-[120px] w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <ComposedChart data={gmvData} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
+                                    <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                                    <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+                                    <YAxis hide={true} domain={['dataMin - 1', 'dataMax + 1']} />
+                                    <RechartsTooltip cursor={{ fill: 'hsla(var(--muted))' }} />
+                                    <Bar dataKey="value" barSize={15}>
+                                        {gmvData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.value[0] > entry.value[1] ? 'hsl(var(--destructive))' : 'hsl(var(--primary))'} />
+                                        ))}
+                                    </Bar>
+                                </ComposedChart>
+                            </ResponsiveContainer>
                         </div>
                     </CardContent>
                 </Card>
@@ -725,3 +737,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

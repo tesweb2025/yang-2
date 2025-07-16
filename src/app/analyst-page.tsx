@@ -468,12 +468,11 @@ export default function AnalystPage() {
                                                            <strategy.icon className="w-6 h-6" />
                                                            <Switch
                                                                 checked={field.value}
-                                                                onCheckedChange={field.onChange}
                                                                 className={cn(
-                                                                    "data-[state=checked]:bg-primary-foreground data-[state=unchecked]:bg-input",
-                                                                    "pointer-events-auto"
+                                                                    field.value ? "data-[state=checked]:bg-primary-foreground" : "",
+                                                                    "data-[state=unchecked]:bg-input",
+                                                                    "pointer-events-none"
                                                                 )}
-                                                                onClick={(e) => e.stopPropagation()}
                                                             />
                                                         </div>
                                                         <div className="mt-2">
@@ -779,3 +778,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

@@ -684,7 +684,7 @@ export default function AnalystPage() {
                         </Card>
                     </div>
                     
-                    <Card>
+                    <Card className="mt-8">
                         <CardHeader>
                             <CardTitle>Kata AI Soal Strategimu</CardTitle>
                         </CardHeader>
@@ -728,5 +728,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

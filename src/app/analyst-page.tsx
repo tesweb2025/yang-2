@@ -62,6 +62,17 @@ const formatCurrency = (value: number) => {
   }).format(value);
 };
 
+const formatNumberWithCommas = (value: number | undefined) => {
+  if (value === undefined || value === null || isNaN(value)) return '';
+  return new Intl.NumberFormat('id-ID').format(value);
+};
+
+const parseNumberWithCommas = (value: string) => {
+  const parsed = parseInt(value.replace(/\./g, ''), 10);
+  return isNaN(parsed) ? undefined : parsed;
+};
+
+
 const businessModelContent: any = {
   'tipis-baru': {
     persona: "Pejuang Volume",
@@ -389,7 +400,7 @@ export default function AnalystPage() {
                                     axisLine={false}
                                     tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
                                     interval={0}
-                                    tickFormatter={(value) => value.includes(' & ') ? value.replace(' & ', ' &\n') : value}
+                                    tickFormatter={(value) => value.includes(' & ') ? value.split(' & ')[0] + '\n& ' + value.split(' & ')[1] : value}
                                 />
                                 <YAxis hide />
                                 <RechartsTooltip 
@@ -556,9 +567,57 @@ export default function AnalystPage() {
                         <div>
                             <h3 className="font-semibold text-lg mb-4">Kalkulator Harga & Biaya per Produk</h3>
                             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <FormField control={form.control} name="sellPrice" render={({ field }) => (<FormItem><FormLabel>Harga Jual</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="costOfGoods" render={({ field }) => (<FormItem><FormLabel>Modal Produk (HPP)</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="adCost" render={({ field }) => (<FormItem><FormLabel>Biaya Iklan (CAC)</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
+                                <Controller
+                                    name="sellPrice"
+                                    control={form.control}
+                                    render={({ field, fieldState }) => (
+                                        <FormItem>
+                                            <FormLabel>Harga Jual</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Rp 0"
+                                                    value={formatNumberWithCommas(field.value)}
+                                                    onChange={(e) => field.onChange(parseNumberWithCommas(e.target.value))}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <Controller
+                                    name="costOfGoods"
+                                    control={form.control}
+                                    render={({ field, fieldState }) => (
+                                        <FormItem>
+                                            <FormLabel>Modal Produk (HPP)</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Rp 0"
+                                                    value={formatNumberWithCommas(field.value)}
+                                                    onChange={(e) => field.onChange(parseNumberWithCommas(e.target.value))}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <Controller
+                                    name="adCost"
+                                    control={form.control}
+                                    render={({ field, fieldState }) => (
+                                        <FormItem>
+                                            <FormLabel>Biaya Iklan (CAC)</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Rp 0"
+                                                    value={formatNumberWithCommas(field.value)}
+                                                    onChange={(e) => field.onChange(parseNumberWithCommas(e.target.value))}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                                 <FormField control={form.control} name="otherCostsPercentage" render={({ field }) => (<FormItem><FormLabel>Biaya Lain (%)</FormLabel><FormControl><Input type="number" placeholder="0%" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
                             </div>
                         </div>
@@ -566,7 +625,23 @@ export default function AnalystPage() {
                             <div>
                                 <h3 className="font-semibold text-lg mb-2">Biaya Tetap & Target Penjualan</h3>
                                 <div className="grid grid-cols-2 gap-4">
-                                  <FormField control={form.control} name="fixedCostsPerMonth" render={({ field }) => (<FormItem><FormLabel>Biaya Tetap / Bulan</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
+                                  <Controller
+                                      name="fixedCostsPerMonth"
+                                      control={form.control}
+                                      render={({ field, fieldState }) => (
+                                          <FormItem>
+                                              <FormLabel>Biaya Tetap / Bulan</FormLabel>
+                                              <FormControl>
+                                                  <Input
+                                                      placeholder="Rp 0"
+                                                      value={formatNumberWithCommas(field.value)}
+                                                      onChange={(e) => field.onChange(parseNumberWithCommas(e.target.value))}
+                                                  />
+                                              </FormControl>
+                                              <FormMessage />
+                                          </FormItem>
+                                      )}
+                                  />
                                   <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Target Jual / Bulan</FormLabel><FormControl><Input type="number" placeholder="0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
                                 </div>
                             </div>
@@ -604,15 +679,22 @@ export default function AnalystPage() {
                         <CardTitle className="text-h3 font-medium">Alokator Bujet Pemasaran</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0 mt-6 max-w-lg mx-auto">
-                        <FormField
-                            control={form.control}
+                        <Controller
                             name="totalMarketingBudget"
-                            render={({ field }) => (
+                            control={form.control}
+                            render={({ field, fieldState }) => (
                                 <FormItem>
                                     <FormLabel>Total Bujet Pemasaran</FormLabel>
                                     <FormControl>
-                                        <Input type="number" placeholder="Rp 0" {...field} value={field.value ?? ''} className="text-2xl font-bold h-auto py-3" />
+                                        <Input
+                                            type="text"
+                                            placeholder="Rp 0"
+                                            className="text-2xl font-bold h-auto py-3"
+                                            value={formatNumberWithCommas(field.value)}
+                                            onChange={(e) => field.onChange(parseNumberWithCommas(e.target.value))}
+                                        />
                                     </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -807,5 +889,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

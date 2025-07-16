@@ -19,6 +19,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig, ChartLe
 import { Pie, Label, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend } from 'recharts';
 import { PieChart as RechartsPieChart, BarChart as RechartsBarChart } from 'recharts';
 import Link from 'next/link';
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   productName: z.string().min(1, "Nama produk harus diisi"),
@@ -171,7 +172,7 @@ export default function AnalystPage() {
 
   const renderFittableNumber = (value: string | number, isCurrency = true, isNegative = false, className = "text-2xl") => {
     const displayValue = typeof value === 'number' && isCurrency ? formatCurrency(value) : String(value);
-    const baseLength = isCurrency ? 12 : 8; 
+    const baseLength = isCurrency ? 12 : 8 : 8; 
     const scaleFactor = Math.min(1, baseLength / displayValue.length);
     const dynamicFontSize = `calc(${scaleFactor} * 1.5rem)`;
   

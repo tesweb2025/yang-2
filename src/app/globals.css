@@ -26,10 +26,10 @@
     --radius: 0.75rem; /* 12px */
 
     /* Chart colors */
-    --chart-1: 212 100% 50%; /* iOS Blue */
-    --chart-2: 343 91% 58%; /* iOS Pink */
-    --chart-3: 158 79% 44%; /* iOS Green */
-    --chart-4: 43 96% 56%; /* iOS Orange */
+    --chart-1: 220 84.8% 60.2%;
+    --chart-2: 158 64.4% 52.4%;
+    --chart-3: 22 95.1% 64.7%;
+    --chart-4: 0 84.2% 60.2%;
     --chart-5: 262 82% 62%; /* iOS Purple */
 
     /* Custom platform colors */

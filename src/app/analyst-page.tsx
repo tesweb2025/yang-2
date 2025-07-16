@@ -159,7 +159,7 @@ export default function AnalystPage() {
       otherCostsPercentage: 15,
       fixedCostsPerMonth: 5000000,
       avgSalesPerMonth: 200,
-      totalMarketingBudget: 5000000,
+      totalMarketingBudget: 1000000,
       useVideoContent: true,
       useKOLs: true,
       useDiscounts: false,
@@ -194,6 +194,25 @@ export default function AnalystPage() {
     }
     const valuePerChannel = totalMarketingBudget / activeChannels.length;
     return activeChannels.map(c => ({ name: c.name, value: valuePerChannel, fill: c.color }));
+  }, [watchedValues]);
+
+  const channelConfig = useMemo(() => {
+    const { totalMarketingBudget, useVideoContent, useKOLs, useDiscounts, useOtherChannels } = watchedValues;
+    const channels = [
+      { id: 'useVideoContent', name: "Video Content & Ads", active: useVideoContent, color: "hsl(var(--chart-1))", switchClass: "data-[state=checked]:bg-chart-1" },
+      { id: 'useKOLs', name: "KOL & Afiliasi", active: useKOLs, color: "hsl(var(--chart-2))", switchClass: "data-[state=checked]:bg-chart-2" },
+      { id: 'useDiscounts', name: "Promosi & Diskon", active: useDiscounts, color: "hsl(var(--chart-3))", switchClass: "data-[state=checked]:bg-chart-3" },
+      { id: 'useOtherChannels', name: "Lainnya", active: useOtherChannels, color: "hsl(var(--chart-4))", switchClass: "data-[state=checked]:bg-chart-4" },
+    ];
+
+    const activeChannelsCount = channels.filter(c => c.active).length;
+    const budgetPerChannel = activeChannelsCount > 0 ? totalMarketingBudget / activeChannelsCount : 0;
+
+    return {
+      channels,
+      budgetPerChannel,
+      activeChannelsCount
+    }
   }, [watchedValues]);
 
 
@@ -505,49 +524,23 @@ export default function AnalystPage() {
             
             <section id="alokasi-bujet">
                  <Card className="p-6 md:p-8">
-                    <CardHeader className="p-0">
-                        <CardTitle className="text-h3 font-medium">Alokasi Bujet Pemasaran</CardTitle>
-                        <CardDescription>Atur bujet bulanan dan pilih kanal promosimu.</CardDescription>
+                    <CardHeader className="p-0 text-center">
+                        <CardTitle className="text-h3 font-medium">Alokator Bujet Pemasaran</CardTitle>
                     </CardHeader>
-                    <CardContent className="p-0 mt-6 grid md:grid-cols-2 gap-8 items-center">
-                        <div className="space-y-6">
-                            <FormField control={form.control} name="totalMarketingBudget" render={({ field }) => (
+                    <CardContent className="p-0 mt-6 max-w-lg mx-auto">
+                        <FormField
+                            control={form.control}
+                            name="totalMarketingBudget"
+                            render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Total Bujet Promosi per Bulan</FormLabel>
+                                    <FormLabel>Total Bujet Pemasaran</FormLabel>
                                     <FormControl>
-                                        <Input type="number" {...field} />
+                                        <Input type="number" {...field} className="text-2xl font-bold h-auto py-3" />
                                     </FormControl>
                                 </FormItem>
-                            )} />
-
-                            <div className="space-y-4">
-                                <FormField control={form.control} name="useVideoContent" render={({ field }) => (
-                                    <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                                        <FormLabel className="font-normal mb-0">Iklan Medsos & Video</FormLabel>
-                                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange}/></FormControl>
-                                    </FormItem>
-                                )}/>
-                                 <FormField control={form.control} name="useKOLs" render={({ field }) => (
-                                    <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                                        <FormLabel className="font-normal mb-0">Endorse & KOL</FormLabel>
-                                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange}/></FormControl>
-                                    </FormItem>
-                                )}/>
-                                 <FormField control={form.control} name="useDiscounts" render={({ field }) => (
-                                    <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                                        <FormLabel className="font-normal mb-0">Promosi & Diskon</FormLabel>
-                                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange}/></FormControl>
-                                    </FormItem>
-                                )}/>
-                                <FormField control={form.control} name="useOtherChannels" render={({ field }) => (
-                                    <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                                        <FormLabel className="font-normal mb-0">Kanal Lainnya</FormLabel>
-                                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange}/></FormControl>
-                                    </FormItem>
-                                )}/>
-                            </div>
-                        </div>
-                        <div className="h-64 w-full">
+                            )}
+                        />
+                        <div className="h-64 w-full my-6">
                            <ResponsiveContainer width="100%" height="100%">
                                 <ChartContainer config={budgetChartConfig}>
                                   <PieChart>
@@ -560,20 +553,53 @@ export default function AnalystPage() {
                                       nameKey="name"
                                       cx="50%"
                                       cy="50%"
-                                      innerRadius="40%"
-                                      outerRadius="80%"
+                                      innerRadius="60%"
+                                      outerRadius="100%"
                                       paddingAngle={2}
-                                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%` }
                                       labelLine={false}
+                                      label={false}
                                     >
                                       {budgetAllocation.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                                        <Cell key={`cell-${index}`} fill={entry.fill} stroke={entry.fill} />
                                       ))}
                                     </Pie>
                                   </PieChart>
                                 </ChartContainer>
                             </ResponsiveContainer>
                         </div>
+                        <div className="space-y-4">
+                          {channelConfig.channels.map(channel => (
+                            <div key={channel.id} className="flex items-center justify-between border-b pb-4">
+                              <div className="flex items-center gap-3">
+                                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: channel.color }}></span>
+                                <span className="text-sm font-medium">{channel.name}</span>
+                              </div>
+                              <div className="flex items-center gap-4">
+                                <span className="text-sm font-semibold">{channel.active ? formatCurrency(channelConfig.budgetPerChannel) : 'Rp 0'}</span>
+                                <FormField
+                                  control={form.control}
+                                  name={channel.id as any}
+                                  render={({ field }) => (
+                                    <FormItem className="m-0">
+                                      <FormControl>
+                                        <Switch
+                                          checked={field.value}
+                                          onCheckedChange={field.onChange}
+                                          className={cn(channel.switchClass)}
+                                        />
+                                      </FormControl>
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-center text-muted-foreground text-caption mt-6">
+                          {channelConfig.activeChannelsCount === 4 && "Strategi diversifikasi penuh, ideal untuk brand mapan."}
+                          {channelConfig.activeChannelsCount > 0 && channelConfig.activeChannelsCount < 4 && "Strategi terfokus, bagus untuk memaksimalkan kanal pilihan."}
+                          {channelConfig.activeChannelsCount === 0 && "Pilih setidaknya satu kanal untuk memulai."}
+                        </p>
                     </CardContent>
                     <div className="border-t -mx-8 my-8"></div>
                     <Button type="submit" className="w-full h-14 text-lg rounded-full" disabled={isLoading}>
@@ -705,3 +731,4 @@ export default function AnalystPage() {
     </div>
   );
 }
+

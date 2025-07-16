@@ -202,7 +202,7 @@ export default function AnalystPage() {
       { id: 'useVideoContent', name: "Video Content & Ads", active: useVideoContent, color: "hsl(var(--chart-1))", switchClass: "data-[state=checked]:bg-chart-1" },
       { id: 'useKOLs', name: "KOL & Afiliasi", active: useKOLs, color: "hsl(var(--chart-2))", switchClass: "data-[state=checked]:bg-chart-2" },
       { id: 'useDiscounts', name: "Promosi & Diskon", active: useDiscounts, color: "hsl(var(--chart-3))", switchClass: "data-[state=checked]:bg-chart-3" },
-      { id: 'useOtherChannels', name: "Lainnya", active: useOtherChannels, color: "hsl(var(--chart-4))", switchClass: "data-[state=checked]:bg-chart-4" },
+      { id: 'Lainnya', name: "Lainnya", active: useOtherChannels, color: "hsl(var(--chart-4))", switchClass: "data-[state=checked]:bg-chart-4" },
     ];
 
     const activeChannelsCount = channels.filter(c => c.active).length;
@@ -306,10 +306,9 @@ export default function AnalystPage() {
                              <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
                                 <ComposedChart data={gmvComboData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                    <XAxis dataKey="month" tickLine={false} axisLine={false} />
+                                    <XAxis dataKey="month" hide />
                                     <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `$${value / 1000}k`} />
                                     <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
-                                    <Legend />
                                     <Bar dataKey="tokopedia" barSize={20} fill="var(--color-tokopedia)" radius={[4, 4, 0, 0]} />
                                     <Bar dataKey="shopee" barSize={20} fill="var(--color-shopee)" radius={[4, 4, 0, 0]} />
                                     <Line type="monotone" dataKey="average" stroke="var(--color-average)" strokeWidth={2} dot={false} />
@@ -777,5 +776,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

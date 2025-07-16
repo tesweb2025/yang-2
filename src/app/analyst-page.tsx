@@ -469,9 +469,8 @@ export default function AnalystPage() {
                                                            <Switch
                                                                 checked={field.value}
                                                                 className={cn(
-                                                                    field.value ? "data-[state=checked]:bg-primary-foreground" : "",
-                                                                    "data-[state=unchecked]:bg-input",
-                                                                    "pointer-events-none"
+                                                                    "pointer-events-none",
+                                                                    field.value ? 'data-[state=checked]:bg-green-500' : 'data-[state=unchecked]:bg-input'
                                                                 )}
                                                             />
                                                         </div>

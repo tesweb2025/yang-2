@@ -17,7 +17,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import Image from 'next/image';
 import { runAnalysis } from './actions';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from '@/components/ui/chart';
-import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell, ComposedChart, PieChart, Pie, TooltipProps } from 'recharts';
+import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell, ComposedChart, PieChart, Pie, TooltipProps, Legend } from 'recharts';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";

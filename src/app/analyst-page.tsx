@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo } from 'react';
@@ -6,18 +5,18 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { BarChart, BrainCircuit, LineChart, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle, CheckCircle } from 'lucide-react';
+import { BarChart, BrainCircuit, LineChart, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle, CheckCircle, ArrowRight } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Image from 'next/image';
 import { runAnalysis } from './actions';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
-import { Pie, Label, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, PieChart as RechartsPieChart, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell, ComposedChart } from 'recharts';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from '@/components/ui/chart';
+import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell } from 'recharts';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -64,41 +63,26 @@ const formatCurrency = (value: number) => {
 
 const businessModelContent: any = {
   'tipis-baru': {
-    persona: "Sang Pejuang (The Hustler)",
-    analysis: "Fokus kejar volume penjualan tinggi dan perputaran cepat. Harga kompetitif jadi senjata utama. Hati-hati perang harga.",
-    platforms: "Rekomendasi: TikTok Shop, Shopee. Platform dengan audiens massa dan fitur live-selling cocok buat lo."
+    persona: "Pejuang Volume",
+    analysis: "Fokus kejar volume penjualan dan perputaran cepat. Harga kompetitif jadi senjata utama.",
+    platforms: "Rekomendasi: TikTok Shop, Shopee."
   },
   'tipis-kuat': {
-    persona: "Pemain Volume (The Volume Player)",
-    analysis: "Lo manfaatin brand yang udah dikenal buat jaga volume walau margin tipis. Kuncinya di efisiensi operasional.",
-    platforms: "Rekomendasi: Shopee Mall, Tokopedia Power Merchant. Butuh skala produksi & distribusi besar."
+    persona: "Pemain Skala Besar",
+    analysis: "Manfaatkan brand yang dikenal untuk jaga volume. Kunci di efisiensi operasional.",
+    platforms: "Rekomendasi: Shopee Mall, Tokopedia."
   },
   'tebal-baru': {
-    persona: "Spesialis Niche (The Niche Specialist)",
-    analysis: "Targetin segmen yang spesifik dengan produk unik. Branding dan cerita produk jadi ujung tombak.",
-    platforms: "Rekomendasi: Instagram Shopping, Website (Shopify/Sirclo). Fokus bangun komunitas loyal."
+    persona: "Spesialis Niche",
+    analysis: "Targetkan segmen spesifik dengan produk unik. Branding dan cerita produk jadi ujung tombak.",
+    platforms: "Rekomendasi: Instagram, Website (Shopify)."
   },
   'tebal-kuat': {
-    persona: "Merek Premium (The Premium Brand)",
-    analysis: "Jual nilai dan status, bukan cuma produk. Pengalaman pelanggan harus premium dari awal sampai akhir.",
-    platforms: "Rekomendasi: Website sendiri, Lazada LazMall. Jaga eksklusivitas brand lo."
+    persona: "Merek Premium",
+    analysis: "Jual nilai dan status, bukan cuma produk. Pengalaman pelanggan harus premium.",
+    platforms: "Rekomendasi: Website, Lazada LazMall."
   }
 };
-
-const gmvData = [
-    { month: 'Jan', range: [2, 3.8], body: [2.8, 3.2] },
-    { month: 'Feb', range: [2.5, 4.5], body: [3.2, 4] },
-    { month: 'Mar', range: [3.5, 5], body: [4, 4.8] },
-    { month: 'Apr', range: [2, 4.8], body: [4.5, 3] },
-    { month: 'May', range: [1.5, 3], body: [2.5, 2] },
-    { month: 'Jun', range: [3, 5.5], body: [3.5, 5] },
-    { month: 'Jul', range: [4.8, 6], body: [5, 5.8] },
-    { month: 'Aug', range: [3, 5], body: [4.8, 3.5] },
-    { month: 'Sep', range: [2.5, 4], body: [3, 3.8] },
-    { month: 'Oct', range: [3.8, 5.2], body: [4, 5] },
-    { month: 'Nov', range: [4, 6.5], body: [5, 6] },
-    { month: 'Dec', range: [2, 4], body: [3.5, 2.5] },
-];
 
 const marketShareData = [
     { name: 'Tokopedia & TikTok Shop', value: 39, fill: 'var(--color-tiktok)' },
@@ -115,10 +99,6 @@ const chartConfig = {
   lazada: { label: 'Lazada', color: 'hsl(var(--chart-lazada))' },
   bukalapak: { label: 'Bukalapak', color: 'hsl(var(--chart-bukalapak))' },
   blibli: { label: 'Blibli', color: 'hsl(var(--chart-blibli))' },
-  'Iklan Medsos & Video': { color: 'hsl(var(--chart-1))' },
-  'Endorse & KOL': { color: 'hsl(var(--chart-2))' },
-  'Promosi & Diskon': { color: 'hsl(var(--chart-3))' },
-  'Lainnya': { color: 'hsl(var(--chart-4))' },
 } satisfies ChartConfig;
 
 export default function AnalystPage() {
@@ -191,153 +171,80 @@ export default function AnalystPage() {
 
   const selectedBusinessModel = businessModelContent[`${watchedValues.marginModel}-${watchedValues.brandStrength}`];
 
-  const { budgetAllocationData, budgetSummary } = useMemo(() => {
-    const { totalMarketingBudget, useVideoContent, useKOLs, useDiscounts, useOtherChannels } = watchedValues;
-    const channels = [
-      { name: 'Iklan Medsos & Video', active: useVideoContent, fill: 'hsl(var(--chart-1))' },
-      { name: 'Endorse & KOL', active: useKOLs, fill: 'hsl(var(--chart-2))' },
-      { name: 'Promosi & Diskon', active: useDiscounts, fill: 'hsl(var(--chart-3))' },
-      { name: 'Lainnya', active: useOtherChannels, fill: 'hsl(var(--chart-4))' },
-    ];
-    
-    const activeChannels = channels.filter(c => c.active);
-    const count = activeChannels.length;
-    
-    const allocation = count > 0 ? totalMarketingBudget / count : 0;
-  
-    const data = channels.map(c => ({
-      name: c.name,
-      value: c.active ? allocation : 0,
-      fill: c.fill,
-      active: c.active
-    }));
-  
-    let summary = "Pilih channel promosi untuk melihat rekomendasi strategi.";
-    if (count === 1) summary = `Strategi fokus, cocok untuk menguji satu channel spesifik.`;
-    if (count === 2) summary = `Strategi seimbang, bagus untuk membandingkan dua channel.`;
-    if (count === 3) summary = `Strategi diversifikasi, menjangkau audiens lebih luas.`;
-    if (count === 4) summary = `Strategi diversifikasi penuh, ideal untuk brand mapan.`;
-    if (count === 0) summary = `Tidak ada bujet yang dialokasikan.`;
-  
-    return { budgetAllocationData: data, budgetSummary: summary };
-  }, [watchedValues.totalMarketingBudget, watchedValues.useVideoContent, watchedValues.useKOLs, watchedValues.useDiscounts, watchedValues.useOtherChannels]);
-
-
-  const renderFittableNumber = (value: string | number, isCurrency = true, isNegative = false, className = "text-2xl") => {
-    const displayValue = isCurrency ? formatCurrency(Number(value)) : String(value);
-    const baseLength = isCurrency ? 12 : 8;
-    const scaleFactor = Math.min(1, baseLength / displayValue.length);
-    const dynamicFontSize = `calc(${scaleFactor} * 1.5rem)`;
-  
-    return (
-      <div 
-        className={cn(className, "font-bold", isNegative ? 'text-destructive' : '')}
-        style={{ fontSize: displayValue.length > baseLength ? dynamicFontSize : undefined }}
-      >
-        {displayValue}
-      </div>
-    );
-  };
-  
-  const renderFittableTableCell = (value: number, isNegative = false, addSign = false) => {
-    const displayValue = formatCurrency(value);
-    const prefix = addSign ? (isNegative ? '- ' : '+ ') : (isNegative ? '- ' : '');
-    const finalDisplayValue = prefix + displayValue.replace('Rp', '').trim();
-    const baseLength = 12; 
-    const scaleFactor = Math.min(1, baseLength / finalDisplayValue.length);
-    const dynamicFontSize = `calc(${scaleFactor} * 0.875rem)`;
-  
-    return (
-       <span style={{ fontSize: finalDisplayValue.length > baseLength ? dynamicFontSize : undefined }} className={cn(isNegative ? 'text-destructive' : 'text-green-600', {'text-foreground': !addSign && !isNegative})}>
-        {finalDisplayValue}
-      </span>
-    );
-  };
-
   const renderFittableTableCellSimple = (value: number, isNegative = false) => {
     const displayValue = formatCurrency(value);
-    const baseLength = 12;
-    const scaleFactor = Math.min(1, baseLength / displayValue.length);
-    const dynamicFontSize = `calc(${scaleFactor} * 0.875rem)`;
-
     return (
-        <span style={{ fontSize: displayValue.length > baseLength ? dynamicFontSize : undefined }} className={cn(isNegative ? 'text-destructive' : 'text-foreground')}>
+        <span className={cn(isNegative ? 'text-destructive' : 'text-foreground')}>
             {isNegative ? `- ${displayValue}`: displayValue}
         </span>
     );
   };
 
+  const renderFittableTableCell = (value: number, isNegative = false, addSign = false) => {
+    const displayValue = formatCurrency(value);
+    const prefix = addSign ? (isNegative ? '− ' : '+ ') : (isNegative ? '− ' : '');
+    const finalDisplayValue = prefix + displayValue.replace('Rp', '').trim();
+    return (
+       <span className={cn(isNegative ? 'text-destructive' : 'text-green-600', {'text-foreground': !addSign && !isNegative})}>
+        {finalDisplayValue}
+      </span>
+    );
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl">
-      <main className="space-y-12">
-        <section className="text-center py-12">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 font-headline">Capek jualan tapi hasilnya gak jelas?</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-4">Cek dulu strategimu di sini. SiapJual.ai bantu kamu lihat untung-rugi sebelum promo dimulai.</p>
-          <div className="mt-8 relative aspect-video max-w-lg mx-auto p-4">
-            <Image src="https://placehold.co/600x400.png" alt="Ilustrasi 3D logistik e-commerce" layout="fill" objectFit="contain" className="rounded-lg" data-ai-hint="e-commerce success" />
-          </div>
-           <Button asChild size="lg" className="mt-8">
-             <Link href="#cek-strategi">Mulai Cek Strategi</Link>
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="space-y-12 md:space-y-20">
+        <section className="text-center pt-12 md:pt-20">
+          <h1 className="text-h1 font-bold tracking-tight mb-4">Uji Strategi Bisnismu, Bukan Uangmu.</h1>
+          <p className="text-subtitle text-muted-foreground max-w-2xl mx-auto">Gunakan Simulasi AI untuk melihat proyeksi untung-rugi sebelum mengambil risiko. Gratis, cepat, dan akurat.</p>
+           <Button asChild size="lg" className="mt-8 rounded-full h-12 px-8">
+             <Link href="#cek-strategi">
+                Mulai Simulasi Gratis
+                <ArrowRight className="ml-2"/>
+             </Link>
            </Button>
         </section>
 
-        <section id="wawasan-pasar" className="space-y-4">
-            <h2 className="text-3xl font-bold text-center">Wawasan Pasar E-Commerce Indonesia (2024)</h2>
-            <div className="grid md:grid-cols-2 gap-8">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Proyeksi Gross Merchandise Value (GMV)</CardTitle>
+        <section id="wawasan-pasar" className="space-y-8">
+            <div className="text-center">
+                <h2 className="text-h2 font-semibold">Wawasan Pasar E-Commerce 2024</h2>
+                <p className="text-subtitle text-muted-foreground mt-2">Data terbaru untuk membantumu mengambil keputusan.</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-6">
+                <Card className="p-6">
+                    <CardHeader className="p-0">
+                        <CardTitle className="text-h3 font-medium">Proyeksi GMV & Pertumbuhan</CardTitle>
                         <CardDescription>Pasar mulai dewasa dengan pertumbuhan 5% (YoY), fokus bergeser dari 'bakar uang' ke profitabilitas.</CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        <p className="text-4xl font-bold text-primary mb-4">US$56,5 Miliar</p>
-                        <div className="h-[120px] w-full">
-                           <ResponsiveContainer width="100%" height="100%">
-                                <ComposedChart data={gmvData} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
-                                    <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                                    <YAxis hide={true} domain={['dataMin - 1', 'dataMax + 1']} />
-                                    <XAxis dataKey="month" hide />
-                                    <RechartsTooltip cursor={{ fill: 'hsla(var(--muted))' }} />
-                                    <Bar dataKey="range" barSize={2} radius={2}>
-                                        {gmvData.map((entry, index) => (
-                                            <Cell key={`cell-range-${index}`} fill={'hsl(var(--border))'} />
-                                        ))}
-                                    </Bar>
-                                    <Bar dataKey="body" barSize={10} radius={2}>
-                                        {gmvData.map((entry, index) => (
-                                            <Cell key={`cell-body-${index}`} fill={entry.body[0] > entry.body[1] ? 'hsl(var(--destructive))' : 'hsl(var(--primary))'} />
-                                        ))}
-                                    </Bar>
-                                </ComposedChart>
-                            </ResponsiveContainer>
-                        </div>
-                        <p className="text-xs text-muted-foreground text-center mt-2">Visualisasi tren volatilitas pasar bulanan</p>
+                    <CardContent className="p-0 mt-6">
+                        <p className="text-5xl font-bold text-primary">US$56,5 M</p>
+                        <p className="text-caption text-muted-foreground mt-2">Visualisasi tren volatilitas pasar bulanan</p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Siapa Pembelimu?</CardTitle>
-                        <CardDescription>Kenali siapa dan bagaimana mereka belanja online.</CardDescription>
+                <Card className="p-6">
+                    <CardHeader className="p-0">
+                        <CardTitle className="text-h3 font-medium">Profil Pembeli Digital</CardTitle>
+                        <CardDescription>Kenali siapa dan bagaimana mereka belanja.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-6">
+                    <CardContent className="p-0 mt-6 space-y-4">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-primary/10 rounded-full"><Target className="w-8 h-8 text-primary" /></div>
+                            <div className="p-3 bg-primary/10 rounded-full"><Target className="w-6 h-6 text-primary" /></div>
                             <div>
-                                <p className="font-semibold">Usia Dominan</p>
-                                <p className="text-2xl font-bold">26-35 Tahun</p>
+                                <p className="font-semibold text-body">Usia Dominan</p>
+                                <p className="text-xl font-bold">26-35 Tahun</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-primary/10 rounded-full"><LineChart className="w-8 h-8 text-primary" /></div>
+                            <div className="p-3 bg-primary/10 rounded-full"><LineChart className="w-6 h-6 text-primary" /></div>
                             <div>
-                                <p className="font-semibold">Belanja Lewat HP</p>
-                                <p className="text-2xl font-bold">67% Transaksi</p>
+                                <p className="font-semibold text-body">Akses Utama</p>
+                                <p className="text-xl font-bold">67% via Mobile</p>
                             </div>
                         </div>
                          <div className="flex items-center gap-4">
-                            <div className="p-3 bg-primary/10 rounded-full"><TrendingUp className="w-8 h-8 text-primary" /></div>
+                            <div className="p-3 bg-primary/10 rounded-full"><TrendingUp className="w-6 h-6 text-primary" /></div>
                             <div>
-                                <p className="font-semibold">Paling Dicari</p>
+                                <p className="font-semibold text-body">Pendorong Utama</p>
                                 <p className="text-xl font-bold">Promo & Gratis Ongkir</p>
                             </div>
                         </div>
@@ -347,39 +254,37 @@ export default function AnalystPage() {
         </section>
         
         <section id="pangsa-pasar">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Siapa Raja di Pasar? (Estimasi Pangsa Pasar GMV 2024)</CardTitle>
+            <Card className="p-6 md:p-8">
+                <CardHeader className="p-0">
+                    <CardTitle className="text-h3 font-medium">Peta Persaingan GMV 2024</CardTitle>
                     <CardDescription>Integrasi Tokopedia & TikTok Shop menciptakan duopoli baru yang menantang dominasi Shopee.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-8">
+                <CardContent className="p-0 mt-8">
                     <div className="w-full h-[300px]">
                          <ChartContainer config={chartConfig} className="h-full w-full">
-                            <RechartsBarChart data={marketShareData} margin={{ top: 20, right: 20, left: -20, bottom: 5 }}>
-                                <CartesianGrid vertical={false} />
-                                <XAxis 
+                            <RechartsBarChart data={marketShareData} layout="vertical" margin={{ top: 0, right: 20, left: 0, bottom: 0 }}>
+                                <CartesianGrid horizontal={false} strokeDasharray="3 3" />
+                                <XAxis type="number" hide />
+                                <YAxis 
                                     dataKey="name" 
+                                    type="category"
                                     tickLine={false} 
                                     axisLine={false}
-                                    tickMargin={10}
+                                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 13 }}
+                                    width={150}
                                     interval={0}
-                                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
-                                />
-                                <YAxis 
-                                    tickFormatter={(value) => `${value}%`}
-                                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
                                 />
                                 <RechartsTooltip 
                                     cursor={{ fill: 'hsl(var(--muted))' }} 
                                     content={<ChartTooltipContent formatter={(value) => `${value}%`} />}
                                 />
-                                <Bar dataKey="value" radius={[5, 5, 0, 0]}>
+                                <Bar dataKey="value" radius={[0, 8, 8, 0]}>
                                     {marketShareData.map((entry) => (
                                         <Cell key={`cell-${entry.name}`} fill={entry.fill} />
                                     ))}
                                     <LabelList 
                                         dataKey="value" 
-                                        position="top" 
+                                        position="right" 
                                         offset={8} 
                                         className="fill-foreground font-semibold"
                                         formatter={(value: number) => `${value}%`}
@@ -389,28 +294,24 @@ export default function AnalystPage() {
                             </RechartsBarChart>
                         </ChartContainer>
                     </div>
-                    <div className="space-y-4">
-                        <h3 className="font-bold text-lg mb-4 text-center">Analisis Medan Perang</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                    <div className="mt-8 space-y-4">
+                        <h3 className="font-semibold text-lg text-center">Analisis Medan Perang</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-4">
                             <div className="space-y-1">
-                                <p className="font-bold">TikTok & Tokopedia</p>
-                                <p className="text-muted-foreground text-sm">Kanal untuk "Shoppertainment" & Pembelian Impulsif</p>
-                                <p className="text-muted-foreground text-xs">Kuasai dengan konten video pendek, live streaming, dan tren viral.</p>
+                                <p className="font-semibold text-body">TikTok & Tokopedia</p>
+                                <p className="text-muted-foreground text-caption">Kuasai dengan konten video pendek, live streaming, dan tren viral untuk "Shoppertainment".</p>
                             </div>
                             <div className="space-y-1">
-                                <p className="font-bold">Shopee</p>
-                                <p className="text-muted-foreground text-sm">Raksasa Pasar Massal & Promo Agresif</p>
-                                <p className="text-muted-foreground text-xs">Menangkan dengan perang harga, voucher, gamifikasi, dan iklan internal yang masif.</p>
+                                <p className="font-semibold text-body">Shopee</p>
+                                <p className="text-muted-foreground text-caption">Menangkan pasar massal dengan perang harga, voucher, gamifikasi, dan iklan internal masif.</p>
                             </div>
                             <div className="space-y-1">
-                                <p className="font-bold">Lazada & Blibli</p>
-                                <p className="text-muted-foreground text-sm">Benteng untuk Brand & Audiens Berkualitas</p>
-                                <p className="text-muted-foreground text-xs">Dominasi dengan branding premium, garansi (LazMall), dan layanan superior.</p>
+                                <p className="font-semibold text-body">Lazada & Blibli</p>
+                                <p className="text-muted-foreground text-caption">Dominasi audiens berkualitas dengan branding premium, garansi (LazMall), dan layanan superior.</p>
                             </div>
                             <div className="space-y-1">
-                                <p className="font-bold">Social Commerce</p>
-                                <p className="text-muted-foreground text-sm">Kanal untuk Targeting Presisi (Meta & Google Ads)</p>
-                                <p className="text-muted-foreground text-xs">Jangkau audiens spesifik dengan retargeting dan lead generation.</p>
+                                <p className="font-semibold text-body">Social Commerce</p>
+                                <p className="text-muted-foreground text-caption">Jangkau audiens spesifik dengan targeting presisi (Meta/Google Ads) & retargeting.</p>
                             </div>
                         </div>
                     </div>
@@ -420,13 +321,13 @@ export default function AnalystPage() {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
-            <section id="cek-strategi">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><BrainCircuit className="text-primary"/> Data Bisnis Kamu</CardTitle>
-                        <CardDescription>Isi data ini biar AI bisa bantu analisis. Santai, data kamu aman.</CardDescription>
+            <section id="cek-strategi" className="scroll-mt-24">
+                <Card className="p-6 md:p-8">
+                    <CardHeader className="p-0">
+                        <CardTitle className="text-h3 font-medium flex items-center gap-2"><BrainCircuit className="text-primary"/> Data Bisnismu</CardTitle>
+                        <CardDescription>Isi data ini agar AI bisa menganalisis strategimu.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="p-0 mt-6 space-y-6">
                         <div className="grid md:grid-cols-2 gap-4">
                             <FormField control={form.control} name="productName" render={({ field }) => (
                                 <FormItem>
@@ -443,31 +344,22 @@ export default function AnalystPage() {
                                 </FormItem>
                             )} />
                         </div>
-                        <FormField control={form.control} name="initialMarketingBudget" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Modal Awal (Rp)</FormLabel>
-                                <FormControl><Input type="number" {...field} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
                     </CardContent>
                 </Card>
             </section>
 
             <section id="model-bisnis">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Gaya Jualan Kamu</CardTitle>
-                        <CardDescription>Pilih model yang paling pas sama bisnismu.</CardDescription>
+                <Card className="p-6 md:p-8">
+                    <CardHeader className="p-0">
+                        <CardTitle className="text-h3 font-medium">Model Bisnis & Strategi Harga</CardTitle>
+                        <CardDescription>Pilih model yang paling sesuai, lalu atur harga dan biaya.</CardDescription>
                     </CardHeader>
-                    <CardContent className="grid md:grid-cols-2 gap-8">
-                         <div>
-                            <FormField
-                                control={form.control}
-                                name="marginModel"
-                                render={({ field }) => (
-                                    <FormItem className="space-y-3">
-                                        <FormLabel>Untungnya Gimana?</FormLabel>
+                    <CardContent className="p-0 mt-6 space-y-8">
+                         <div className="grid md:grid-cols-2 gap-8 items-start">
+                            <div className="space-y-6">
+                                <FormField control={form.control} name="marginModel" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Model Margin</FormLabel>
                                         <FormControl>
                                             <Tabs defaultValue={field.value} onValueChange={field.onChange} className="w-full">
                                                 <TabsList className="grid w-full grid-cols-2">
@@ -477,79 +369,57 @@ export default function AnalystPage() {
                                             </Tabs>
                                         </FormControl>
                                     </FormItem>
-                                )}
-                            />
-                            <div className="mt-4"></div>
-                            <FormField
-                                control={form.control}
-                                name="brandStrength"
-                                render={({ field }) => (
-                                    <FormItem className="space-y-3">
-                                        <FormLabel>Brand Kamu Udah Dikenal?</FormLabel>
+                                )} />
+                                <FormField control={form.control} name="brandStrength" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Kekuatan Brand</FormLabel>
                                         <FormControl>
                                             <Tabs defaultValue={field.value} onValueChange={field.onChange} className="w-full">
                                                 <TabsList className="grid w-full grid-cols-2">
                                                     <TabsTrigger value="baru">Baru Mulai</TabsTrigger>
-                                                    <TabsTrigger value="kuat">Udah Kuat</TabsTrigger>
+                                                    <TabsTrigger value="kuat">Sudah Kuat</TabsTrigger>
                                                 </TabsList>
                                             </Tabs>
                                         </FormControl>
                                     </FormItem>
-                                )}
-                            />
+                                )} />
+                            </div>
+                            <div className="bg-background border p-4 rounded-lg">
+                              <h4 className="font-semibold text-lg text-primary">{selectedBusinessModel.persona}</h4>
+                              <p className="mt-1 text-caption">{selectedBusinessModel.analysis}</p>
+                              <p className="mt-2 text-caption font-semibold">{selectedBusinessModel.platforms}</p>
+                            </div>
                         </div>
-                        <div className="bg-primary/5 border-l-4 border-primary p-4 rounded-r-lg">
-                          <h4 className="font-bold text-lg text-primary">{selectedBusinessModel.persona}</h4>
-                          <p className="mt-2 text-sm">{selectedBusinessModel.analysis}</p>
-                          <p className="mt-2 text-sm font-semibold">{selectedBusinessModel.platforms}</p>
-                        </div>
-                    </CardContent>
-                </Card>
-            </section>
-
-            <section id="cek-strategi-lanjutan">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Cek Strategi Harga & Biaya</CardTitle>
-                        <CardDescription>Ayo kita hitung potensi cuan dari bisnismu.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
+                        <div className="border-t -mx-8 my-8"></div>
                         <div>
-                            <h3 className="font-semibold mb-2">Kalkulator Untung per Produk</h3>
+                            <h3 className="font-semibold text-lg mb-4">Kalkulator Harga & Biaya per Produk</h3>
                             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <FormField control={form.control} name="sellPrice" render={({ field }) => (<FormItem><FormLabel>Harga Jual</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
                                 <FormField control={form.control} name="costOfGoods" render={({ field }) => (<FormItem><FormLabel>Modal Produk (HPP)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
                                 <FormField control={form.control} name="adCost" render={({ field }) => (<FormItem><FormLabel>Biaya Iklan / Produk</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
                                 <FormField control={form.control} name="otherCostsPercentage" render={({ field }) => (<FormItem><FormLabel>Biaya Lain (%)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
                             </div>
-                            <div className="grid md:grid-cols-2 gap-4 mt-4">
-                                <Card className="p-4 bg-muted">
-                                    <p className="text-sm text-muted-foreground">Laba/unit</p>
-                                    {renderFittableNumber(calculations.netProfitPerUnit, true, calculations.netProfitPerUnit < 0)}
-                                </Card>
-                                <Card className="p-4 bg-muted">
-                                    <p className="text-sm text-muted-foreground">Net Margin</p>
-                                    <p className={`text-2xl font-bold ${calculations.netProfitMargin < 0 ? 'text-destructive' : 'text-green-600'}`}>{calculations.netProfitMargin.toFixed(1)}%</p>
-                                </Card>
-                            </div>
                         </div>
-
                         <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                                <h3 className="font-semibold mb-2">Kapan Balik Modal? (BEP)</h3>
-                                <FormField control={form.control} name="fixedCostsPerMonth" render={({ field }) => (<FormItem><FormLabel>Biaya Tetap / Bulan</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
-                                <Card className="p-4 bg-muted mt-2">
-                                  <p className="text-sm text-muted-foreground">Jual Berapa Produk Biar BEP?</p>
-                                  {renderFittableNumber(isFinite(calculations.bepUnit) ? Math.ceil(calculations.bepUnit) : 'N/A', false, false, "text-xl")}
-                                </Card>
+                                <h3 className="font-semibold text-lg mb-2">Biaya Tetap & Target Penjualan</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                  <FormField control={form.control} name="fixedCostsPerMonth" render={({ field }) => (<FormItem><FormLabel>Biaya Tetap / Bulan</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
+                                  <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Target Jual / Bulan</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
+                                </div>
                             </div>
                             <div>
-                                <h3 className="font-semibold mb-2">Prediksi Omzet</h3>
-                                <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Target Jual / Bulan (Unit)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
-                                <Card className="p-4 bg-muted mt-2">
-                                  <p className="text-sm text-muted-foreground">Omzet Bulanan</p>
-                                  {renderFittableNumber(calculations.monthlyRevenue, true, false, "text-xl")}
-                                </Card>
+                                <h3 className="font-semibold text-lg mb-2">Estimasi Profitabilitas</h3>
+                                 <div className="grid grid-cols-2 gap-4">
+                                    <Card className="p-4 bg-muted/50">
+                                        <p className="text-caption text-muted-foreground">Laba/unit</p>
+                                        <p className={`text-xl font-bold ${calculations.netProfitPerUnit < 0 ? 'text-destructive' : 'text-foreground'}`}>{formatCurrency(calculations.netProfitPerUnit)}</p>
+                                    </Card>
+                                    <Card className="p-4 bg-muted/50">
+                                        <p className="text-caption text-muted-foreground">BEP (unit)</p>
+                                        <p className={`text-xl font-bold`}>{isFinite(calculations.bepUnit) ? Math.ceil(calculations.bepUnit) : 'N/A'}</p>
+                                    </Card>
+                                </div>
                             </div>
                         </div>
                     </CardContent>
@@ -557,121 +427,86 @@ export default function AnalystPage() {
             </section>
             
             <section id="alokasi-bujet">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Alokator Bujet Pemasaran</CardTitle>
+                <Card className="p-6 md:p-8">
+                    <CardHeader className="p-0">
+                        <CardTitle className="text-h3 font-medium">Alokasi Bujet Pemasaran</CardTitle>
+                        <CardDescription>Atur bujet bulanan dan pilih kanal promosimu.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-6">
+                    <CardContent className="p-0 mt-6 space-y-6">
                         <FormField control={form.control} name="totalMarketingBudget" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Bujet Promosi / Bulan</FormLabel>
+                                <FormLabel>Total Bujet Promosi per Bulan</FormLabel>
                                 <FormControl>
                                     <Input type="number" {...field} />
                                 </FormControl>
                             </FormItem>
                         )} />
-                        
-                        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
-                            <RechartsPieChart>
-                                <RechartsTooltip cursor={{ fill: 'hsl(var(--muted))' }} content={<ChartTooltipContent hideLabel />} />
-                                <Pie 
-                                    data={budgetAllocationData.filter(d => d.active)} 
-                                    dataKey="value" 
-                                    nameKey="name" 
-                                    innerRadius={60} 
-                                    outerRadius={90} 
-                                    strokeWidth={2}
-                                />
-                            </RechartsPieChart>
-                        </ChartContainer>
 
                         <div className="space-y-4">
-                            {budgetAllocationData.map((channel, index) => (
-                                <FormField 
-                                    key={channel.name}
-                                    control={form.control}
-                                    name={
-                                        index === 0 ? "useVideoContent" :
-                                        index === 1 ? "useKOLs" :
-                                        index === 2 ? "useDiscounts" :
-                                        "useOtherChannels"
-                                    }
-                                    render={({ field }) => (
-                                    <FormItem>
-                                        <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
-                                            <div className="flex items-center gap-3">
-                                                <span className="h-2 w-2 rounded-full" style={{backgroundColor: channel.fill}}></span>
-                                                <FormLabel className="font-normal">{channel.name}</FormLabel>
-                                            </div>
-                                            <div className="flex items-center gap-4">
-                                                <span className="text-sm text-muted-foreground">{formatCurrency(channel.value)}</span>
-                                                <FormControl>
-                                                    <Switch
-                                                        checked={field.value}
-                                                        onCheckedChange={field.onChange}
-                                                        style={{
-                                                            '--switch-bg-checked': channel.fill,
-                                                            '--switch-bg-unchecked': 'hsl(var(--muted))',
-                                                        } as React.CSSProperties}
-                                                        className="data-[state=checked]:bg-[--switch-bg-checked] data-[state=unchecked]:bg-[--switch-bg-unchecked]"
-                                                    />
-                                                </FormControl>
-                                            </div>
-                                        </div>
-                                    </FormItem>
-                                )}/>
-                            ))}
+                            <FormField control={form.control} name="useVideoContent" render={({ field }) => (
+                                <FormItem className="flex items-center justify-between rounded-lg border p-4">
+                                    <FormLabel className="font-normal mb-0">Iklan Medsos & Video</FormLabel>
+                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange}/></FormControl>
+                                </FormItem>
+                            )}/>
+                             <FormField control={form.control} name="useKOLs" render={({ field }) => (
+                                <FormItem className="flex items-center justify-between rounded-lg border p-4">
+                                    <FormLabel className="font-normal mb-0">Endorse & KOL</FormLabel>
+                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange}/></FormControl>
+                                </FormItem>
+                            )}/>
+                             <FormField control={form.control} name="useDiscounts" render={({ field }) => (
+                                <FormItem className="flex items-center justify-between rounded-lg border p-4">
+                                    <FormLabel className="font-normal mb-0">Promosi & Diskon</FormLabel>
+                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange}/></FormControl>
+                                </FormItem>
+                            )}/>
+                            <FormField control={form.control} name="useOtherChannels" render={({ field }) => (
+                                <FormItem className="flex items-center justify-between rounded-lg border p-4">
+                                    <FormLabel className="font-normal mb-0">Kanal Lainnya</FormLabel>
+                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange}/></FormControl>
+                                </FormItem>
+                            )}/>
                         </div>
-                        <p className="text-center text-sm text-muted-foreground">{budgetSummary}</p>
                     </CardContent>
-                    <CardFooter>
-                       <Button type="submit" className="w-full text-lg" disabled={isLoading}>
-                           {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : '⚡ Cek Hasilnya dengan AI'}
-                       </Button>
-                    </CardFooter>
+                    <div className="border-t -mx-8 my-8"></div>
+                    <Button type="submit" className="w-full h-14 text-lg rounded-full" disabled={isLoading}>
+                       {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : '⚡ Jalankan Simulasi AI'}
+                    </Button>
                 </Card>
             </section>
           </form>
         </Form>
         
-         <div id="hasil-simulasi" className="scroll-mt-20">
+         <div id="hasil-simulasi" className="scroll-mt-24 space-y-12">
             {isLoading && (
               <div className="flex flex-col items-center justify-center text-center p-8">
                 <Loader2 className="w-12 h-12 animate-spin text-primary" />
-                <p className="mt-4 text-lg font-semibold">AI lagi ngitung, bentar ya...</p>
-                <p className="text-muted-foreground">Lagi ngeracik strategi terbaik buat lo.</p>
+                <p className="mt-4 text-lg font-semibold">AI sedang menganalisis...</p>
+                <p className="text-muted-foreground text-caption">Meracik strategi terbaik berdasarkan data Anda.</p>
               </div>
             )}
 
             {analysisResult && (
-              <div className="space-y-8">
+              <>
                 <section>
                     <div className="text-center">
-                        <h2 className="text-3xl font-bold">Hasil Simulasi Strategimu</h2>
-                        <p className="text-muted-foreground mt-2">Ini dia prediksi kesehatan bisnismu berdasarkan data yang kamu isi.</p>
+                        <h2 className="text-h2 font-semibold">Hasil Simulasi Strategi</h2>
+                        <p className="text-subtitle text-muted-foreground mt-2">Proyeksi kesehatan bisnismu berdasarkan data yang kamu isi.</p>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-6 mt-8">
-                        <Card className="p-6 flex flex-col justify-between text-center">
-                           <div>
-                             <p className="text-sm text-muted-foreground">Proyeksi Pendapatan Tahunan</p>
-                             {renderFittableNumber(analysisResult.annualRevenue, true, false, "text-3xl mt-2 text-primary")}
-                           </div>
-                           <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Estimasi total penjualan kotor kamu dalam setahun.</p>
+                        <Card className="p-6 text-center">
+                            <p className="text-caption text-muted-foreground">Proyeksi Pendapatan Tahunan</p>
+                            <p className="text-4xl mt-2 font-bold text-primary">{formatCurrency(analysisResult.annualRevenue)}</p>
                         </Card>
-                        <Card className="p-6 flex flex-col justify-between text-center">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Proyeksi Profit Tahunan</p>
-                                {renderFittableNumber(analysisResult.annualProfit, true, analysisResult.annualProfit < 0, `text-3xl mt-2 ${analysisResult.annualProfit < 0 ? '' : 'text-green-600'}`)}
-                            </div>
-                           <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Perkiraan untung bersih setelah semua biaya dibayar.</p>
+                        <Card className="p-6 text-center">
+                            <p className="text-caption text-muted-foreground">Proyeksi Profit Tahunan</p>
+                            <p className={`text-4xl mt-2 font-bold ${analysisResult.annualProfit < 0 ? 'text-destructive' : 'text-green-600'}`}>{formatCurrency(analysisResult.annualProfit)}</p>
                         </Card>
-                        <Card className="p-6 flex flex-col justify-between text-center">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Return on Ad Spend (ROAS)</p>
-                                {renderFittableNumber(`${analysisResult.roas.toFixed(2)}x`, false, false, "text-3xl mt-2 text-primary")}
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Setiap Rp1 buat iklan menghasilkan {formatCurrency(analysisResult.roas)} pendapatan.</p>
+                        <Card className="p-6 text-center">
+                            <p className="text-caption text-muted-foreground">Return on Ad Spend (ROAS)</p>
+                            <p className="text-4xl mt-2 font-bold text-primary">{`${analysisResult.roas.toFixed(2)}x`}</p>
                         </Card>
                     </div>
                 <div className="grid md:grid-cols-2 gap-8 mt-8">
@@ -682,8 +517,8 @@ export default function AnalystPage() {
                                     <TableBody>
                                     {analysisResult.pnlTable.map(item => (
                                         <TableRow key={item.item}>
-                                        <TableCell className={cn("py-2 px-4", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>{item.item}</TableCell>
-                                        <TableCell className={cn("text-right font-medium py-2 px-4", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>
+                                        <TableCell className={cn("py-3 px-4", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>{item.item}</TableCell>
+                                        <TableCell className={cn("text-right font-medium py-3 px-4 text-sm", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>
                                             {renderFittableTableCellSimple(item.value, item.isNegative)}
                                         </TableCell>
                                         </TableRow>
@@ -699,8 +534,8 @@ export default function AnalystPage() {
                                     <TableBody>
                                     {analysisResult.cashflowTable.map((row, index) => (
                                         <TableRow key={index}>
-                                            <TableCell className={cn("py-2 px-4", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>{row.item}</TableCell>
-                                            <TableCell className={cn("text-right font-medium py-2 px-4", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>
+                                            <TableCell className={cn("py-3 px-4", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>{row.item}</TableCell>
+                                            <TableCell className={cn("text-right font-medium py-3 px-4 text-sm", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>
                                             {renderFittableTableCell(row.value, row.isNegative, true)}
                                             </TableCell>
                                         </TableRow>
@@ -711,21 +546,21 @@ export default function AnalystPage() {
                         </Card>
                     </div>
                     
-                    <Card className="mt-8">
-                        <CardHeader>
-                            <CardTitle>Kata AI Soal Strategimu</CardTitle>
+                    <Card className="mt-8 p-6">
+                        <CardHeader className="p-0">
+                            <CardTitle>Evaluasi AI Terhadap Strategimu</CardTitle>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="p-0 mt-4">
                             {analysisResult.marketAnalysis.evaluation.includes("berisiko") || analysisResult.annualProfit < 0 ?
-                                (<Alert variant="destructive" className="bg-destructive/5">
+                                (<Alert variant="destructive">
                                     <AlertTriangle className="h-4 w-4" />
-                                    <AlertTitle>Waduh, Gawat Nih!</AlertTitle>
-                                    <AlertDescription>{analysisResult.marketAnalysis.evaluation} {analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
+                                    <AlertTitle>{analysisResult.marketAnalysis.evaluation}</AlertTitle>
+                                    <AlertDescription>{analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
                                 </Alert>) :
                                 (<Alert className="bg-green-500/10 border-green-500/30 text-green-700">
                                     <CheckCircle className="h-4 w-4 text-green-500" />
-                                    <AlertTitle>Analisis AI</AlertTitle>
-                                    <AlertDescription>{analysisResult.marketAnalysis.evaluation} {analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
+                                    <AlertTitle>{analysisResult.marketAnalysis.evaluation}</AlertTitle>
+                                    <AlertDescription>{analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
                                 </Alert>)
                             }
                         </CardContent>
@@ -734,26 +569,24 @@ export default function AnalystPage() {
                 </section>
                 
                 <section id="rencana-aksi" className="mt-8">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Rencana Aksi Biar Cuan</CardTitle>
-                      <CardDescription>Ini langkah-langkah nyata dari AI yang bisa langsung kamu kerjain.</CardDescription>
+                  <Card className="p-6 md:p-8">
+                    <CardHeader className="p-0">
+                      <CardTitle className="text-h3 font-medium">Rencana Aksi Prioritas</CardTitle>
+                      <CardDescription>Rekomendasi taktis dari AI yang bisa langsung Anda terapkan.</CardDescription>
                     </CardHeader>
-                    <CardContent>
-                      <ol className="list-decimal list-inside space-y-3">
+                    <CardContent className="p-0 mt-6">
+                      <ul className="list-decimal list-outside space-y-3 pl-5 text-body">
                         {analysisResult.strategicPlan.recommendations.map((rec: string, index: number) => (
                           <li key={index} className="pl-2">{rec}</li>
                         ))}
-                      </ol>
+                      </ul>
                     </CardContent>
                   </Card>
                 </section>
-              </div>
+              </>
             )}
         </div>
       </main>
     </div>
   );
 }
-
-    

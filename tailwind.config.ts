@@ -10,16 +10,26 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: "1rem", // 16px
       screens: {
-        "2xl": "1400px",
+        "sm": "640px",
+        "md": "768px",
+        "lg": "1024px",
+        "xl": "1280px",
       },
     },
     extend: {
+      fontSize: {
+        'h1': ['34px', { fontWeight: '700', lineHeight: '1.2' }],
+        'h2': ['28px', { fontWeight: '600', lineHeight: '1.3' }],
+        'h3': ['22px', { fontWeight: '500', lineHeight: '1.4' }],
+        'subtitle': ['18px', { fontWeight: '400', lineHeight: '1.5' }],
+        'body': ['16px', { fontWeight: '400', lineHeight: '1.6' }],
+        'caption': ['13px', { fontWeight: '400', lineHeight: '1.4' }],
+      },
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
-        code: ['monospace'],
+        body: ['-apple-system', 'BlinkMacSystemFont', 'Inter', 'Segoe UI', 'Roboto', 'sans-serif'],
+        headline: ['-apple-system', 'BlinkMacSystemFont', 'Inter', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -62,21 +72,18 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
-        sidebar: {
-          DEFAULT: 'hsl(var(--sidebar-background))',
-          foreground: 'hsl(var(--sidebar-foreground))',
-          primary: 'hsl(var(--sidebar-primary))',
-          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-          accent: 'hsl(var(--sidebar-accent))',
-          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-          border: 'hsl(var(--sidebar-border))',
-          ring: 'hsl(var(--sidebar-ring))',
-        },
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        lg: 'calc(var(--radius) - 4px)', // 8px
+        md: 'calc(var(--radius) - 4px)', // 8px
+        sm: 'calc(var(--radius) - 6px)', // 6px
+        xl: 'var(--radius)', // 12px
+        '2xl': 'calc(var(--radius) + 4px)', // 16px
+        '3xl': 'calc(var(--radius) + 12px)', // 24px
+      },
+      boxShadow: {
+        'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+        'DEFAULT': '0 2px 8px rgba(0,0,0,0.06)',
       },
       keyframes: {
         'accordion-down': {

@@ -4,32 +4,35 @@
 
 @layer base {
   :root {
-    --background: 204 33% 97%;
-    --foreground: 224 71.4% 4.1%;
-    --card: 0 0% 100%;
-    --card-foreground: 224 71.4% 4.1%;
+    --background: 240 10% 99%; /* #fcfcfd - Almost white */
+    --foreground: 240 10% 3.9%;
+    --card: 240 4.8% 95.9%; /* #f2f2f7 - iOS light gray */
+    --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 224 71.4% 4.1%;
-    --primary: 216 88% 53%;
-    --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 275 87% 33%;
-    --accent-foreground: 210 40% 98%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 212 100% 50%; /* #007AFF - iOS Blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 216 88% 53%;
-    --radius: 0.5rem;
-    --chart-1: 216 88% 53%;
-    --chart-2: 275 87% 33%;
-    --chart-3: 160 60% 45%;
-    --chart-4: 30 80% 55%;
-    --chart-5: 262 72% 66%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 5.9% 90%; /* #e5e5e7 */
+    --input: 240 5.2% 93.9%; /* #eeeff2 */
+    --ring: 212 100% 50%;
+    --radius: 0.75rem; /* 12px */
 
+    /* Chart colors */
+    --chart-1: 212 100% 50%; /* iOS Blue */
+    --chart-2: 343 91% 58%; /* iOS Pink */
+    --chart-3: 158 79% 44%; /* iOS Green */
+    --chart-4: 43 96% 56%; /* iOS Orange */
+    --chart-5: 262 82% 62%; /* iOS Purple */
+
+    /* Custom platform colors */
     --chart-tiktok: 217 91% 60%; 
     --chart-shopee: 22 95% 65%;
     --chart-lazada: 205 78% 55%;
@@ -38,37 +41,25 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 216 88% 53%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215.4 16.3% 56.9%;
-    --accent: 275 87% 33%;
-    --accent-foreground: 210 40% 98%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 212 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 216 88% 53%;
-
-    --chart-1: 216 88% 53%;
-    --chart-2: 275 87% 33%;
-    --chart-3: 160 60% 45%;
-    --chart-4: 30 80% 55%;
-    --chart-5: 262 72% 66%;
-
-    --chart-tiktok: 217 91% 60%; 
-    --chart-shopee: 22 95% 65%;
-    --chart-lazada: 205 78% 55%;
-    --chart-bukalapak: 350 78% 60%;
-    --chart-blibli: 205 90% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 15%;
+    --input: 0 0% 20%;
+    --ring: 212 100% 50%;
   }
 }
 
@@ -78,7 +69,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
-
-    

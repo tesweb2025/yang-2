@@ -660,7 +660,12 @@ export default function AnalystPage() {
                                     <Card className="p-4 bg-muted/50 flex flex-col justify-between">
                                         <div>
                                             <p className="text-caption text-muted-foreground">BEP (unit)</p>
-                                            <p className="text-xl font-bold">{isFinite(calculations.bepUnit) ? Math.ceil(calculations.bepUnit) : 'N/A'}</p>
+                                            <p className={cn(
+                                              "text-xl font-bold",
+                                              !isFinite(calculations.bepUnit) && "text-destructive"
+                                            )}>
+                                              {isFinite(calculations.bepUnit) ? Math.ceil(calculations.bepUnit) : 'N/A'}
+                                            </p>
                                         </div>
                                         <p className="text-xs text-muted-foreground mt-1">Jumlah produk yang harus terjual untuk balik modal setiap bulan.</p>
                                     </Card>

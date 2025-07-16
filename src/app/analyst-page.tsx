@@ -86,10 +86,18 @@ const businessModelContent: any = {
 };
 
 const gmvData = [
-  { month: 'Jan', value: [2, 3] }, { month: 'Feb', value: [2.5, 4] }, { month: 'Mar', value: [3.5, 4.5] },
-  { month: 'Apr', value: [4, 2] }, { month: 'May', value: [1.5, 2.5] }, { month: 'Jun', value: [3, 5] },
-  { month: 'Jul', value: [4.8, 5] }, { month: 'Aug', value: [4.5, 3] }, { month: 'Sep', value: [2.5, 3.5] },
-  { month: 'Oct', value: [3.8, 4.8] }, { month: 'Nov', value: [5, 4] }, { month: 'Dec', value: [3.5, 2] }
+    { month: 'Jan', range: [2, 3.8], body: [2.8, 3.2] },
+    { month: 'Feb', range: [2.5, 4.5], body: [3.2, 4] },
+    { month: 'Mar', range: [3.5, 5], body: [4, 4.8] },
+    { month: 'Apr', range: [2, 4.8], body: [4.5, 3] },
+    { month: 'May', range: [1.5, 3], body: [2.5, 2] },
+    { month: 'Jun', range: [3, 5.5], body: [3.5, 5] },
+    { month: 'Jul', range: [4.8, 6], body: [5, 5.8] },
+    { month: 'Aug', range: [3, 5], body: [4.8, 3.5] },
+    { month: 'Sep', range: [2.5, 4], body: [3, 3.8] },
+    { month: 'Oct', range: [3.8, 5.2], body: [4, 5] },
+    { month: 'Nov', range: [4, 6.5], body: [5, 6] },
+    { month: 'Dec', range: [2, 4], body: [3.5, 2.5] },
 ];
 
 const marketShareData = [
@@ -257,8 +265,7 @@ export default function AnalystPage() {
             {isNegative ? `- ${displayValue}`: displayValue}
         </span>
     );
-  };
-
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -279,20 +286,26 @@ export default function AnalystPage() {
             <div className="grid md:grid-cols-2 gap-8">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Proyeksi Nilai Pasar (GMV)</CardTitle>
+                        <CardTitle>Proyeksi Gross Merchandise Value (GMV)</CardTitle>
                         <CardDescription>Pasar mulai dewasa dengan pertumbuhan 5% (YoY), fokus bergeser dari 'bakar uang' ke profitabilitas.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <p className="text-4xl font-bold text-primary mb-4">US$56,5 Miliar</p>
                         <div className="h-[120px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
+                           <ResponsiveContainer width="100%" height="100%">
                                 <ComposedChart data={gmvData} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
                                     <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--border))" />
                                     <YAxis hide={true} domain={['dataMin - 1', 'dataMax + 1']} />
+                                    <XAxis dataKey="month" hide />
                                     <RechartsTooltip cursor={{ fill: 'hsla(var(--muted))' }} />
-                                    <Bar dataKey="value" barSize={15}>
+                                    <Bar dataKey="range" barSize={2} radius={2}>
                                         {gmvData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.value[0] > entry.value[1] ? 'hsl(var(--destructive))' : 'hsl(var(--primary))'} />
+                                            <Cell key={`cell-range-${index}`} fill={'hsl(var(--border))'} />
+                                        ))}
+                                    </Bar>
+                                    <Bar dataKey="body" barSize={10} radius={2}>
+                                        {gmvData.map((entry, index) => (
+                                            <Cell key={`cell-body-${index}`} fill={entry.body[0] > entry.body[1] ? 'hsl(var(--destructive))' : 'hsl(var(--primary))'} />
                                         ))}
                                     </Bar>
                                 </ComposedChart>
@@ -655,8 +668,7 @@ export default function AnalystPage() {
                             <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Setiap Rp1 buat iklan menghasilkan {formatCurrency(analysisResult.roas)} pendapatan.</p>
                         </Card>
                     </div>
-                <div className="mt-8"></div>
-                    <div className="grid md:grid-cols-2 gap-8">
+                <div className="grid md:grid-cols-2 gap-8 mt-8">
                         <Card>
                             <CardHeader><CardTitle>Laporan Untung Rugi (Bulanan)</CardTitle></CardHeader>
                             <CardContent>
@@ -737,7 +749,5 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    
 
     

@@ -17,8 +17,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import Image from 'next/image';
 import { runAnalysis } from './actions';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
-import { Pie, Label, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend } from 'recharts';
-import { PieChart as RechartsPieChart, BarChart as RechartsBarChart } from 'recharts';
+import { Pie, Label, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, PieChart as RechartsPieChart, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell } from 'recharts';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -91,22 +90,27 @@ const gmvData = [
   { month: 'Apr', value: 3.4 }, { month: 'May', value: 3.6 }, { month: 'Jun', value: 3.8 }
 ];
 const marketShareData = [
-  { name: 'TikTok-Toko', value: 35, fill: 'hsl(var(--chart-2))' },
-  { name: 'Shopee', value: 30, fill: 'hsl(var(--chart-3))' },
-  { name: 'Lazada', value: 15, fill: 'hsl(var(--chart-4))' },
-  { name: 'Lainnya', value: 20, fill: 'hsl(var(--chart-5))' }
+    { name: 'Shopee', value: 46, fill: 'var(--color-shopee)', label: 'Shopee' },
+    { name: 'Tokopedia', value: 23, fill: 'var(--color-tokopedia)', label: 'Tokopedia' },
+    { name: 'TikTok Shop', value: 13, fill: 'var(--color-tiktok)', label: 'TikTok Shop' },
+    { name: 'Bukalapak', value: 10, fill: 'var(--color-bukalapak)', label: 'Bukalapak' },
+    { name: 'Lazada', value: 6, fill: 'var(--color-lazada)', label: 'Lazada' },
+    { name: 'Blibli', value: 2, fill: 'var(--color-blibli)', label: 'Blibli' },
 ];
-const chartConfig: ChartConfig = {
+
+const chartConfig = {
   value: { label: 'Value' },
-  'TikTok-Toko': { label: 'TikTok-Toko', color: 'hsl(var(--chart-2))' },
-  'Shopee': { label: 'Shopee', color: 'hsl(var(--chart-3))' },
-  'Lazada': { label: 'Lazada', color: 'hsl(var(--chart-4))' },
-  'Lainnya': { label: 'Lainnya', color: 'hsl(var(--chart-5))' },
+  shopee: { label: 'Shopee', color: 'hsl(var(--chart-shopee))' },
+  tokopedia: { label: 'Tokopedia', color: 'hsl(var(--chart-tokopedia))' },
+  tiktok: { label: 'TikTok Shop', color: 'hsl(var(--chart-tiktok))' },
+  bukalapak: { label: 'Bukalapak', color: 'hsl(var(--chart-bukalapak))' },
+  lazada: { label: 'Lazada', color: 'hsl(var(--chart-lazada))' },
+  blibli: { label: 'Blibli', color: 'hsl(var(--chart-blibli))' },
   'Video Content & Ads': { color: 'hsl(var(--chart-1))' },
   'KOL & Afiliasi': { color: 'hsl(var(--chart-2))' },
   'Promosi & Diskon': { color: 'hsl(var(--chart-3))' },
   'Lainnya': { color: 'hsl(var(--chart-4))' },
-};
+} satisfies ChartConfig;
 
 export default function AnalystPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -331,20 +335,42 @@ export default function AnalystPage() {
                     <CardTitle>Siapa Raja di Pasar? (Estimasi Pangsa Pasar GMV 2025)</CardTitle>
                 </CardHeader>
                 <CardContent className="grid md:grid-cols-2 gap-8 items-center">
-                    <div>
-                        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
-                            <RechartsPieChart>
-                                <RechartsTooltip cursor={{fill: 'hsl(var(--muted))'}} content={<ChartTooltipContent hideLabel />} />
-                                <Pie data={marketShareData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={110} strokeWidth={2}>
-                                </Pie>
-                                <ChartLegend content={<ChartLegendContent layout="vertical" align="right" verticalAlign="middle" />} />
-                            </RechartsPieChart>
+                    <div className="w-full h-[300px]">
+                         <ChartContainer config={chartConfig} className="h-full w-full">
+                            <RechartsBarChart layout="vertical" data={marketShareData} margin={{ left: 10, right: 50 }}>
+                                <CartesianGrid horizontal={false} />
+                                <YAxis 
+                                    dataKey="name" 
+                                    type="category" 
+                                    tickLine={false} 
+                                    axisLine={false}
+                                    tick={{ fill: 'hsl(var(--foreground))' }}
+                                    width={80}
+                                />
+                                <XAxis dataKey="value" type="number" hide />
+                                <RechartsTooltip 
+                                    cursor={{ fill: 'hsl(var(--muted))' }} 
+                                    content={<ChartTooltipContent formatter={(value) => `${value}%`} />}
+                                />
+                                <Bar dataKey="value" layout="vertical" radius={5}>
+                                    {marketShareData.map((entry) => (
+                                        <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+                                    ))}
+                                    <LabelList 
+                                        dataKey="value" 
+                                        position="right" 
+                                        offset={8} 
+                                        className="fill-foreground font-semibold"
+                                        formatter={(value: number) => `${value}%`}
+                                    />
+                                </Bar>
+                            </RechartsBarChart>
                         </ChartContainer>
                     </div>
                     <div>
                         <h3 className="font-bold text-lg mb-2">Analisis Medan Perang</h3>
                         <p className="text-muted-foreground">
-                            Pasar dikuasai pemain besar dengan strategi beda-beda. <strong>TikTok-Toko</strong> jago di 'shoppertainment' dan bikin orang kalap belanja. <strong>Shopee</strong> kuat di promo dan logistik. <strong>Lazada</strong> fokus ke brand premium di LazMall. Pemain baru kayak lo harus pinter cari celah.
+                            Pasar dikuasai pemain besar dengan strategi beda-beda. <strong>Shopee</strong> masih memimpin dengan promo dan jangkauan luas. <strong>Tokopedia</strong> kuat di segmen loyal. <strong>TikTok Shop</strong> jago di 'shoppertainment' dan bikin orang kalap belanja. Pemain baru kayak lo harus pinter cari celah, misalnya di komunitas niche atau dengan produk yang sangat unik.
                         </p>
                     </div>
                 </CardContent>
@@ -501,7 +527,7 @@ export default function AnalystPage() {
                     <CardContent className="space-y-6">
                         <FormField control={form.control} name="totalMarketingBudget" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Total Bujet Pemasaran</FormLabel>
+                                <FormLabel>Bujet Promosi / Bulan</FormLabel>
                                 <FormControl>
                                     <Input type="number" {...field} />
                                 </FormControl>
@@ -621,8 +647,8 @@ export default function AnalystPage() {
                                     <TableBody>
                                     {analysisResult.pnlTable.map(item => (
                                         <TableRow key={item.item}>
-                                        <TableCell className={cn("py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih Bulanan' ? 'font-bold' : '')}>{item.item}</TableCell>
-                                        <TableCell className={cn("text-right font-medium py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih Bulanan' ? 'font-bold' : '')}>
+                                        <TableCell className={cn("py-2 px-4", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>{item.item}</TableCell>
+                                        <TableCell className={cn("text-right font-medium py-2 px-4", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>
                                             {renderFittableTableCellSimple(item.value, item.isNegative)}
                                         </TableCell>
                                         </TableRow>
@@ -693,3 +719,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

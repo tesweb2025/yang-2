@@ -127,12 +127,14 @@ export default function AnalystPage() {
   const watchedValues = form.watch();
 
   const calculations = useMemo(() => {
-    const { sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth } = watchedValues;
-    const netProfitPerUnit = sellPrice - costOfGoods - adCost - (sellPrice * otherCostsPercentage / 100);
+    const { sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth, avgSalesPerMonth } = watchedValues;
+    const grossProfitPerUnit = sellPrice - costOfGoods;
+    const netProfitPerUnit = grossProfitPerUnit - adCost - (sellPrice * otherCostsPercentage / 100);
     const netProfitMargin = sellPrice > 0 ? (netProfitPerUnit / sellPrice) * 100 : 0;
-    const bepUnit = netProfitPerUnit > 0 ? fixedCostsPerMonth / (sellPrice - costOfGoods - adCost - (sellPrice * otherCostsPercentage / 100)) : Infinity;
+    const bepUnit = netProfitPerUnit > 0 ? fixedCostsPerMonth / netProfitPerUnit : Infinity;
+    const monthlyRevenue = sellPrice * avgSalesPerMonth;
 
-    return { netProfitPerUnit, netProfitMargin, bepUnit };
+    return { netProfitPerUnit, netProfitMargin, bepUnit, monthlyRevenue };
   }, [watchedValues]);
 
   const onSubmit = async (data: FormData) => {
@@ -157,11 +159,44 @@ export default function AnalystPage() {
       if (useVideoContent) allocations.push({ name: 'Video Content & Ads', value: 40, fill: 'var(--color-chart-1)' });
       if (useKOLs) allocations.push({ name: 'KOL & Afiliasi', value: 35, fill: 'var(--color-chart-2)' });
       if (useSocialMediaAds) allocations.push({ name: 'Iklan Media Sosial', value: 25, fill: 'var(--color-chart-3)' });
+      
+      if (allocations.length === 0) {
+        return [{ name: 'Tidak ada alokasi', value: 100, fill: 'var(--color-muted)' }];
+      }
 
       const total = allocations.reduce((acc, item) => acc + item.value, 0);
       return allocations.map(item => ({...item, value: (item.value / total) * 100}));
 
   }, [watchedValues.useVideoContent, watchedValues.useKOLs, watchedValues.useSocialMediaAds]);
+
+  const renderFittableNumber = (value: string | number, isCurrency = true, className = "text-2xl") => {
+    const displayValue = typeof value === 'number' && isCurrency ? formatCurrency(value) : String(value);
+    const baseLength = isCurrency ? 12 : 8; // base character length before scaling
+    const scaleFactor = Math.min(1, baseLength / displayValue.length);
+    const dynamicFontSize = `calc(${scaleFactor} * 1.5rem)`; // 1.5rem is base for text-2xl
+  
+    return (
+      <div 
+        className={`${className} font-bold`}
+        style={{ fontSize: displayValue.length > baseLength ? dynamicFontSize : undefined }}
+      >
+        {displayValue}
+      </div>
+    );
+  };
+  
+  const renderFittableTableCell = (value: number) => {
+    const displayValue = formatCurrency(value);
+    const baseLength = 12; // base character length before scaling
+    const scaleFactor = Math.min(1, baseLength / displayValue.length);
+    const dynamicFontSize = `calc(${scaleFactor} * 0.875rem)`; // 0.875rem is base for text-sm
+  
+    return (
+      <span style={{ fontSize: displayValue.length > baseLength ? dynamicFontSize : undefined }}>
+        {displayValue}
+      </span>
+    );
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -170,7 +205,7 @@ export default function AnalystPage() {
         <section className="text-center py-12">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 font-headline">Simulasikan Strategi<br/>Bisnismu.</h1>
           <div className="mt-8 relative aspect-video max-w-lg mx-auto p-4">
-            <Image src="https://placehold.co/600x400" alt="3D Illustration of e-commerce logistics" layout="fill" objectFit="contain" className="rounded-lg" data-ai-hint="delivery truck" />
+            <Image src="https://placehold.co/600x400.png" alt="3D Illustration of e-commerce logistics" layout="fill" objectFit="contain" className="rounded-lg" data-ai-hint="delivery truck" />
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-4">Gunakan AI Marketplace Analyst untuk memvalidasi ide, merencanakan keuangan, dan menyusun strategi aksi yang solid untuk pasar e-commerce Indonesia.</p>
            <Button asChild size="lg" className="mt-8">
@@ -368,11 +403,11 @@ export default function AnalystPage() {
                             <div className="grid md:grid-cols-2 gap-4 mt-4">
                                 <Card className="p-4 bg-muted">
                                     <p className="text-sm text-muted-foreground">Profit Bersih / Unit</p>
-                                    <p className="text-2xl font-bold">{formatCurrency(calculations.netProfitPerUnit)}</p>
+                                    {renderFittableNumber(calculations.netProfitPerUnit)}
                                 </Card>
                                 <Card className="p-4 bg-muted">
                                     <p className="text-sm text-muted-foreground">Net Profit Margin</p>
-                                    <p className="text-2xl font-bold">{calculations.netProfitMargin.toFixed(2)}%</p>
+                                    <p className="text-2xl font-bold">{calculations.netProfitMargin.toFixed(1)}%</p>
                                 </Card>
                             </div>
                         </div>
@@ -383,7 +418,7 @@ export default function AnalystPage() {
                                 <FormField control={form.control} name="fixedCostsPerMonth" render={({ field }) => (<FormItem><FormLabel>Total Biaya Tetap / Bulan</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
                                 <Card className="p-4 bg-muted mt-2">
                                   <p className="text-sm text-muted-foreground">BEP (Unit / Bulan)</p>
-                                  <p className="text-xl font-bold">{isFinite(calculations.bepUnit) ? Math.ceil(calculations.bepUnit) : 'N/A'}</p>
+                                  {renderFittableNumber(isFinite(calculations.bepUnit) ? Math.ceil(calculations.bepUnit) : 'N/A', false, "text-xl")}
                                 </Card>
                             </div>
                             <div>
@@ -391,7 +426,7 @@ export default function AnalystPage() {
                                 <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Rata-rata Penjualan / Bulan (Unit)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
                                 <Card className="p-4 bg-muted mt-2">
                                   <p className="text-sm text-muted-foreground">Proyeksi Pendapatan / Bulan</p>
-                                  <p className="text-xl font-bold">{formatCurrency(watchedValues.sellPrice * watchedValues.avgSalesPerMonth)}</p>
+                                  {renderFittableNumber(calculations.monthlyRevenue, true, "text-xl")}
                                 </Card>
                             </div>
                         </div>
@@ -459,7 +494,7 @@ export default function AnalystPage() {
                                 <DollarSign className="h-4 w-4 text-muted-foreground" />
                               </CardHeader>
                               <CardContent className="p-0">
-                                <div className="text-2xl font-bold">{formatCurrency(analysisResult.annualRevenue)}</div>
+                                {renderFittableNumber(analysisResult.annualRevenue)}
                               </CardContent>
                           </Card>
                            <Card className="p-4 bg-primary/10">
@@ -468,7 +503,9 @@ export default function AnalystPage() {
                                 <DollarSign className="h-4 w-4 text-muted-foreground" />
                               </CardHeader>
                               <CardContent className="p-0">
-                                <div className={`text-2xl font-bold ${analysisResult.annualProfit < 0 ? 'text-destructive' : ''}`}>{formatCurrency(analysisResult.annualProfit)}</div>
+                                <div className={`${analysisResult.annualProfit < 0 ? 'text-destructive' : ''}`}>
+                                  {renderFittableNumber(analysisResult.annualProfit)}
+                                </div>
                               </CardContent>
                           </Card>
                            <Card className="p-4 bg-primary/10">
@@ -491,7 +528,7 @@ export default function AnalystPage() {
                               {analysisResult.pnlTable.map(item => (
                                 <TableRow key={item.item}>
                                   <TableCell>{item.item}</TableCell>
-                                  <TableCell className={`text-right font-medium ${item.isNegative ? 'text-destructive' : ''}`}>{formatCurrency(item.value)}</TableCell>
+                                  <TableCell className={`text-right font-medium ${item.isNegative ? 'text-destructive' : ''}`}>{renderFittableTableCell(item.value)}</TableCell>
                                 </TableRow>
                               ))}
                             </TableBody>
@@ -505,8 +542,8 @@ export default function AnalystPage() {
                               {analysisResult.cashflowTable.map(row => (
                                 <TableRow key={row.month}>
                                   <TableCell>{row.month}</TableCell>
-                                  <TableCell className={`text-right font-medium ${row.netCashFlow < 0 ? 'text-destructive' : ''}`}>{formatCurrency(row.netCashFlow)}</TableCell>
-                                  <TableCell className={`text-right font-bold ${row.endCash < 0 ? 'text-destructive' : ''}`}>{formatCurrency(row.endCash)}</TableCell>
+                                  <TableCell className={`text-right font-medium ${row.netCashFlow < 0 ? 'text-destructive' : ''}`}>{renderFittableTableCell(row.netCashFlow)}</TableCell>
+                                  <TableCell className={`text-right font-bold ${row.endCash < 0 ? 'text-destructive' : ''}`}>{renderFittableTableCell(row.endCash)}</TableCell>
                                 </TableRow>
                               ))}
                             </TableBody>

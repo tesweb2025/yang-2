@@ -38,11 +38,11 @@ export async function runAnalysis(data: FormData) {
   
   // P&L Table Data
   const pnlTable = [
-    { item: 'Pendapatan', value: monthlyRevenue, isNegative: false },
-    { item: 'Harga Pokok Penjualan (HPP)', value: monthlyCostOfGoods, isNegative: true },
-    { item: 'Laba Kotor', value: grossProfit, isNegative: grossProfit < 0 },
+    { item: 'Omzet Bulanan', value: monthlyRevenue, isNegative: false },
+    { item: 'Modal Produk (HPP)', value: monthlyCostOfGoods, isNegative: true },
+    { item: 'Untung Kotor', value: grossProfit, isNegative: grossProfit < 0 },
     { item: 'Biaya Operasional', value: operationalCosts, isNegative: true },
-    { item: 'Laba Bersih (Net Profit)', value: monthlyProfit, isNegative: monthlyProfit < 0 },
+    { item: 'Untung Bersih Bulanan', value: monthlyProfit, isNegative: monthlyProfit < 0 },
   ];
 
   // Cashflow Table Data
@@ -53,16 +53,16 @@ export async function runAnalysis(data: FormData) {
   const netCashFlow = cashIn - cashOutHpp - cashOutAdCost - cashOutOtherFixed;
 
   const cashflowTable = [
-    { item: 'Kas Masuk dari Penjualan', value: cashIn, isNegative: false },
-    { item: 'Kas Keluar untuk HPP', value: cashOutHpp, isNegative: true },
-    { item: 'Kas Keluar untuk Iklan', value: cashOutAdCost, isNegative: true },
-    { item: 'Kas Keluar untuk Biaya Tetap & Lainnya', value: cashOutOtherFixed, isNegative: true },
+    { item: 'Duit Masuk dari Penjualan', value: cashIn, isNegative: false },
+    { item: 'Duit Keluar buat Modal (HPP)', value: cashOutHpp, isNegative: true },
+    { item: 'Duit Keluar buat Iklan', value: cashOutAdCost, isNegative: true },
+    { item: 'Duit Keluar buat Biaya Lain', value: cashOutOtherFixed, isNegative: true },
     { item: 'Arus Kas Bersih', value: netCashFlow, isNegative: netCashFlow < 0 },
   ];
   
-  const financialForecastSummary = `Proyeksi pendapatan tahunan: ${annualRevenue.toLocaleString('id-ID')}. Proyeksi profit tahunan: ${annualProfit.toLocaleString('id-ID')}.`;
+  const financialForecastSummary = `Proyeksi omzet tahunan: Rp ${annualRevenue.toLocaleString('id-ID')}. Proyeksi untung tahunan: Rp ${annualProfit.toLocaleString('id-ID')}.`;
 
-  const marketConditionSummary = "Pasar e-commerce Indonesia sangat kompetitif, didominasi oleh Shopee dan TikTok-Shop. Konsumen sensitif terhadap harga dan promosi. Pertumbuhan didorong oleh adopsi digital di luar kota-kota besar.";
+  const marketConditionSummary = "Pasar e-commerce Indonesia sangat kompetitif, didominasi oleh Shopee dan TikTok Shop. Konsumen sensitif harga dan suka promo. Pertumbuhan didorong oleh adopsi digital di kota-kota lapis kedua dan ketiga.";
   
   const [marketAnalysis, strategicPlan] = await Promise.all([
     analyzeMarketEntry({
@@ -79,8 +79,8 @@ export async function runAnalysis(data: FormData) {
         annualRevenueProjection: annualRevenue,
         annualProfitProjection: annualProfit,
         roas,
-        monthlyProfitAndLossStatement: JSON.stringify(pnlTable.map(p => `${p.item}: ${p.value.toLocaleString('id-ID')}`)),
-        monthlyCashFlowSimulation: JSON.stringify(cashflowTable.map(c => `${c.item}: ${c.value.toLocaleString('id-ID')}`)),
+        monthlyProfitAndLossStatement: JSON.stringify(pnlTable.map(p => `${p.item}: Rp ${p.value.toLocaleString('id-ID')}`)),
+        monthlyCashFlowSimulation: JSON.stringify(cashflowTable.map(c => `${c.item}: Rp ${c.value.toLocaleString('id-ID')}`)),
         socialMediaAds: data.useSocialMediaAds,
         endorsementKOL: data.useKOLs,
     })

@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'Simulasi Pasar AI',
-  description: 'Simulasikan strategi bisnismu dengan AI Marketplace Analyst.',
+  title: 'SiapJual.ai - Cek Strategi Bisnismu',
+  description: 'Simulasikan strategi bisnismu dengan AI. Lihat untung-rugi sebelum promo dimulai.',
 };
 
 export default function RootLayout({

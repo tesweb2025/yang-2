@@ -63,24 +63,24 @@ const formatCurrency = (value: number) => {
 
 const businessModelContent: any = {
   'tipis-baru': {
-    persona: "The Hustler",
-    analysis: "Fokus pada volume penjualan tinggi dan perputaran cepat. Strategi harga kompetitif adalah kunci. Rentan terhadap perang harga.",
-    platforms: "Rekomendasi: TikTok Shop, Shopee. Platform dengan audiens massa dan fitur live-selling."
+    persona: "Sang Pejuang (The Hustler)",
+    analysis: "Fokus kejar volume penjualan tinggi dan perputaran cepat. Harga kompetitif jadi senjata utama. Hati-hati perang harga.",
+    platforms: "Rekomendasi: TikTok Shop, Shopee. Platform dengan audiens massa dan fitur live-selling cocok buat lo."
   },
   'tipis-kuat': {
-    persona: "The Volume Player",
-    analysis: "Memanfaatkan kekuatan brand untuk menjaga volume meski margin tipis. Efisiensi operasional sangat penting.",
-    platforms: "Rekomendasi: Shopee Mall, Tokopedia Power Merchant. Membutuhkan skala besar."
+    persona: "Pemain Volume (The Volume Player)",
+    analysis: "Lo manfaatin brand yang udah dikenal buat jaga volume walau margin tipis. Kuncinya di efisiensi operasional.",
+    platforms: "Rekomendasi: Shopee Mall, Tokopedia Power Merchant. Butuh skala produksi & distribusi besar."
   },
   'tebal-baru': {
-    persona: "The Niche Specialist",
-    analysis: "Menargetkan segmen spesifik dengan produk unik. Branding dan story-telling menjadi ujung tombak.",
-    platforms: "Rekomendasi: Instagram Shopping, Website (Shopify/Sirclo). Bangun komunitas."
+    persona: "Spesialis Niche (The Niche Specialist)",
+    analysis: "Targetin segmen yang spesifik dengan produk unik. Branding dan cerita produk jadi ujung tombak.",
+    platforms: "Rekomendasi: Instagram Shopping, Website (Shopify/Sirclo). Fokus bangun komunitas loyal."
   },
   'tebal-kuat': {
-    persona: "The Premium Brand",
-    analysis: "Menjual nilai dan status, bukan hanya produk. Pengalaman pelanggan premium dari awal hingga akhir.",
-    platforms: "Rekomendasi: Website sendiri, Lazada LazMall. Jaga eksklusivitas."
+    persona: "Merek Premium (The Premium Brand)",
+    analysis: "Jual nilai dan status, bukan cuma produk. Pengalaman pelanggan harus premium dari awal sampai akhir.",
+    platforms: "Rekomendasi: Website sendiri, Lazada LazMall. Jaga eksklusivitas brand lo."
   }
 };
 
@@ -144,16 +144,21 @@ export default function AnalystPage() {
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
     setAnalysisResult(null);
+    // Scroll to results section after a short delay to allow the loading state to render
+    setTimeout(() => {
+        document.getElementById('hasil-simulasi')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+
     try {
       const result = await runAnalysis(data);
       setAnalysisResult(result);
     } catch (error: any) {
       console.error("Analysis failed:", error);
-      let errorMessage = "Terjadi kesalahan saat analisis AI. Silakan coba lagi.";
-      if (error.message && error.message.includes('429')) {
-        errorMessage = "Batas penggunaan AI telah tercapai. Coba lagi nanti atau periksa paket Anda.";
-      } else if (error.message && error.message.includes('503')) {
-        errorMessage = "Server AI sedang sibuk. Silakan coba lagi beberapa saat lagi.";
+      let errorMessage = "Waduh, AI-nya lagi pusing. Coba lagi beberapa saat, ya.";
+      if (error.message && (error.message.includes('429') || error.message.includes('quota'))) {
+        errorMessage = "Sabar ya, lagi banyak yang pakai nih. Coba lagi beberapa menit lagi.";
+      } else if (error.message && (error.message.includes('503') || error.message.includes('overloaded'))) {
+        errorMessage = "Server AI lagi penuh, bro. Coba refresh dan ulangi lagi, ya.";
       }
       toast({
         variant: "destructive",
@@ -162,9 +167,6 @@ export default function AnalystPage() {
       });
     } finally {
       setIsLoading(false);
-      if (analysisResult) {
-        document.getElementById('simulation-results')?.scrollIntoView({ behavior: 'smooth' });
-      }
     }
   };
 
@@ -173,9 +175,9 @@ export default function AnalystPage() {
   const budgetAllocationData = useMemo(() => {
       const { useVideoContent, useKOLs, useSocialMediaAds } = watchedValues;
       const allocations = [];
-      if (useVideoContent) allocations.push({ name: 'Video Content & Ads', value: 40, fill: 'hsl(var(--chart-1))' });
+      if (useVideoContent) allocations.push({ name: 'Konten Video & Iklan', value: 40, fill: 'hsl(var(--chart-1))' });
       if (useKOLs) allocations.push({ name: 'KOL & Afiliasi', value: 35, fill: 'hsl(var(--chart-2))' });
-      if (useSocialMediaAds) allocations.push({ name: 'Iklan Media Sosial', value: 25, fill: 'hsl(var(--chart-3))' });
+      if (useSocialMediaAds) allocations.push({ name: 'Iklan Medsos', value: 25, fill: 'hsl(var(--chart-3))' });
       
       if (allocations.length === 0) {
         return [{ name: 'Tidak ada alokasi', value: 100, fill: 'hsl(var(--muted))' }];
@@ -236,24 +238,24 @@ export default function AnalystPage() {
       <main className="space-y-12">
         {/* 1. Hero Section */}
         <section className="text-center py-12">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 font-headline">Simulasikan Strategi<br/>Bisnismu.</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 font-headline">Capek jualan tapi hasilnya gak jelas?</h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-4">Cek dulu strategimu di sini. SiapJual.ai bantu kamu lihat untung-rugi sebelum promo dimulai.</p>
           <div className="mt-8 relative aspect-video max-w-lg mx-auto p-4">
-            <Image src="https://placehold.co/600x400.png" alt="3D Illustration of e-commerce logistics" layout="fill" objectFit="contain" className="rounded-lg" data-ai-hint="delivery truck" />
+            <Image src="https://placehold.co/600x400.png" alt="Ilustrasi 3D logistik e-commerce" layout="fill" objectFit="contain" className="rounded-lg" data-ai-hint="e-commerce success" />
           </div>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-4">Gunakan AI Marketplace Analyst untuk memvalidasi ide, merencanakan keuangan, dan menyusun strategi aksi yang solid untuk pasar e-commerce Indonesia.</p>
            <Button asChild size="lg" className="mt-8">
-             <Link href="#ai-analyst-form">Mulai Simulasi</Link>
+             <Link href="#cek-strategi">Mulai Cek Strategi</Link>
            </Button>
         </section>
 
         {/* 2. Market Insights */}
-        <section id="market-insights" className="space-y-4">
+        <section id="wawasan-pasar" className="space-y-4">
             <h2 className="text-3xl font-bold text-center">Wawasan Pasar E-Commerce Indonesia</h2>
             <div className="grid md:grid-cols-2 gap-8">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Proyeksi Gross Merchandise Value (GMV)</CardTitle>
-                        <CardDescription>Pertumbuhan pasar e-commerce di Indonesia terus melesat.</CardDescription>
+                        <CardTitle>Proyeksi Nilai Pasar (GMV)</CardTitle>
+                        <CardDescription>Pasar e-commerce Indonesia terus tumbuh kencang. Jangan sampai ketinggalan.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <p className="text-4xl font-bold text-primary mb-4">US$4 Miliar</p>
@@ -269,8 +271,8 @@ export default function AnalystPage() {
                 </Card>
                 <Card>
                     <CardHeader>
-                        <CardTitle>Profil Konsumen Digital</CardTitle>
-                        <CardDescription>Memahami siapa dan bagaimana mereka berbelanja.</CardDescription>
+                        <CardTitle>Siapa Pembelimu?</CardTitle>
+                        <CardDescription>Kenali siapa dan bagaimana mereka belanja online.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div className="flex items-center gap-4">
@@ -283,14 +285,14 @@ export default function AnalystPage() {
                         <div className="flex items-center gap-4">
                             <div className="p-3 bg-primary/10 rounded-full"><LineChart className="w-8 h-8 text-primary" /></div>
                             <div>
-                                <p className="font-semibold">Transaksi Seluler</p>
-                                <p className="text-2xl font-bold">67% Volume</p>
+                                <p className="font-semibold">Belanja Lewat HP</p>
+                                <p className="text-2xl font-bold">67% Transaksi</p>
                             </div>
                         </div>
                          <div className="flex items-center gap-4">
                             <div className="p-3 bg-primary/10 rounded-full"><TrendingUp className="w-8 h-8 text-primary" /></div>
                             <div>
-                                <p className="font-semibold">Motivasi Utama</p>
+                                <p className="font-semibold">Paling Dicari</p>
                                 <p className="text-xl font-bold">Promo & Gratis Ongkir</p>
                             </div>
                         </div>
@@ -300,10 +302,10 @@ export default function AnalystPage() {
         </section>
         
         {/* 3. Market Share */}
-        <section id="market-share">
+        <section id="pangsa-pasar">
             <Card>
                 <CardHeader>
-                    <CardTitle>Pangsa Pasar GMV (Estimasi 2025)</CardTitle>
+                    <CardTitle>Siapa Raja di Pasar? (Estimasi Pangsa Pasar GMV 2025)</CardTitle>
                 </CardHeader>
                 <CardContent className="grid md:grid-cols-2 gap-8 items-center">
                     <div>
@@ -319,7 +321,7 @@ export default function AnalystPage() {
                     <div>
                         <h3 className="font-bold text-lg mb-2">Analisis Medan Perang</h3>
                         <p className="text-muted-foreground">
-                            Persaingan didominasi oleh pemain besar dengan strategi yang berbeda. <strong>TikTok-Toko</strong> mengandalkan 'shoppertainment' dan impulse buying. <strong>Shopee</strong> kuat dalam promo dan jangkauan logistik. <strong>Lazada</strong> berfokus pada pengalaman brand premium di LazMall. Pemain baru harus menemukan celah di antara raksasa-raksasa ini.
+                            Pasar dikuasai pemain besar dengan strategi beda-beda. <strong>TikTok-Toko</strong> jago di 'shoppertainment' dan bikin orang kalap belanja. <strong>Shopee</strong> kuat di promo dan logistik. <strong>Lazada</strong> fokus ke brand premium di LazMall. Pemain baru kayak lo harus pinter cari celah.
                         </p>
                     </div>
                 </CardContent>
@@ -329,32 +331,32 @@ export default function AnalystPage() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
             {/* 8. AI Analyst Form */}
-            <section id="ai-analyst-form">
+            <section id="cek-strategi">
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><BrainCircuit className="text-primary"/> Input Strategis (AI Marketplace Analyst)</CardTitle>
-                        <CardDescription>Masukkan data dasar bisnismu untuk dianalisis oleh AI.</CardDescription>
+                        <CardTitle className="flex items-center gap-2"><BrainCircuit className="text-primary"/> Data Bisnis Kamu</CardTitle>
+                        <CardDescription>Isi data ini biar AI bisa bantu analisis. Santai, data kamu aman.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="grid md:grid-cols-2 gap-4">
                             <FormField control={form.control} name="productName" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Nama Produk / Bisnis</FormLabel>
-                                    <FormControl><Input placeholder="Contoh: Kopi Susu Gula Aren" {...field} /></FormControl>
+                                    <FormControl><Input placeholder="Contoh: Sambal Roa Nona Manis" {...field} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )} />
                             <FormField control={form.control} name="targetSegment" render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Segmentasi Target Utama</FormLabel>
-                                    <FormControl><Input placeholder="Contoh: Mahasiswa & pekerja muda" {...field} /></FormControl>
+                                    <FormLabel>Target Pasar Utama</FormLabel>
+                                    <FormControl><Input placeholder="Contoh: Karyawan kantoran, suka pedas" {...field} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )} />
                         </div>
                         <FormField control={form.control} name="initialMarketingBudget" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Modal Marketing Awal (Rp)</FormLabel>
+                                <FormLabel>Modal Awal (Rp)</FormLabel>
                                 <FormControl><Input type="number" {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -364,11 +366,11 @@ export default function AnalystPage() {
             </section>
 
             {/* 4. Business Model Validator */}
-            <section id="business-model-validator">
+            <section id="model-bisnis">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Validator Model Bisnis</CardTitle>
-                        <CardDescription>Pilih model yang paling sesuai dengan bisnismu.</CardDescription>
+                        <CardTitle>Gaya Jualan Kamu</CardTitle>
+                        <CardDescription>Pilih model yang paling pas sama bisnismu.</CardDescription>
                     </CardHeader>
                     <CardContent className="grid md:grid-cols-2 gap-8">
                          <div>
@@ -377,12 +379,12 @@ export default function AnalystPage() {
                                 name="marginModel"
                                 render={({ field }) => (
                                     <FormItem className="space-y-3">
-                                        <FormLabel>Model Margin</FormLabel>
+                                        <FormLabel>Untungnya Gimana?</FormLabel>
                                         <FormControl>
                                             <Tabs defaultValue={field.value} onValueChange={field.onChange} className="w-full">
                                                 <TabsList className="grid w-full grid-cols-2">
-                                                    <TabsTrigger value="tipis">Margin Tipis</TabsTrigger>
-                                                    <TabsTrigger value="tebal">Margin Tebal</TabsTrigger>
+                                                    <TabsTrigger value="tipis">Untung Tipis</TabsTrigger>
+                                                    <TabsTrigger value="tebal">Untung Tebal</TabsTrigger>
                                                 </TabsList>
                                             </Tabs>
                                         </FormControl>
@@ -395,12 +397,12 @@ export default function AnalystPage() {
                                 name="brandStrength"
                                 render={({ field }) => (
                                     <FormItem className="space-y-3">
-                                        <FormLabel>Kekuatan Brand</FormLabel>
+                                        <FormLabel>Brand Kamu Udah Dikenal?</FormLabel>
                                         <FormControl>
                                             <Tabs defaultValue={field.value} onValueChange={field.onChange} className="w-full">
                                                 <TabsList className="grid w-full grid-cols-2">
-                                                    <TabsTrigger value="baru">Brand Baru</TabsTrigger>
-                                                    <TabsTrigger value="kuat">Brand Kuat</TabsTrigger>
+                                                    <TabsTrigger value="baru">Baru Mulai</TabsTrigger>
+                                                    <TabsTrigger value="kuat">Udah Kuat</TabsTrigger>
                                                 </TabsList>
                                             </Tabs>
                                         </FormControl>
@@ -418,28 +420,28 @@ export default function AnalystPage() {
             </section>
 
             {/* 5. Strategy Lab */}
-            <section id="strategy-lab">
+            <section id="cek-strategi-lanjutan">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Laboratorium Strategi</CardTitle>
-                        <CardDescription>Atur angka-angka kunci untuk melihat profitabilitas bisnismu.</CardDescription>
+                        <CardTitle>Cek Strategi Harga & Biaya</CardTitle>
+                        <CardDescription>Ayo kita hitung potensi cuan dari bisnismu.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div>
-                            <h3 className="font-semibold mb-2">Kalkulator Profitabilitas</h3>
+                            <h3 className="font-semibold mb-2">Kalkulator Untung per Produk</h3>
                             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <FormField control={form.control} name="sellPrice" render={({ field }) => (<FormItem><FormLabel>Harga Jual</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="costOfGoods" render={({ field }) => (<FormItem><FormLabel>HPP</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="adCost" render={({ field }) => (<FormItem><FormLabel>Biaya Iklan (CAC)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="costOfGoods" render={({ field }) => (<FormItem><FormLabel>Modal Produk (HPP)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="adCost" render={({ field }) => (<FormItem><FormLabel>Biaya Iklan / Produk</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
                                 <FormField control={form.control} name="otherCostsPercentage" render={({ field }) => (<FormItem><FormLabel>Biaya Lain (%)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
                             </div>
                             <div className="grid md:grid-cols-2 gap-4 mt-4">
                                 <Card className="p-4 bg-muted">
-                                    <p className="text-sm text-muted-foreground">Profit Bersih / Unit</p>
+                                    <p className="text-sm text-muted-foreground">Untung Bersih / Produk</p>
                                     {renderFittableNumber(calculations.netProfitPerUnit, true, calculations.netProfitPerUnit < 0)}
                                 </Card>
                                 <Card className="p-4 bg-muted">
-                                    <p className="text-sm text-muted-foreground">Net Profit Margin</p>
+                                    <p className="text-sm text-muted-foreground">Margin Untung Bersih</p>
                                     <p className={`text-2xl font-bold ${calculations.netProfitMargin < 0 ? 'text-destructive' : 'text-green-600'}`}>{calculations.netProfitMargin.toFixed(1)}%</p>
                                 </Card>
                             </div>
@@ -447,18 +449,18 @@ export default function AnalystPage() {
 
                         <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                                <h3 className="font-semibold mb-2">Kalkulator Break-Even Point (BEP)</h3>
-                                <FormField control={form.control} name="fixedCostsPerMonth" render={({ field }) => (<FormItem><FormLabel>Total Biaya Tetap / Bulan</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
+                                <h3 className="font-semibold mb-2">Kapan Balik Modal? (BEP)</h3>
+                                <FormField control={form.control} name="fixedCostsPerMonth" render={({ field }) => (<FormItem><FormLabel>Biaya Tetap / Bulan</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
                                 <Card className="p-4 bg-muted mt-2">
-                                  <p className="text-sm text-muted-foreground">BEP (Unit / Bulan)</p>
+                                  <p className="text-sm text-muted-foreground">Jual Berapa Produk Biar BEP?</p>
                                   {renderFittableNumber(isFinite(calculations.bepUnit) ? Math.ceil(calculations.bepUnit) : 'N/A', false, false, "text-xl")}
                                 </Card>
                             </div>
                             <div>
-                                <h3 className="font-semibold mb-2">Kalkulator Proyeksi Pendapatan</h3>
-                                <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Rata-rata Penjualan / Bulan (Unit)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
+                                <h3 className="font-semibold mb-2">Prediksi Omzet</h3>
+                                <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Target Jual / Bulan (Unit)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
                                 <Card className="p-4 bg-muted mt-2">
-                                  <p className="text-sm text-muted-foreground">Proyeksi Pendapatan / Bulan</p>
+                                  <p className="text-sm text-muted-foreground">Omzet Bulanan</p>
                                   {renderFittableNumber(calculations.monthlyRevenue, true, false, "text-xl")}
                                 </Card>
                             </div>
@@ -468,18 +470,18 @@ export default function AnalystPage() {
             </section>
             
             {/* 6. Budget Allocator */}
-            <section id="budget-allocator">
+            <section id="alokasi-bujet">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Alokator Bujet Pemasaran</CardTitle>
+                        <CardTitle>Mau Promosi di Mana Aja?</CardTitle>
                     </CardHeader>
                     <CardContent className="grid md:grid-cols-2 gap-8 items-center">
                         <div>
-                            <FormField control={form.control} name="totalMarketingBudget" render={({ field }) => (<FormItem><FormLabel>Total Bujet Pemasaran / Bulan</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
+                            <FormField control={form.control} name="totalMarketingBudget" render={({ field }) => (<FormItem><FormLabel>Bujet Promosi / Bulan</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
                             <div className="mt-4 space-y-4">
-                                <FormField control={form.control} name="useVideoContent" render={({ field }) => (<FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"><div className="space-y-0.5"><FormLabel>Video Content & Ads</FormLabel></div><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="useKOLs" render={({ field }) => (<FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"><div className="space-y-0.5"><FormLabel>KOL & Afiliasi</FormLabel></div><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="useSocialMediaAds" render={({ field }) => (<FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"><div className="space-y-0.5"><FormLabel>Iklan Media Sosial</FormLabel></div><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="useVideoContent" render={({ field }) => (<FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"><div className="space-y-0.5"><FormLabel>Konten Video (TikTok/Reels)</FormLabel></div><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="useKOLs" render={({ field }) => (<FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"><div className="space-y-0.5"><FormLabel>Endorse KOL / Afiliator</FormLabel></div><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="useSocialMediaAds" render={({ field }) => (<FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"><div className="space-y-0.5"><FormLabel>Iklan Medsos (FB/IG/TikTok Ads)</FormLabel></div><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>)} />
                             </div>
                         </div>
                         <div>
@@ -489,12 +491,12 @@ export default function AnalystPage() {
                                     <Pie data={budgetAllocationData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={110} />
                                 </RechartsPieChart>
                             </ChartContainer>
-                            <p className="text-center text-sm text-muted-foreground mt-2">Estimasi alokasi bujet berdasarkan channel yang aktif.</p>
+                            <p className="text-center text-sm text-muted-foreground mt-2">Estimasi alokasi bujet berdasarkan channel pilihanmu.</p>
                         </div>
                     </CardContent>
                     <CardFooter>
                        <Button type="submit" className="w-full text-lg" disabled={isLoading}>
-                           {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : '⚡ Analisis dengan AI'}
+                           {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : '⚡ Cek Hasilnya dengan AI'}
                        </Button>
                     </CardFooter>
                 </Card>
@@ -502,122 +504,124 @@ export default function AnalystPage() {
           </form>
         </Form>
         
-        {isLoading && (
-          <div className="flex flex-col items-center justify-center text-center p-8">
-            <Loader2 className="w-12 h-12 animate-spin text-primary" />
-            <p className="mt-4 text-lg font-semibold">AI sedang menganalisis strategimu...</p>
-            <p className="text-muted-foreground">Mohon tunggu sebentar.</p>
-          </div>
-        )}
+         <div id="hasil-simulasi" className="scroll-mt-20">
+            {isLoading && (
+              <div className="flex flex-col items-center justify-center text-center p-8">
+                <Loader2 className="w-12 h-12 animate-spin text-primary" />
+                <p className="mt-4 text-lg font-semibold">AI lagi ngitung, bentar ya...</p>
+                <p className="text-muted-foreground">Lagi ngeracik strategi terbaik buat lo.</p>
+              </div>
+            )}
 
-        {analysisResult && (
-          <>
-            {/* 7. Strategic Impact Simulation */}
-            <section id="simulation-results" className="space-y-8">
-                <div className="text-center">
-                    <h2 className="text-3xl font-bold">Simulasi Dampak Strategis</h2>
-                    <p className="text-muted-foreground mt-2">Lihat kesehatan bisnismu di sini berdasarkan input dari Laboratorium Strategi.</p>
-                </div>
+            {analysisResult && (
+              <>
+                {/* 7. Strategic Impact Simulation */}
+                <section className="space-y-8">
+                    <div className="text-center">
+                        <h2 className="text-3xl font-bold">Hasil Simulasi Strategimu</h2>
+                        <p className="text-muted-foreground mt-2">Ini dia prediksi kesehatan bisnismu berdasarkan data yang kamu isi.</p>
+                    </div>
 
-                <div className="grid md:grid-cols-3 gap-6">
-                    <Card className="p-6 flex flex-col justify-between text-center">
-                        <div>
-                            <p className="text-sm text-muted-foreground">Proyeksi Pendapatan Tahunan</p>
-                            {renderFittableNumber(analysisResult.annualRevenue, true, false, "text-3xl mt-2 text-primary")}
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Total penjualan yang diproyeksikan dalam satu tahun.</p>
-                    </Card>
-                    <Card className="p-6 flex flex-col justify-between text-center">
-                        <div>
-                            <p className="text-sm text-muted-foreground">Proyeksi Profit Tahunan</p>
-                            {renderFittableNumber(analysisResult.annualProfit, true, analysisResult.annualProfit < 0, `text-3xl mt-2 ${analysisResult.annualProfit < 0 ? '' : 'text-green-600'}`)}
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Perkiraan keuntungan bersih setelah semua biaya diperhitungkan.</p>
-                    </Card>
-                    <Card className="p-6 flex flex-col justify-between text-center">
-                        <div>
-                            <p className="text-sm text-muted-foreground">Return on Ad Spend (ROAS)</p>
-                            {renderFittableNumber(`${analysisResult.roas.toFixed(2)}x`, false, false, "text-3xl mt-2 text-primary")}
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Setiap Rp1 iklan menghasilkan Rp{analysisResult.roas.toFixed(2)} pendapatan.</p>
-                    </Card>
-                </div>
+                    <div className="grid md:grid-cols-3 gap-6">
+                        <Card className="p-6 flex flex-col justify-between text-center">
+                           <div>
+                             <p className="text-sm text-muted-foreground">Proyeksi Pendapatan Tahunan</p>
+                             {renderFittableNumber(analysisResult.annualRevenue, true, false, "text-3xl mt-2 text-primary")}
+                           </div>
+                           <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Estimasi total penjualan kotor kamu dalam setahun.</p>
+                        </Card>
+                        <Card className="p-6 flex flex-col justify-between text-center">
+                            <div>
+                                <p className="text-sm text-muted-foreground">Proyeksi Untung Tahunan</p>
+                                {renderFittableNumber(analysisResult.annualProfit, true, analysisResult.annualProfit < 0, `text-3xl mt-2 ${analysisResult.annualProfit < 0 ? '' : 'text-green-600'}`)}
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Perkiraan untung bersih setelah semua biaya dibayar.</p>
+                        </Card>
+                        <Card className="p-6 flex flex-col justify-between text-center">
+                            <div>
+                                <p className="text-sm text-muted-foreground">Return on Ad Spend (ROAS)</p>
+                                {renderFittableNumber(`${analysisResult.roas.toFixed(2)}x`, false, false, "text-3xl mt-2 text-primary")}
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Setiap Rp1 buat iklan menghasilkan Rp{analysisResult.roas.toFixed(2)} pendapatan.</p>
+                        </Card>
+                    </div>
 
-                <div className="grid md:grid-cols-2 gap-8">
-                    <Card>
-                        <CardHeader><CardTitle>Laporan Laba Rugi (Bulanan)</CardTitle></CardHeader>
-                        <CardContent>
-                            <Table>
-                                <TableBody>
-                                {analysisResult.pnlTable.map(item => (
-                                    <TableRow key={item.item}>
-                                    <TableCell className={cn("py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih (Net Profit)' ? 'font-bold' : '')}>{item.item}</TableCell>
-                                    <TableCell className={cn("text-right font-medium py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih (Net Profit)' ? 'font-bold' : '')}>
-                                        {renderFittableTableCellSimple(item.value, item.isNegative)}
-                                    </TableCell>
-                                    </TableRow>
-                                ))}
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader><CardTitle>Simulasi Arus Kas (Bulanan)</CardTitle></CardHeader>
-                        <CardContent>
-                            <Table>
-                                <TableBody>
-                                {analysisResult.cashflowTable.map((row, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell className={cn("py-2 px-4", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>{row.item}</TableCell>
-                                        <TableCell className={cn("text-right font-medium py-2 px-4", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>
-                                        {renderFittableTableCell(row.value, row.isNegative, true)}
+                    <div className="grid md:grid-cols-2 gap-8">
+                        <Card>
+                            <CardHeader><CardTitle>Laporan Untung Rugi (Bulanan)</CardTitle></CardHeader>
+                            <CardContent>
+                                <Table>
+                                    <TableBody>
+                                    {analysisResult.pnlTable.map(item => (
+                                        <TableRow key={item.item}>
+                                        <TableCell className={cn("py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih Bulanan' ? 'font-bold' : '')}>{item.item}</TableCell>
+                                        <TableCell className={cn("text-right font-medium py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih Bulanan' ? 'font-bold' : '')}>
+                                            {renderFittableTableCellSimple(item.value, item.isNegative)}
                                         </TableCell>
-                                    </TableRow>
-                                ))}
-                                </TableBody>
-                            </Table>
+                                        </TableRow>
+                                    ))}
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader><CardTitle>Simulasi Arus Kas (Bulanan)</CardTitle></CardHeader>
+                            <CardContent>
+                                <Table>
+                                    <TableBody>
+                                    {analysisResult.cashflowTable.map((row, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell className={cn("py-2 px-4", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>{row.item}</TableCell>
+                                            <TableCell className={cn("text-right font-medium py-2 px-4", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>
+                                            {renderFittableTableCell(row.value, row.isNegative, true)}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+                        </Card>
+                    </div>
+                    
+                    <Card>
+                        <CardHeader><CardTitle>Kata AI Soal Strategimu</CardTitle></CardHeader>
+                        <CardContent>
+                            {analysisResult.marketAnalysis.evaluation.includes("berisiko") || analysisResult.annualProfit < 0 ?
+                            (<Alert variant="destructive" className="bg-destructive/5">
+                                <AlertTriangle className="h-4 w-4" />
+                                <AlertTitle>Waduh, Gawat Nih!</AlertTitle>
+                                <AlertDescription>{analysisResult.marketAnalysis.evaluation} {analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
+                            </Alert>) :
+                            (<Alert className="bg-primary/5 border-primary/20">
+                                <Lightbulb className="h-4 w-4" />
+                                <AlertTitle>Analisis AI</AlertTitle>
+                                <AlertDescription>{analysisResult.marketAnalysis.evaluation} {analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
+                            </Alert>)
+                            }
                         </CardContent>
                     </Card>
-                </div>
-                
-                <Card>
-                    <CardHeader><CardTitle>Vonis & Rekomendasi Strategis</CardTitle></CardHeader>
-                    <CardContent>
-                        {analysisResult.marketAnalysis.evaluation.includes("negatif") || analysisResult.annualProfit < 0 ?
-                        (<Alert variant="destructive" className="bg-destructive/5">
-                            <AlertTriangle className="h-4 w-4" />
-                            <AlertTitle>Peringatan Kritis</AlertTitle>
-                            <AlertDescription>{analysisResult.marketAnalysis.evaluation} {analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
-                        </Alert>) :
-                        (<Alert className="bg-primary/5 border-primary/20">
-                            <Lightbulb className="h-4 w-4" />
-                            <AlertTitle>Evaluasi AI</AlertTitle>
-                            <AlertDescription>{analysisResult.marketAnalysis.evaluation} {analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
-                        </Alert>)
-                        }
-                    </CardContent>
-                </Card>
 
-            </section>
-            
-            {/* 9. Strategic Action Plan */}
-            <section id="action-plan">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Rencana Aksi Strategis</CardTitle>
-                  <CardDescription>Rekomendasi dari AI untuk meningkatkan performa bisnismu.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ol className="list-decimal list-inside space-y-3">
-                    {analysisResult.strategicPlan.recommendations.map((rec: string, index: number) => (
-                      <li key={index} className="pl-2">{rec}</li>
-                    ))}
-                  </ol>
-                </CardContent>
-              </Card>
-            </section>
-          </>
-        )}
+                </section>
+                
+                {/* 9. Strategic Action Plan */}
+                <section id="rencana-aksi">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Rencana Aksi Biar Cuan</CardTitle>
+                      <CardDescription>Ini langkah-langkah nyata dari AI yang bisa langsung kamu kerjain.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ol className="list-decimal list-inside space-y-3">
+                        {analysisResult.strategicPlan.recommendations.map((rec: string, index: number) => (
+                          <li key={index} className="pl-2">{rec}</li>
+                        ))}
+                      </ol>
+                    </CardContent>
+                  </Card>
+                </section>
+              </>
+            )}
+        </div>
       </main>
     </div>
   );

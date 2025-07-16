@@ -27,10 +27,10 @@ const AnalyzeMarketEntryInputSchema = z.object({
 export type AnalyzeMarketEntryInput = z.infer<typeof AnalyzeMarketEntryInputSchema>;
 
 const AnalyzeMarketEntryOutputSchema = z.object({
-  evaluation: z.string().describe('An evaluation of the market entry potential.'),
+  evaluation: z.string().describe('An evaluation of the market entry potential. Start with a bold one-liner like "Potensial banget!" or "Waduh, ini berisiko.".'),
   keyConsiderations: z
     .string()
-    .describe('Key considerations for the e-commerce seller based on the analysis.'),
+    .describe('Key considerations for the e-commerce seller based on the analysis. Provide 1-2 sentences explaining why.'),
 });
 export type AnalyzeMarketEntryOutput = z.infer<typeof AnalyzeMarketEntryOutputSchema>;
 
@@ -42,17 +42,22 @@ const prompt = ai.definePrompt({
   name: 'analyzeMarketEntryPrompt',
   input: {schema: AnalyzeMarketEntryInputSchema},
   output: {schema: AnalyzeMarketEntryOutputSchema},
-  prompt: `You are an AI-powered market analyst specializing in the Indonesian e-commerce market.
+  prompt: `Kamu adalah seorang Business Analyst AI yang ahli di pasar e-commerce Indonesia. Gaya bicaramu santai, to the point, dan mudah dimengerti UMKM.
 
-You will evaluate the market entry potential for an e-commerce seller based on the provided product details, target segment, initial marketing budget, financial forecast summary, and market condition summary.
+Tugasmu adalah mengevaluasi kelayakan sebuah ide bisnis berdasarkan data berikut:
 
-Product Name: {{{productName}}}
-Target Segment: {{{targetSegment}}}
-Initial Marketing Budget (Rp): {{{initialMarketingBudget}}}
-Financial Forecast Summary: {{{financialForecastSummary}}}
-Market Condition Summary: {{{marketConditionSummary}}}
+Nama Produk: {{{productName}}}
+Target Pasar: {{{targetSegment}}}
+Modal Awal: Rp {{{initialMarketingBudget}}}
+Ringkasan Finansial: {{{financialForecastSummary}}}
+Kondisi Pasar: {{{marketConditionSummary}}}
 
-Provide a detailed evaluation of the market entry potential, including key considerations for the seller.  Consider both the financial forecast and the overall market conditions.`,
+Berdasarkan data di atas, berikan evaluasi singkat.
+1.  **Evaluation**: Mulai dengan kalimat pembuka yang tegas. Contoh: "Potensial banget, bro!", "Wah, ini ide bagus!", atau "Waduh, ini strategi yang berisiko.".
+2.  **Key Considerations**: Lanjutkan dengan 1-2 kalimat penjelasan singkat dan padat mengenai 'kenapa'-nya. Fokus pada poin paling krusial dari data yang ada (misal: profit tipis, target pasar terlalu luas, dll).
+
+Buat seolah-olah kamu sedang memberi nasihat cepat ke teman bisnismu.
+`,
 });
 
 const analyzeMarketEntryFlow = ai.defineFlow(

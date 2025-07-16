@@ -1,4 +1,3 @@
-// src/ai/flows/generate-strategic-recommendations.ts
 'use server';
 
 /**
@@ -28,7 +27,7 @@ export type StrategicRecommendationsInput = z.infer<typeof StrategicRecommendati
 
 const StrategicRecommendationsOutputSchema = z.object({
   recommendations: z.array(
-    z.string().describe('A numbered list of actionable recommendations.')
+    z.string().describe('A single, actionable, and prioritized recommendation. Be specific and tactical.')
   ),
 });
 export type StrategicRecommendationsOutput = z.infer<typeof StrategicRecommendationsOutputSchema>;
@@ -43,27 +42,34 @@ const prompt = ai.definePrompt({
   name: 'strategicRecommendationsPrompt',
   input: {schema: StrategicRecommendationsInputSchema},
   output: {schema: StrategicRecommendationsOutputSchema},
-  prompt: `You are an expert e-commerce business strategist specializing in the Indonesian market. Based on the provided business data and simulation outcomes, generate a numbered list of actionable recommendations to improve the business performance. Be concise and specific, suggesting concrete actions. Write the recommendation in Indonesian.
+  prompt: `Kamu adalah seorang Business Strategist AI yang jago banget ngasih saran praktis buat UMKM di Indonesia. Gaya bicaramu santai, memotivasi, dan solutif.
 
-Here's the business data:
+Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi bisnis ini. Fokus pada saran yang paling besar dampaknya.
 
-Product/Business Name: {{{productName}}}
-Target Segmentation: {{{targetSegmentation}}}
-Initial Marketing Budget: Rp {{{initialMarketingBudget}}}
-Social Media Ads: {{#if socialMediaAds}}Yes{{else}}No{{/if}}
-Endorsement & KOL: {{#if endorsementKOL}}Yes{{else}}No{{/if}}
+**Data Bisnis:**
+- Nama Produk: {{{productName}}}
+- Target Pasar: {{{targetSegmentation}}}
+- Bujet Promosi Awal: Rp {{{initialMarketingBudget}}}
+- Pakai Iklan Medsos: {{#if socialMediaAds}}Ya{{else}}Nggak{{/if}}
+- Pakai KOL/Endorse: {{#if endorsementKOL}}Ya{{else}}Nggak{{/if}}
 
-Key Metrics:
-Annual Revenue Projection: {{{annualRevenueProjection}}}
-Annual Profit Projection: {{{annualProfitProjection}}}
-Return on Ad Spend (ROAS): {{{roas}}}
+**Hasil Simulasi Keuangan:**
+- Proyeksi Omzet Tahunan: Rp {{{annualRevenueProjection}}}
+- Proyeksi Untung Tahunan: Rp {{{annualProfitProjection}}}
+- ROAS (Return on Ad Spend): {{{roas}}}x
+- Laporan Untung Rugi Bulanan: {{{monthlyProfitAndLossStatement}}}
+- Arus Kas Bulanan: {{{monthlyCashFlowSimulation}}}
 
-Financial Tables:
-Monthly Profit & Loss Statement: {{{monthlyProfitAndLossStatement}}}
-Monthly Cash Flow Simulation: {{{monthlyCashFlowSimulation}}}
+**Instruksi:**
+1.  Analisis semua data di atas. Cari di mana letak "kebocoran" atau "potensi" terbesarnya.
+2.  Berikan 3-5 rekomendasi dalam bentuk list.
+3.  Setiap rekomendasi harus berupa langkah taktis yang bisa langsung dikerjakan. Contoh: "Naikkan harga jual sebesar 10% jadi Rp XX.XXX", "Cari supplier baru untuk turunkan HPP sebesar Rp X.XXX", atau "Fokuskan bujet iklan ke KOL micro-niche di kategori parenting".
+4.  Gunakan bahasa Indonesia yang santai dan jelas. Mulai setiap poin dengan kata kerja.
+5.  Jika hasilnya rugi, berikan saran yang fokus untuk membalikkan keadaan. Jika sudah untung, berikan saran untuk scale-up.
 
+Contoh output item: "Naikin harga pelan-pelan sambil tetap pantau kompetitor" atau "Tekan biaya operasional bulanan Rp 4 juta".
 
-Generate a numbered list of strategic recommendations:
+Buat daftar Rencana Aksi Prioritas:
 `,
 });
 

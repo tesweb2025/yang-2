@@ -504,18 +504,26 @@ export default function AnalystPage() {
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-6">
-                    <Card className="p-6 flex flex-col items-center justify-center">
-                        <p className="text-sm text-muted-foreground">Proyeksi Pendapatan Tahunan</p>
-                        {renderFittableNumber(analysisResult.annualRevenue, true, false, "text-3xl mt-2 text-primary")}
+                    <Card className="p-6 flex flex-col justify-between text-center">
+                        <div>
+                            <p className="text-sm text-muted-foreground">Proyeksi Pendapatan Tahunan</p>
+                            {renderFittableNumber(analysisResult.annualRevenue, true, false, "text-3xl mt-2 text-primary")}
+                        </div>
+                        <div className="h-6"></div>
                     </Card>
-                    <Card className="p-6 flex flex-col items-center justify-center">
-                        <p className="text-sm text-muted-foreground">Proyeksi Profit Tahunan</p>
-                         {renderFittableNumber(analysisResult.annualProfit, true, analysisResult.annualProfit < 0, `text-3xl mt-2 ${analysisResult.annualProfit < 0 ? '' : 'text-green-600'}`)}
+                    <Card className="p-6 flex flex-col justify-between text-center">
+                        <div>
+                            <p className="text-sm text-muted-foreground">Proyeksi Profit Tahunan</p>
+                            {renderFittableNumber(analysisResult.annualProfit, true, analysisResult.annualProfit < 0, `text-3xl mt-2 ${analysisResult.annualProfit < 0 ? '' : 'text-green-600'}`)}
+                        </div>
+                        <div className="h-6"></div>
                     </Card>
-                    <Card className="p-6 flex flex-col items-center justify-center">
-                        <p className="text-sm text-muted-foreground">Return on Ad Spend (ROAS)</p>
-                        {renderFittableNumber(`${analysisResult.roas.toFixed(2)}x`, false, false, "text-3xl mt-2 text-primary")}
-                        <p className="text-xs text-muted-foreground mt-1 text-center">Setiap Rp1 iklan menghasilkan Rp{analysisResult.roas.toFixed(2)} pendapatan.</p>
+                    <Card className="p-6 flex flex-col justify-between text-center">
+                        <div>
+                            <p className="text-sm text-muted-foreground">Return on Ad Spend (ROAS)</p>
+                            {renderFittableNumber(`${analysisResult.roas.toFixed(2)}x`, false, false, "text-3xl mt-2 text-primary")}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">Setiap Rp1 iklan menghasilkan Rp{analysisResult.roas.toFixed(2)} pendapatan.</p>
                     </Card>
                 </div>
 

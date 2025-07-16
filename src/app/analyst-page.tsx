@@ -293,20 +293,19 @@ export default function AnalystPage() {
                 <p className="text-subtitle text-muted-foreground mt-2">Data terbaru untuk membantumu mengambil keputusan.</p>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
-                 <Card className="p-6 flex flex-col">
+                 <Card className="p-6">
                     <CardHeader className="p-0">
                         <CardTitle className="text-h3 font-medium">Proyeksi Gross Merchandise Value (GMV)</CardTitle>
                         <CardDescription>Pasar mulai dewasa, fokus bergeser dari 'bakar uang' ke profitabilitas. Pertumbuhan melambat ke 5% (YoY).</CardDescription>
                     </CardHeader>
-                    <CardContent className="p-0 mt-6 flex-grow flex flex-col justify-end">
+                    <CardContent className="p-0 mt-6 flex flex-col justify-between h-full">
                          <div className='mb-4'>
                             <p className="text-5xl font-bold text-primary">US$56,5 M</p>
                         </div>
-                        <div className="relative h-60 w-full -ml-5">
+                        <div className="relative h-60 w-full -ml-5 flex-grow">
                              <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
                                 <ComposedChart data={gmvComboData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                    <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `$${value / 1000}k`} />
                                     <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
                                     <Bar dataKey="tokopedia" barSize={20} fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
                                     <Bar dataKey="shopee" barSize={20} fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
@@ -474,8 +473,8 @@ export default function AnalystPage() {
                                                            <Switch
                                                                 checked={field.value}
                                                                 className={cn(
-                                                                    "pointer-events-none",
-                                                                     field.value ? 'data-[state=checked]:bg-green-500' : 'data-[state=unchecked]:bg-input'
+                                                                    "pointer-events-none data-[state=unchecked]:bg-input",
+                                                                     field.value ? 'data-[state=checked]:bg-green-500' : ''
                                                                 )}
                                                             />
                                                         </div>
@@ -503,7 +502,7 @@ export default function AnalystPage() {
                     </CardHeader>
                     <CardContent className="p-0 mt-6 space-y-8">
                          <div className="grid md:grid-cols-2 gap-8 items-start">
-                            <div className="space-y-6">
+                             <div className="space-y-6 flex flex-col justify-center h-full">
                                 <FormField control={form.control} name="marginModel" render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Model Margin</FormLabel>

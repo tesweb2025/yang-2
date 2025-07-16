@@ -1,0 +1,54 @@
+"use client";
+
+import { BrainCircuit, Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
+import Link from 'next/link';
+import { useState } from 'react';
+
+const navLinks = [
+    { href: '#market-insights', label: 'Wawasan Pasar' },
+    { href: '#market-share', label: 'Pangsa Pasar' },
+    { href: '#ai-analyst-form', label: 'Mulai Simulasi' },
+    { href: '#simulation-results', label: 'Hasil Simulasi' },
+];
+
+export function Header() {
+    const [isOpen, setIsOpen] = useState(false);
+  return (
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center max-w-5xl">
+        <div className="mr-4 flex">
+          <Link className="mr-6 flex items-center space-x-2" href="/">
+            <BrainCircuit className="h-6 w-6 text-primary" />
+            <span className="font-bold">Simulasi Pasar AI</span>
+          </Link>
+        </div>
+        <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+             {navLinks.map(link => (
+                <Link key={link.href} href={link.href} className="transition-colors hover:text-primary">{link.label}</Link>
+             ))}
+        </nav>
+        <div className="flex flex-1 items-center justify-end space-x-2 md:hidden">
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Buka Menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px]">
+                <nav className="flex flex-col gap-4 mt-8">
+                    {navLinks.map(link => (
+                        <SheetClose asChild key={link.href}>
+                            <Link href={link.href} className="text-lg font-medium transition-colors hover:text-primary">{link.label}</Link>
+                        </SheetClose>
+                    ))}
+                </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
+    </header>
+  );
+}

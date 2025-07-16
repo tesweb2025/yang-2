@@ -17,7 +17,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import Image from 'next/image';
 import { runAnalysis } from './actions';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from '@/components/ui/chart';
-import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell, ComposedChart, PieChart, Pie, TooltipProps } from 'recharts';
+import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell, ComposedChart, PieChart, Pie, TooltipProps, Legend, Line } from 'recharts';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -103,20 +103,20 @@ const marketShareChartConfig = {
 } satisfies ChartConfig;
 
 
-const gmvTrendData = [
-    { month: 'Jan', value: [30, 40] },
-    { month: 'Feb', value: [35, 45] },
-    { month: 'Mar', value: [42, 50] },
-    { month: 'Apr', value: [40, 48] },
-    { month: 'May', value: [48, 55] },
-    { month: 'Jun', value: [45, 52] },
-    { month: 'Jul', value: [50, 60] },
-    { month: 'Aug', value: [55, 65] },
-    { month: 'Sep', value: [58, 68] },
-    { month: 'Oct', value: [60, 70] },
-    { month: 'Nov', value: [70, 85] },
-    { month: 'Dec', value: [65, 78] },
+const gmvComboData = [
+    { month: 'Jan', shopee: 1800, tokopedia: 1500, average: 1650 },
+    { month: 'Feb', shopee: 1700, tokopedia: 1600, average: 1650 },
+    { month: 'Mar', shopee: 2100, tokopedia: 1800, average: 1950 },
+    { month: 'Apr', shopee: 2200, tokopedia: 2000, average: 2100 },
+    { month: 'May', shopee: 2500, tokopedia: 2200, average: 2350 },
+    { month: 'Jun', shopee: 2300, tokopedia: 2100, average: 2200 },
 ];
+
+const gmvComboChartConfig = {
+  shopee: { label: 'Shopee', color: 'hsl(var(--chart-shopee))' },
+  tokopedia: { label: 'Tokopedia', color: 'hsl(var(--chart-tiktok))' },
+  average: { label: 'Rata-rata', color: 'hsl(var(--primary))' },
+} satisfies ChartConfig;
 
 const budgetChartConfig = {
   channels: {
@@ -295,16 +295,21 @@ export default function AnalystPage() {
                          <div>
                             <p className="text-5xl font-bold text-primary">US$56,5 M</p>
                         </div>
-                        <div className="relative h-32 w-full mt-4 -mb-4">
-                           <Image
-                                src="https://placehold.co/600x400.png"
-                                alt="Peta Pertumbuhan E-commerce Indonesia"
-                                layout="fill"
-                                objectFit="contain"
-                                data-ai-hint="indonesia map"
-                            />
+                        <div className="relative h-64 w-full mt-4 -mb-4">
+                             <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
+                                <ComposedChart data={gmvComboData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                    <XAxis dataKey="month" tickLine={false} axisLine={false} />
+                                    <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `$${value / 1000}k`} />
+                                    <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
+                                    <Legend />
+                                    <Bar dataKey="tokopedia" barSize={20} fill="var(--color-tokopedia)" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="shopee" barSize={20} fill="var(--color-shopee)" radius={[4, 4, 0, 0]} />
+                                    <Line type="monotone" dataKey="average" stroke="var(--color-average)" strokeWidth={2} dot={false} />
+                                </ComposedChart>
+                            </ChartContainer>
                         </div>
-                        <p className="text-caption text-muted-foreground mt-2 text-center">Peta Sebaran Pertumbuhan E-Commerce di Indonesia</p>
+                        <p className="text-caption text-muted-foreground mt-2 text-center">Visualisasi tren GMV antar platform besar.</p>
                     </CardContent>
                 </Card>
                 <Card className="p-6">

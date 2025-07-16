@@ -270,7 +270,7 @@ export default function AnalystPage() {
                  <Card className="p-6">
                     <CardHeader className="p-0">
                         <CardTitle className="text-h3 font-medium">Proyeksi Gross Merchandise Value (GMV)</CardTitle>
-                        <CardDescription>Pasar mulai dewasa dengan pertumbuhan 5% (YoY), fokus bergeser dari 'bakar uang' ke profitabilitas.</CardDescription>
+                        <CardDescription>Pasar mulai dewasa, fokus bergeser dari 'bakar uang' ke profitabilitas. Pertumbuhan melambat ke 5% (YoY).</CardDescription>
                     </CardHeader>
                     <CardContent className="p-0 mt-6 flex flex-col justify-between h-full">
                         <div>
@@ -342,7 +342,9 @@ export default function AnalystPage() {
                                     dataKey="name" 
                                     tickLine={false} 
                                     axisLine={false}
-                                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 13 }}
+                                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
+                                    angle={0}
+                                    dy={10}
                                 />
                                 <YAxis hide />
                                 <RechartsTooltip 
@@ -601,17 +603,26 @@ export default function AnalystPage() {
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-6 mt-8">
-                        <Card className="p-6 text-center">
-                            <p className="text-caption text-muted-foreground">Proyeksi Pendapatan Tahunan</p>
-                            <p className="text-2xl md:text-3xl mt-2 font-bold text-primary break-words">{formatCurrency(analysisResult.annualRevenue)}</p>
+                        <Card className="p-6 text-center flex flex-col justify-between">
+                            <div>
+                               <p className="text-body font-semibold">Proyeksi Pendapatan Tahunan</p>
+                               <p className="text-2xl md:text-3xl mt-2 font-bold text-primary break-words">{formatCurrency(analysisResult.annualRevenue)}</p>
+                            </div>
+                            <p className="text-caption text-muted-foreground mt-2">Total omzet kotor sebelum dikurangi biaya.</p>
                         </Card>
-                        <Card className="p-6 text-center">
-                            <p className="text-caption text-muted-foreground">Proyeksi Profit Tahunan</p>
-                            <p className={`text-2xl md:text-3xl mt-2 font-bold break-words ${analysisResult.annualProfit < 0 ? 'text-destructive' : 'text-green-600'}`}>{formatCurrency(analysisResult.annualProfit)}</p>
+                        <Card className="p-6 text-center flex flex-col justify-between">
+                             <div>
+                                <p className="text-body font-semibold">Proyeksi Profit Tahunan</p>
+                                <p className={`text-2xl md:text-3xl mt-2 font-bold break-words ${analysisResult.annualProfit < 0 ? 'text-destructive' : 'text-green-600'}`}>{formatCurrency(analysisResult.annualProfit)}</p>
+                            </div>
+                            <p className="text-caption text-muted-foreground mt-2">Sisa uang setelah semua biaya terbayar.</p>
                         </Card>
-                        <Card className="p-6 text-center">
-                            <p className="text-caption text-muted-foreground">Return on Ad Spend (ROAS)</p>
-                            <p className="text-2xl md:text-3xl mt-2 font-bold text-primary break-words">{`${analysisResult.roas.toFixed(2)}x`}</p>
+                        <Card className="p-6 text-center flex flex-col justify-between">
+                            <div>
+                               <p className="text-body font-semibold">Return on Ad Spend (ROAS)</p>
+                               <p className="text-2xl md:text-3xl mt-2 font-bold text-primary break-words">{`${analysisResult.roas.toFixed(2)}x`}</p>
+                            </div>
+                            <p className="text-caption text-muted-foreground mt-2">Pengembalian dari setiap Rupiah untuk iklan.</p>
                         </Card>
                     </div>
                 <div className="grid md:grid-cols-2 gap-8 mt-8">
@@ -695,4 +706,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-

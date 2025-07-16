@@ -363,14 +363,28 @@ export default function AnalystPage() {
                             </RechartsBarChart>
                         </ChartContainer>
                     </div>
-                    <div>
+                    <div className="space-y-4">
                         <h3 className="font-bold text-lg mb-2">Analisis Medan Perang</h3>
-                        <ul className="space-y-3 text-muted-foreground">
-                            <li><strong>Shopee:</strong> Masih memimpin dengan promo gila-gilaan dan jangkauan paling luas. Medan perang utama untuk produk massal.</li>
-                            <li><strong>Tokopedia:</strong> Kuat di segmen pengguna loyal dan kategori spesifik seperti elektronik. Kepercayaan adalah kunci di sini.</li>
-                            <li><strong>TikTok Shop:</strong> Jagonya 'shoppertainment'. Cocok buat produk viral dan impulse buying lewat konten video.</li>
-                            <li><strong>Pemain Baru:</strong> Lo harus pinter cari celah. Fokus di komunitas niche atau tawarkan produk yang unik banget.</li>
-                        </ul>
+                        <div>
+                            <p className="font-bold">TikTok & Tokopedia</p>
+                            <p className="text-muted-foreground text-sm">Kanal untuk "Shoppertainment" & Pembelian Impulsif</p>
+                            <p className="text-muted-foreground">Kuasai dengan konten video pendek, live streaming, dan tren viral.</p>
+                        </div>
+                        <div>
+                            <p className="font-bold">Shopee</p>
+                            <p className="text-muted-foreground text-sm">Raksasa Pasar Massal & Promo Agresif</p>
+                            <p className="text-muted-foreground">Menangkan dengan perang harga, voucher, gamifikasi, dan iklan internal yang masif.</p>
+                        </div>
+                        <div>
+                            <p className="font-bold">Lazada & Blibli</p>
+                            <p className="text-muted-foreground text-sm">Benteng untuk Brand & Audiens Berkualitas</p>
+                            <p className="text-muted-foreground">Dominasi dengan branding premium, garansi (LazMall), dan layanan superior.</p>
+                        </div>
+                        <div>
+                            <p className="font-bold">Social Commerce</p>
+                            <p className="text-muted-foreground text-sm">Kanal untuk Targeting Presisi (Meta & Google Ads)</p>
+                            <p className="text-muted-foreground">Jangkau audiens spesifik dengan retargeting dan lead generation.</p>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
@@ -482,11 +496,11 @@ export default function AnalystPage() {
                             </div>
                             <div className="grid md:grid-cols-2 gap-4 mt-4">
                                 <Card className="p-4 bg-muted">
-                                    <p className="text-sm text-muted-foreground">Untung Bersih / Produk</p>
+                                    <p className="text-sm text-muted-foreground">Laba/Unit</p>
                                     {renderFittableNumber(calculations.netProfitPerUnit, true, calculations.netProfitPerUnit < 0)}
                                 </Card>
                                 <Card className="p-4 bg-muted">
-                                    <p className="text-sm text-muted-foreground">Margin Untung Bersih</p>
+                                    <p className="text-sm text-muted-foreground">Net Margin</p>
                                     <p className={`text-2xl font-bold ${calculations.netProfitMargin < 0 ? 'text-destructive' : 'text-green-600'}`}>{calculations.netProfitMargin.toFixed(1)}%</p>
                                 </Card>
                             </div>
@@ -641,8 +655,8 @@ export default function AnalystPage() {
                                     <TableBody>
                                     {analysisResult.pnlTable.map(item => (
                                         <TableRow key={item.item}>
-                                        <TableCell className={cn("py-2 px-4", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>{item.item}</TableCell>
-                                        <TableCell className={cn("text-right font-medium py-2 px-4", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>
+                                        <TableCell className={cn("py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih Bulanan' ? 'font-bold' : '')}>{item.item}</TableCell>
+                                        <TableCell className={cn("text-right font-medium py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih Bulanan' ? 'font-bold' : '')}>
                                             {renderFittableTableCellSimple(item.value, item.isNegative)}
                                         </TableCell>
                                         </TableRow>

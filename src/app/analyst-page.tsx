@@ -265,7 +265,7 @@ export default function AnalystPage() {
             {isNegative ? `- ${displayValue}`: displayValue}
         </span>
     );
-  }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -352,60 +352,69 @@ export default function AnalystPage() {
                     <CardTitle>Siapa Raja di Pasar? (Estimasi Pangsa Pasar GMV 2024)</CardTitle>
                     <CardDescription>Integrasi Tokopedia & TikTok Shop menciptakan duopoli baru yang menantang dominasi Shopee.</CardDescription>
                 </CardHeader>
-                <CardContent className="grid md:grid-cols-2 gap-8 items-center">
+                <CardContent className="space-y-8">
                     <div className="w-full h-[300px]">
                          <ChartContainer config={chartConfig} className="h-full w-full">
-                            <RechartsBarChart layout="vertical" data={marketShareData} margin={{ left: 10, right: 50 }}>
-                                <CartesianGrid horizontal={false} />
-                                <YAxis 
+                            <RechartsBarChart data={marketShareData} margin={{ top: 20, right: 20, left: -20, bottom: 5 }}>
+                                <CartesianGrid vertical={false} />
+                                <XAxis 
                                     dataKey="name" 
-                                    type="category" 
                                     tickLine={false} 
                                     axisLine={false}
-                                    tick={{ fill: 'hsl(var(--foreground))' }}
-                                    width={140}
+                                    tickMargin={10}
+                                    angle={-45}
+                                    textAnchor="end"
+                                    height={60}
+                                    interval={0}
+                                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
                                 />
-                                <XAxis dataKey="value" type="number" hide />
+                                <YAxis 
+                                    tickFormatter={(value) => `${value}%`}
+                                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
+                                />
                                 <RechartsTooltip 
                                     cursor={{ fill: 'hsl(var(--muted))' }} 
                                     content={<ChartTooltipContent formatter={(value) => `${value}%`} />}
                                 />
-                                <Bar dataKey="value" layout="vertical" radius={5}>
+                                <Bar dataKey="value" radius={[5, 5, 0, 0]}>
                                     {marketShareData.map((entry) => (
                                         <Cell key={`cell-${entry.name}`} fill={entry.fill} />
                                     ))}
                                     <LabelList 
                                         dataKey="value" 
-                                        position="right" 
+                                        position="top" 
                                         offset={8} 
                                         className="fill-foreground font-semibold"
                                         formatter={(value: number) => `${value}%`}
+                                        fontSize={12}
                                     />
                                  </Bar>
                             </RechartsBarChart>
                         </ChartContainer>
                     </div>
                     <div className="space-y-4">
-                        <h3 className="font-bold text-lg mb-2">Analisis Medan Perang</h3>
-                        <div className="space-y-1">
-                            <p className="font-bold">TikTok & Tokopedia</p>
-                            <p className="text-muted-foreground text-sm">Kanal untuk "Shoppertainment" & Pembelian Impulsif</p>
-                            <p className="text-muted-foreground text-xs">Kuasai dengan konten video pendek, live streaming, dan tren viral.</p>
-                        </div>
-                        <div className="space-y-1">
-                            <p className="font-bold">Shopee</p>
-                            <p className="text-muted-foreground text-sm">Raksasa Pasar Massal & Promo Agresif</p>
-                            <p className="text-muted-foreground text-xs">Menangkan dengan perang harga, voucher, gamifikasi, dan iklan internal yang masif.</p>
-                        </div>
-                        <div className="space-y-1">
-                            <p className="font-bold">Lazada & Blibli</p>
-                            <p className="text-muted-foreground text-sm">Benteng untuk Brand & Audiens Berkualitas</p>
-                            <p className="text-muted-foreground text-xs">Dominasi dengan branding premium, garansi (LazMall), dan layanan superior.</p>
-                        </div>
-                        <div className="space-y-1">
-                            <p className="font-bold">Social Commerce</p>
-                            <p className="text-muted-foreground text-sm">Kanal untuk Targeting Presisi (Meta & Google Ads)</p>
-                            <p className="text-muted-foreground text-xs">Jangkau audiens spesifik dengan retargeting dan lead generation.</p>
+                        <h3 className="font-bold text-lg mb-4 text-center">Analisis Medan Perang</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                            <div className="space-y-1">
+                                <p className="font-bold">TikTok & Tokopedia</p>
+                                <p className="text-muted-foreground text-sm">Kanal untuk "Shoppertainment" & Pembelian Impulsif</p>
+                                <p className="text-muted-foreground text-xs">Kuasai dengan konten video pendek, live streaming, dan tren viral.</p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="font-bold">Shopee</p>
+                                <p className="text-muted-foreground text-sm">Raksasa Pasar Massal & Promo Agresif</p>
+                                <p className="text-muted-foreground text-xs">Menangkan dengan perang harga, voucher, gamifikasi, dan iklan internal yang masif.</p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="font-bold">Lazada & Blibli</p>
+                                <p className="text-muted-foreground text-sm">Benteng untuk Brand & Audiens Berkualitas</p>
+                                <p className="text-muted-foreground text-xs">Dominasi dengan branding premium, garansi (LazMall), dan layanan superior.</p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="font-bold">Social Commerce</p>
+                                <p className="text-muted-foreground text-sm">Kanal untuk Targeting Presisi (Meta & Google Ads)</p>
+                                <p className="text-muted-foreground text-xs">Jangkau audiens spesifik dengan retargeting dan lead generation.</p>
+                            </div>
                         </div>
                     </div>
                 </CardContent>
@@ -749,5 +758,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

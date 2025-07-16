@@ -298,22 +298,20 @@ export default function AnalystPage() {
                         <CardTitle className="text-h3 font-medium">Proyeksi Gross Merchandise Value (GMV)</CardTitle>
                         <CardDescription>Pasar mulai dewasa, fokus bergeser dari 'bakar uang' ke profitabilitas. Pertumbuhan melambat ke 5% (YoY).</CardDescription>
                     </CardHeader>
-                    <CardContent className="p-0 mt-6 flex flex-col justify-between h-full">
-                         <div className='mb-4'>
-                            <p className="text-5xl font-bold text-primary">US$56,5 M</p>
-                        </div>
-                        <div className="relative h-60 w-full -ml-5 flex-grow">
-                             <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
+                    <CardContent className="p-0 mt-6">
+                        <p className="text-5xl font-bold text-primary mb-4">US$56,5 M</p>
+                        <div className="relative h-60 w-full">
+                            <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
                                 <ComposedChart data={gmvComboData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                     <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
                                     <Bar dataKey="tokopedia" barSize={20} fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
                                     <Bar dataKey="shopee" barSize={20} fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
-                                    <Line type="monotone" dataKey="average" stroke="var(--color-primary)" strokeWidth={2} dot={false} />
+                                    <Line type="monotone" dataKey="average" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
                                 </ComposedChart>
                             </ChartContainer>
                         </div>
-                         <p className="text-caption text-muted-foreground mt-4 text-center">Visualisasi tren GMV antar platform besar.</p>
+                        <p className="text-caption text-muted-foreground mt-4 text-center">Visualisasi tren GMV antar platform besar.</p>
                     </CardContent>
                 </Card>
                 <Card className="p-6">

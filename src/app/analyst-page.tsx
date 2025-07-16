@@ -728,3 +728,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

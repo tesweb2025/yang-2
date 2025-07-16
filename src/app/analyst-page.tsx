@@ -363,24 +363,24 @@ export default function AnalystPage() {
                             </RechartsBarChart>
                         </ChartContainer>
                     </div>
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                         <h3 className="font-bold text-lg mb-2">Analisis Medan Perang</h3>
-                        <div>
+                        <div className="space-y-1">
                             <p className="font-bold">TikTok & Tokopedia</p>
                             <p className="text-muted-foreground text-sm">Kanal untuk "Shoppertainment" & Pembelian Impulsif</p>
                             <p className="text-muted-foreground">Kuasai dengan konten video pendek, live streaming, dan tren viral.</p>
                         </div>
-                        <div>
+                        <div className="space-y-1">
                             <p className="font-bold">Shopee</p>
                             <p className="text-muted-foreground text-sm">Raksasa Pasar Massal & Promo Agresif</p>
                             <p className="text-muted-foreground">Menangkan dengan perang harga, voucher, gamifikasi, dan iklan internal yang masif.</p>
                         </div>
-                        <div>
+                        <div className="space-y-1">
                             <p className="font-bold">Lazada & Blibli</p>
                             <p className="text-muted-foreground text-sm">Benteng untuk Brand & Audiens Berkualitas</p>
                             <p className="text-muted-foreground">Dominasi dengan branding premium, garansi (LazMall), dan layanan superior.</p>
                         </div>
-                        <div>
+                        <div className="space-y-1">
                             <p className="font-bold">Social Commerce</p>
                             <p className="text-muted-foreground text-sm">Kanal untuk Targeting Presisi (Meta & Google Ads)</p>
                             <p className="text-muted-foreground">Jangkau audiens spesifik dengan retargeting dan lead generation.</p>
@@ -655,8 +655,8 @@ export default function AnalystPage() {
                                     <TableBody>
                                     {analysisResult.pnlTable.map(item => (
                                         <TableRow key={item.item}>
-                                        <TableCell className={cn("py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih Bulanan' ? 'font-bold' : '')}>{item.item}</TableCell>
-                                        <TableCell className={cn("text-right font-medium py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih Bulanan' ? 'font-bold' : '')}>
+                                        <TableCell className={cn("py-2 px-4", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>{item.item}</TableCell>
+                                        <TableCell className={cn("text-right font-medium py-2 px-4", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>
                                             {renderFittableTableCellSimple(item.value, item.isNegative)}
                                         </TableCell>
                                         </TableRow>
@@ -728,5 +728,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

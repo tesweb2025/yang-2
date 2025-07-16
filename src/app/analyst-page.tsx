@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo } from 'react';
@@ -602,15 +603,15 @@ export default function AnalystPage() {
                     <div className="grid md:grid-cols-3 gap-6 mt-8">
                         <Card className="p-6 text-center">
                             <p className="text-caption text-muted-foreground">Proyeksi Pendapatan Tahunan</p>
-                            <p className="text-4xl mt-2 font-bold text-primary">{formatCurrency(analysisResult.annualRevenue)}</p>
+                            <p className="text-2xl md:text-3xl mt-2 font-bold text-primary break-words">{formatCurrency(analysisResult.annualRevenue)}</p>
                         </Card>
                         <Card className="p-6 text-center">
                             <p className="text-caption text-muted-foreground">Proyeksi Profit Tahunan</p>
-                            <p className={`text-4xl mt-2 font-bold ${analysisResult.annualProfit < 0 ? 'text-destructive' : 'text-green-600'}`}>{formatCurrency(analysisResult.annualProfit)}</p>
+                            <p className={`text-2xl md:text-3xl mt-2 font-bold break-words ${analysisResult.annualProfit < 0 ? 'text-destructive' : 'text-green-600'}`}>{formatCurrency(analysisResult.annualProfit)}</p>
                         </Card>
                         <Card className="p-6 text-center">
                             <p className="text-caption text-muted-foreground">Return on Ad Spend (ROAS)</p>
-                            <p className="text-4xl mt-2 font-bold text-primary">{`${analysisResult.roas.toFixed(2)}x`}</p>
+                            <p className="text-2xl md:text-3xl mt-2 font-bold text-primary break-words">{`${analysisResult.roas.toFixed(2)}x`}</p>
                         </Card>
                     </div>
                 <div className="grid md:grid-cols-2 gap-8 mt-8">
@@ -694,3 +695,4 @@ export default function AnalystPage() {
     </div>
   );
 }
+

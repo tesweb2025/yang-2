@@ -16,7 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import Image from 'next/image';
 import { runAnalysis } from './actions';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from '@/components/ui/chart';
-import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell } from 'recharts';
+import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell, ComposedChart } from 'recharts';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -85,11 +85,11 @@ const businessModelContent: any = {
 };
 
 const marketShareData = [
-    { name: 'Tokopedia & TikTok Shop', value: 39, fill: 'var(--color-tiktok)' },
-    { name: 'Shopee', value: 37, fill: 'var(--color-shopee)' },
-    { name: 'Lazada', value: 10, fill: 'var(--color-lazada)' },
-    { name: 'Bukalapak', value: 6, fill: 'var(--color-bukalapak)' },
-    { name: 'Blibli', value: 5, fill: 'var(--color-blibli)' },
+    { name: 'Tokopedia & TikTok Shop', value: 39, fill: '#2A76E3' },
+    { name: 'Shopee', value: 37, fill: '#EE4D2D' },
+    { name: 'Lazada', value: 10, fill: '#0F146D' },
+    { name: 'Bukalapak', value: 6, fill: '#E31E52' },
+    { name: 'Blibli', value: 5, fill: '#0095DA' },
 ];
 
 const chartConfig = {
@@ -100,6 +100,21 @@ const chartConfig = {
   bukalapak: { label: 'Bukalapak', color: 'hsl(var(--chart-bukalapak))' },
   blibli: { label: 'Blibli', color: 'hsl(var(--chart-blibli))' },
 } satisfies ChartConfig;
+
+const gmvTrendData = [
+    { month: 'Jan', value: [30, 40] },
+    { month: 'Feb', value: [35, 45] },
+    { month: 'Mar', value: [42, 50] },
+    { month: 'Apr', value: [40, 48] },
+    { month: 'May', value: [48, 55] },
+    { month: 'Jun', value: [45, 52] },
+    { month: 'Jul', value: [50, 60] },
+    { month: 'Aug', value: [55, 65] },
+    { month: 'Sep', value: [58, 68] },
+    { month: 'Oct', value: [60, 70] },
+    { month: 'Nov', value: [70, 85] },
+    { month: 'Dec', value: [65, 78] },
+];
 
 export default function AnalystPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -211,14 +226,32 @@ export default function AnalystPage() {
                 <p className="text-subtitle text-muted-foreground mt-2">Data terbaru untuk membantumu mengambil keputusan.</p>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
-                <Card className="p-6">
+                 <Card className="p-6">
                     <CardHeader className="p-0">
-                        <CardTitle className="text-h3 font-medium">Proyeksi GMV & Pertumbuhan</CardTitle>
+                        <CardTitle className="text-h3 font-medium">Proyeksi Gross Merchandise Value (GMV)</CardTitle>
                         <CardDescription>Pasar mulai dewasa dengan pertumbuhan 5% (YoY), fokus bergeser dari 'bakar uang' ke profitabilitas.</CardDescription>
                     </CardHeader>
-                    <CardContent className="p-0 mt-6">
-                        <p className="text-5xl font-bold text-primary">US$56,5 M</p>
-                        <p className="text-caption text-muted-foreground mt-2">Visualisasi tren volatilitas pasar bulanan</p>
+                    <CardContent className="p-0 mt-6 flex flex-col justify-between h-full">
+                        <div>
+                            <p className="text-5xl font-bold text-primary">US$56,5 M</p>
+                        </div>
+                        <div className="h-24 w-full mt-4 -mb-4 -mx-2">
+                           <ResponsiveContainer width="100%" height="100%">
+                                <ComposedChart data={gmvTrendData}>
+                                    <Bar dataKey="value" barSize={12} radius={[4, 4, 0, 0]}>
+                                        {gmvTrendData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={'#007AFF'} fillOpacity={0.4} />
+                                        ))}
+                                    </Bar>
+                                    <Bar dataKey="value" barSize={2} className="translate-y-[-1px]">
+                                        {gmvTrendData.map((entry, index) => (
+                                            <Cell key={`cell-stick-${index}`} fill={'#007AFF'} />
+                                        ))}
+                                    </Bar>
+                                </ComposedChart>
+                            </ResponsiveContainer>
+                        </div>
+                        <p className="text-caption text-muted-foreground mt-2 text-center">Visualisasi tren volatilitas pasar bulanan</p>
                     </CardContent>
                 </Card>
                 <Card className="p-6">
@@ -256,11 +289,11 @@ export default function AnalystPage() {
         <section id="pangsa-pasar">
             <Card className="p-6 md:p-8">
                 <CardHeader className="p-0">
-                    <CardTitle className="text-h3 font-medium">Peta Persaingan GMV 2024</CardTitle>
+                    <CardTitle className="text-h3 font-medium">Siapa Raja di Pasar? (Estimasi Pangsa Pasar GMV 2024)</CardTitle>
                     <CardDescription>Integrasi Tokopedia & TikTok Shop menciptakan duopoli baru yang menantang dominasi Shopee.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-0 mt-8">
-                    <div className="w-full h-[300px]">
+                     <div className="w-full h-[300px]">
                          <ChartContainer config={chartConfig} className="h-full w-full">
                             <RechartsBarChart data={marketShareData} layout="vertical" margin={{ top: 0, right: 20, left: 0, bottom: 0 }}>
                                 <CartesianGrid horizontal={false} strokeDasharray="3 3" />
@@ -294,9 +327,9 @@ export default function AnalystPage() {
                             </RechartsBarChart>
                         </ChartContainer>
                     </div>
-                    <div className="mt-8 space-y-4">
+                     <div className="mt-8 space-y-4">
                         <h3 className="font-semibold text-lg text-center">Analisis Medan Perang</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-4">
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-4">
                             <div className="space-y-1">
                                 <p className="font-semibold text-body">TikTok & Tokopedia</p>
                                 <p className="text-muted-foreground text-caption">Kuasai dengan konten video pendek, live streaming, dan tren viral untuk "Shoppertainment".</p>
@@ -548,7 +581,7 @@ export default function AnalystPage() {
                     
                     <Card className="mt-8 p-6">
                         <CardHeader className="p-0">
-                            <CardTitle>Evaluasi AI Terhadap Strategimu</CardTitle>
+                            <CardTitle>Kata AI Soal Strategimu</CardTitle>
                         </CardHeader>
                         <CardContent className="p-0 mt-4">
                             {analysisResult.marketAnalysis.evaluation.includes("berisiko") || analysisResult.annualProfit < 0 ?
@@ -571,7 +604,7 @@ export default function AnalystPage() {
                 <section id="rencana-aksi" className="mt-8">
                   <Card className="p-6 md:p-8">
                     <CardHeader className="p-0">
-                      <CardTitle className="text-h3 font-medium">Rencana Aksi Prioritas</CardTitle>
+                      <CardTitle className="text-h3 font-medium">Rencana Aksi Biar Cuan</CardTitle>
                       <CardDescription>Rekomendasi taktis dari AI yang bisa langsung Anda terapkan.</CardDescription>
                     </CardHeader>
                     <CardContent className="p-0 mt-6">

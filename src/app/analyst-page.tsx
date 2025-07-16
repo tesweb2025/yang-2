@@ -113,8 +113,8 @@ const gmvComboData = [
 ];
 
 const gmvComboChartConfig = {
-  shopee: { label: 'Shopee', color: 'hsl(var(--chart-shopee))' },
-  tokopedia: { label: 'Tokopedia', color: 'hsl(var(--chart-tiktok))' },
+  shopee: { label: 'Shopee', color: 'hsl(var(--chart-2))' },
+  tokopedia: { label: 'Tokopedia', color: 'hsl(var(--chart-1))' },
   average: { label: 'Rata-rata', color: 'hsl(var(--primary))' },
 } satisfies ChartConfig;
 
@@ -199,10 +199,10 @@ export default function AnalystPage() {
   const channelConfig = useMemo(() => {
     const { totalMarketingBudget, useVideoContent, useKOLs, useDiscounts, useOtherChannels } = watchedValues;
     const channels = [
-      { id: 'useVideoContent', name: "Video Content & Ads", active: useVideoContent, color: "hsl(var(--chart-1))", switchClass: "data-[state=checked]:bg-chart-1" },
-      { id: 'useKOLs', name: "KOL & Afiliasi", active: useKOLs, color: "hsl(var(--chart-2))", switchClass: "data-[state=checked]:bg-chart-2" },
-      { id: 'useDiscounts', name: "Promosi & Diskon", active: useDiscounts, color: "hsl(var(--chart-3))", switchClass: "data-[state=checked]:bg-chart-3" },
-      { id: 'Lainnya', name: "Lainnya", active: useOtherChannels, color: "hsl(var(--chart-4))", switchClass: "data-[state=checked]:bg-chart-4" },
+      { id: 'useVideoContent', name: "Video Content & Ads", active: useVideoContent, color: "hsl(var(--chart-1))", switchClass: "data-[state=checked]:bg-green-500" },
+      { id: 'useKOLs', name: "KOL & Afiliasi", active: useKOLs, color: "hsl(var(--chart-2))", switchClass: "data-[state=checked]:bg-green-500" },
+      { id: 'useDiscounts', name: "Promosi & Diskon", active: useDiscounts, color: "hsl(var(--chart-3))", switchClass: "data-[state=checked]:bg-green-500" },
+      { id: 'Lainnya', name: "Lainnya", active: useOtherChannels, color: "hsl(var(--chart-4))", switchClass: "data-[state=checked]:bg-green-500" },
     ];
 
     const activeChannelsCount = channels.filter(c => c.active).length;
@@ -775,3 +775,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

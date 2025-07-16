@@ -20,6 +20,8 @@ import { Pie, Label, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsToolti
 import { PieChart as RechartsPieChart, BarChart as RechartsBarChart } from 'recharts';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+
 
 const formSchema = z.object({
   productName: z.string().min(1, "Nama produk harus diisi"),
@@ -103,6 +105,7 @@ const chartConfig: ChartConfig = {
 export default function AnalystPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+  const { toast } = useToast();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -144,11 +147,24 @@ export default function AnalystPage() {
     try {
       const result = await runAnalysis(data);
       setAnalysisResult(result);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Analysis failed:", error);
+      let errorMessage = "Terjadi kesalahan saat analisis AI. Silakan coba lagi.";
+      if (error.message && error.message.includes('429')) {
+        errorMessage = "Batas penggunaan AI telah tercapai. Coba lagi nanti atau periksa paket Anda.";
+      } else if (error.message && error.message.includes('503')) {
+        errorMessage = "Server AI sedang sibuk. Silakan coba lagi beberapa saat lagi.";
+      }
+      toast({
+        variant: "destructive",
+        title: "Analisis Gagal",
+        description: errorMessage,
+      });
     } finally {
       setIsLoading(false);
-      document.getElementById('simulation-results')?.scrollIntoView({ behavior: 'smooth' });
+      if (analysisResult) {
+        document.getElementById('simulation-results')?.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 

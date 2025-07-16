@@ -86,11 +86,11 @@ const businessModelContent: any = {
 };
 
 const marketShareData = [
-    { name: 'Tokopedia & TikTok Shop', value: 39, fill: 'hsl(var(--chart-tiktok))' },
-    { name: 'Shopee', value: 37, fill: 'hsl(var(--chart-shopee))' },
-    { name: 'Lazada', value: 10, fill: 'hsl(var(--chart-lazada))' },
-    { name: 'Bukalapak', value: 6, fill: 'hsl(var(--chart-bukalapak))' },
-    { name: 'Blibli', value: 5, fill: 'hsl(var(--chart-blibli))' },
+    { name: 'Tokopedia & TikTok Shop', value: 39, fill: 'var(--color-chart-tiktok)' },
+    { name: 'Shopee', value: 37, fill: 'var(--color-chart-shopee)' },
+    { name: 'Lazada', value: 10, fill: 'var(--color-chart-lazada)' },
+    { name: 'Bukalapak', value: 6, fill: 'var(--color-chart-bukalapak)' },
+    { name: 'Blibli', value: 5, fill: 'var(--color-chart-blibli)' },
 ];
 
 const marketShareChartConfig = {
@@ -113,8 +113,8 @@ const gmvComboData = [
 ];
 
 const gmvComboChartConfig = {
-    shopee: { label: 'Shopee', color: 'hsl(220, 84.8%, 60.2%)' },
-    tokopedia: { label: 'Tokopedia', color: 'hsl(158, 64.4%, 52.4%)' },
+    shopee: { label: 'Shopee', color: "hsl(220, 84.8%, 60.2%)" },
+    tokopedia: { label: 'Tokopedia', color: "hsl(158, 64.4%, 52.4%)" },
     average: { label: 'Rata-rata', color: 'hsl(var(--primary))' },
 } satisfies ChartConfig;
 
@@ -389,7 +389,7 @@ export default function AnalystPage() {
                                     axisLine={false}
                                     tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
                                     interval={0}
-                                    tickFormatter={(value) => value.replace(' & ', ' &\n')}
+                                    tickFormatter={(value) => value.includes(' & ') ? value.replace(' & ', ' &\n') : value}
                                 />
                                 <YAxis hide />
                                 <RechartsTooltip 
@@ -475,7 +475,7 @@ export default function AnalystPage() {
                                         name={strategy.id as keyof FormData}
                                         render={({ field }) => (
                                             <FormItem className={cn(
-                                                "h-full p-4 flex flex-col items-start gap-2 text-left rounded-lg border cursor-pointer transition-all",
+                                                "h-full p-4 flex flex-col items-start gap-2 text-left rounded-lg border transition-all",
                                                 field.value
                                                     ? 'bg-primary text-primary-foreground border-primary'
                                                     : 'bg-transparent hover:bg-accent'
@@ -490,13 +490,13 @@ export default function AnalystPage() {
                                                             checked={field.value}
                                                             onCheckedChange={field.onChange}
                                                             className={cn(
-                                                                "pointer-events-none data-[state=unchecked]:bg-input",
+                                                                "data-[state=unchecked]:bg-input",
                                                                     field.value ? 'data-[state=checked]:bg-green-500' : ''
                                                             )}
                                                         />
                                                     </FormControl>
                                                 </div>
-                                                <div className="mt-2" onClick={() => field.onChange(!field.value)}>
+                                                <div className="mt-2 cursor-pointer" onClick={() => field.onChange(!field.value)}>
                                                     <p className="font-semibold">{strategy.title}</p>
                                                     <p className={cn("text-xs", field.value ? 'text-primary-foreground/80' : 'text-muted-foreground')}>{strategy.description}</p>
                                                 </div>
@@ -556,18 +556,18 @@ export default function AnalystPage() {
                         <div>
                             <h3 className="font-semibold text-lg mb-4">Kalkulator Harga & Biaya per Produk</h3>
                             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <FormField control={form.control} name="sellPrice" render={({ field }) => (<FormItem><FormLabel>Harga Jual</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="costOfGoods" render={({ field }) => (<FormItem><FormLabel>Modal Produk (HPP)</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="adCost" render={({ field }) => (<FormItem><FormLabel>Biaya Iklan / Produk</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="otherCostsPercentage" render={({ field }) => (<FormItem><FormLabel>Biaya Lain (%)</FormLabel><FormControl><Input type="number" placeholder="0%" {...field} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="sellPrice" render={({ field }) => (<FormItem><FormLabel>Harga Jual</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="costOfGoods" render={({ field }) => (<FormItem><FormLabel>Modal Produk (HPP)</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="adCost" render={({ field }) => (<FormItem><FormLabel>Biaya Iklan / Produk</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="otherCostsPercentage" render={({ field }) => (<FormItem><FormLabel>Biaya Lain (%)</FormLabel><FormControl><Input type="number" placeholder="0%" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
                             </div>
                         </div>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div>
                                 <h3 className="font-semibold text-lg mb-2">Biaya Tetap & Target Penjualan</h3>
                                 <div className="grid grid-cols-2 gap-4">
-                                  <FormField control={form.control} name="fixedCostsPerMonth" render={({ field }) => (<FormItem><FormLabel>Biaya Tetap / Bulan</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl></FormItem>)} />
-                                  <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Target Jual / Bulan</FormLabel><FormControl><Input type="number" placeholder="0" {...field} /></FormControl></FormItem>)} />
+                                  <FormField control={form.control} name="fixedCostsPerMonth" render={({ field }) => (<FormItem><FormLabel>Biaya Tetap / Bulan</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
+                                  <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Target Jual / Bulan</FormLabel><FormControl><Input type="number" placeholder="0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
                                 </div>
                             </div>
                             <div>
@@ -601,7 +601,7 @@ export default function AnalystPage() {
                                 <FormItem>
                                     <FormLabel>Total Bujet Pemasaran</FormLabel>
                                     <FormControl>
-                                        <Input type="number" placeholder="Rp 0" {...field} className="text-2xl font-bold h-auto py-3" />
+                                        <Input type="number" placeholder="Rp 0" {...field} value={field.value ?? ''} className="text-2xl font-bold h-auto py-3" />
                                     </FormControl>
                                 </FormItem>
                             )}
@@ -797,3 +797,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

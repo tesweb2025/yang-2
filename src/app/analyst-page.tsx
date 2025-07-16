@@ -11,7 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { BarChart, BrainCircuit, DollarSign, LineChart, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle } from 'lucide-react';
+import { BarChart, BrainCircuit, LineChart, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Image from 'next/image';
 import { runAnalysis } from './actions';
@@ -185,18 +185,34 @@ export default function AnalystPage() {
     );
   };
   
-  const renderFittableTableCell = (value: number, isNegative = false) => {
+  const renderFittableTableCell = (value: number, isNegative = false, addSign = false) => {
     const displayValue = formatCurrency(value);
+    const prefix = addSign ? (isNegative ? '- ' : '+ ') : (isNegative ? '- ' : '');
+    const finalDisplayValue = prefix + displayValue.replace('Rp', '').trim();
     const baseLength = 12; 
-    const scaleFactor = Math.min(1, baseLength / displayValue.length);
+    const scaleFactor = Math.min(1, baseLength / finalDisplayValue.length);
     const dynamicFontSize = `calc(${scaleFactor} * 0.875rem)`;
   
     return (
-      <span style={{ fontSize: displayValue.length > baseLength ? dynamicFontSize : undefined }} className={isNegative ? 'text-destructive' : ''}>
-        {displayValue}
+       <span style={{ fontSize: finalDisplayValue.length > baseLength ? dynamicFontSize : undefined }} className={cn(isNegative ? 'text-destructive' : 'text-green-600', {'text-foreground': !addSign && !isNegative})}>
+        {finalDisplayValue}
       </span>
     );
   };
+
+  const renderFittableTableCellSimple = (value: number, isNegative = false) => {
+    const displayValue = formatCurrency(value);
+    const baseLength = 12;
+    const scaleFactor = Math.min(1, baseLength / displayValue.length);
+    const dynamicFontSize = `calc(${scaleFactor} * 0.875rem)`;
+
+    return (
+        <span style={{ fontSize: displayValue.length > baseLength ? dynamicFontSize : undefined }} className={cn(isNegative ? 'text-destructive' : 'text-foreground')}>
+            {isNegative ? `- ${displayValue}`: displayValue}
+        </span>
+    );
+  };
+
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -407,7 +423,7 @@ export default function AnalystPage() {
                                 </Card>
                                 <Card className="p-4 bg-muted">
                                     <p className="text-sm text-muted-foreground">Net Profit Margin</p>
-                                    <p className={`text-2xl font-bold ${calculations.netProfitMargin < 0 ? 'text-destructive' : ''}`}>{calculations.netProfitMargin.toFixed(1)}%</p>
+                                    <p className={`text-2xl font-bold ${calculations.netProfitMargin < 0 ? 'text-destructive' : 'text-green-600'}`}>{calculations.netProfitMargin.toFixed(1)}%</p>
                                 </Card>
                             </div>
                         </div>
@@ -481,91 +497,81 @@ export default function AnalystPage() {
           <>
             {/* 7. Strategic Impact Simulation */}
             <section id="simulation-results" className="space-y-8">
-              <h2 className="text-3xl font-bold text-center">Simulasi Dampak Strategis</h2>
-              <Card className="bg-card">
-                  <CardHeader>
-                      <CardTitle>Hasil Simulasi Finansial</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                      <div className="grid md:grid-cols-3 gap-4 mb-8">
-                          <Card className="p-4 bg-primary/10">
-                              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0">
-                                <CardTitle className="text-sm font-medium">Proyeksi Pendapatan Tahunan</CardTitle>
-                                <DollarSign className="h-4 w-4 text-muted-foreground" />
-                              </CardHeader>
-                              <CardContent className="p-0">
-                                {renderFittableNumber(analysisResult.annualRevenue)}
-                              </CardContent>
-                          </Card>
-                           <Card className="p-4 bg-primary/10">
-                              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0">
-                                <CardTitle className="text-sm font-medium">Proyeksi Profit Tahunan</CardTitle>
-                                <DollarSign className="h-4 w-4 text-muted-foreground" />
-                              </CardHeader>
-                              <CardContent className="p-0">
-                                {renderFittableNumber(analysisResult.annualProfit, true, analysisResult.annualProfit < 0)}
-                              </CardContent>
-                          </Card>
-                           <Card className="p-4 bg-primary/10">
-                              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0">
-                                <CardTitle className="text-sm font-medium">Return on Ad Spend (ROAS)</CardTitle>
-                                <DollarSign className="h-4 w-4 text-muted-foreground" />
-                              </CardHeader>
-                              <CardContent className="p-0">
-                                <div className="text-2xl font-bold">{analysisResult.roas.toFixed(2)}x</div>
-                              </CardContent>
-                          </Card>
-                      </div>
+                <div className="text-center">
+                    <h2 className="text-3xl font-bold">Simulasi Dampak Strategis</h2>
+                    <p className="text-muted-foreground mt-2">Lihat kesehatan bisnismu di sini berdasarkan input dari Laboratorium Strategi.</p>
+                </div>
 
-                      <div className="grid md:grid-cols-2 gap-8">
-                        <div>
-                          <h3 className="font-semibold mb-2">Laporan Laba Rugi (Bulanan)</h3>
-                          <Table>
-                            <TableHeader><TableRow><TableHead>Deskripsi</TableHead><TableHead className="text-right">Jumlah</TableHead></TableRow></TableHeader>
-                            <TableBody>
-                              {analysisResult.pnlTable.map(item => (
-                                <TableRow key={item.item}>
-                                  <TableCell>{item.item}</TableCell>
-                                  <TableCell className={`text-right font-medium`}>{renderFittableTableCell(item.value, item.isNegative)}</TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </div>
-                         <div>
-                          <h3 className="font-semibold mb-2">Simulasi Arus Kas (Bulanan)</h3>
-                           <Table>
-                            <TableHeader><TableRow><TableHead>Bulan</TableHead><TableHead className="text-right">Arus Kas Bersih</TableHead><TableHead className="text-right">Kas Akhir</TableHead></TableRow></TableHeader>
-                            <TableBody>
-                              {analysisResult.cashflowTable.map(row => (
-                                <TableRow key={row.month}>
-                                  <TableCell>{row.month}</TableCell>
-                                  <TableCell className={`text-right font-medium`}>{renderFittableTableCell(row.netCashFlow, row.netCashFlow < 0)}</TableCell>
-                                  <TableCell className={`text-right font-bold`}>{renderFittableTableCell(row.endCash, row.endCash < 0)}</TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-8">
-                          {analysisResult.marketAnalysis.evaluation.includes("negatif") || analysisResult.annualProfit < 0 ?
-                            (<Alert variant="destructive">
-                                <AlertTriangle className="h-4 w-4" />
-                                <AlertTitle>Peringatan Kritis</AlertTitle>
-                                <AlertDescription>{analysisResult.marketAnalysis.evaluation} {analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
-                            </Alert>) :
-                            (<Alert>
-                                <Lightbulb className="h-4 w-4" />
-                                <AlertTitle>Evaluasi AI</AlertTitle>
-                                <AlertDescription>{analysisResult.marketAnalysis.evaluation} {analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
-                            </Alert>)
-                          }
-                      </div>
+                <div className="grid md:grid-cols-3 gap-6">
+                    <Card className="p-6 text-center">
+                        <p className="text-sm text-muted-foreground">Proyeksi Pendapatan Tahunan</p>
+                        <p className="text-3xl font-bold text-primary mt-2">{formatCurrency(analysisResult.annualRevenue)}</p>
+                    </Card>
+                    <Card className="p-6 text-center">
+                        <p className="text-sm text-muted-foreground">Proyeksi Profit Tahunan</p>
+                        <p className={`text-3xl font-bold mt-2 ${analysisResult.annualProfit < 0 ? 'text-destructive' : 'text-green-600'}`}>{formatCurrency(analysisResult.annualProfit)}</p>
+                    </Card>
+                    <Card className="p-6 text-center">
+                        <p className="text-sm text-muted-foreground">Return on Ad Spend (ROAS)</p>
+                        <p className="text-3xl font-bold text-primary mt-2">{analysisResult.roas.toFixed(2)}x</p>
+                    </Card>
+                </div>
 
-                  </CardContent>
-              </Card>
+                <div className="grid md:grid-cols-2 gap-8">
+                    <Card>
+                        <CardHeader><CardTitle>Laporan Laba Rugi (Bulanan)</CardTitle></CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableBody>
+                                {analysisResult.pnlTable.map(item => (
+                                    <TableRow key={item.item}>
+                                    <TableCell className={cn("py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih Bulanan' ? 'font-bold' : '')}>{item.item}</TableCell>
+                                    <TableCell className={cn("text-right font-medium py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih Bulanan' ? 'font-bold' : '')}>
+                                        {renderFittableTableCellSimple(item.value, item.isNegative)}
+                                    </TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader><CardTitle>Simulasi Arus Kas (Bulanan)</CardTitle></CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableBody>
+                                {analysisResult.cashflowTable.map((row, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell className={cn("py-2 px-4", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>{row.item}</TableCell>
+                                        <TableCell className={cn("text-right font-medium py-2 px-4", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>
+                                        {renderFittableTableCell(row.value, row.isNegative, true)}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </div>
+                
+                <Card>
+                    <CardHeader><CardTitle>Vonis & Rekomendasi Strategis</CardTitle></CardHeader>
+                    <CardContent>
+                        {analysisResult.marketAnalysis.evaluation.includes("negatif") || analysisResult.annualProfit < 0 ?
+                        (<Alert variant="destructive" className="bg-destructive/5">
+                            <AlertTriangle className="h-4 w-4" />
+                            <AlertTitle>Peringatan Kritis</AlertTitle>
+                            <AlertDescription>{analysisResult.marketAnalysis.evaluation} {analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
+                        </Alert>) :
+                        (<Alert className="bg-primary/5 border-primary/20">
+                            <Lightbulb className="h-4 w-4" />
+                            <AlertTitle>Evaluasi AI</AlertTitle>
+                            <AlertDescription>{analysisResult.marketAnalysis.evaluation} {analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
+                        </Alert>)
+                        }
+                    </CardContent>
+                </Card>
+
             </section>
             
             {/* 9. Strategic Action Plan */}
@@ -590,5 +596,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

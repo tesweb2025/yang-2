@@ -28,45 +28,39 @@ export async function runAnalysis(data: FormData) {
   // Financial Calculations
   const monthlyRevenue = data.sellPrice * data.avgSalesPerMonth;
   const annualRevenue = monthlyRevenue * 12;
-  const monthlyVariableCostsPerUnit = data.costOfGoods + data.adCost + (data.sellPrice * data.otherCostsPercentage / 100);
-  const totalMonthlyVariableCosts = monthlyVariableCostsPerUnit * data.avgSalesPerMonth;
-  const totalMonthlyCosts = data.fixedCostsPerMonth + totalMonthlyVariableCosts + data.totalMarketingBudget; // Marketing budget is a monthly cost.
-  const monthlyProfit = monthlyRevenue - totalMonthlyCosts;
+  const monthlyCostOfGoods = data.costOfGoods * data.avgSalesPerMonth;
+  const grossProfit = monthlyRevenue - monthlyCostOfGoods;
+  const otherVariableCosts = (data.adCost * data.avgSalesPerMonth) + (monthlyRevenue * data.otherCostsPercentage / 100);
+  const operationalCosts = otherVariableCosts + data.totalMarketingBudget + data.fixedCostsPerMonth;
+  const monthlyProfit = grossProfit - operationalCosts;
   const annualProfit = monthlyProfit * 12;
   const roas = data.totalMarketingBudget > 0 ? monthlyRevenue / data.totalMarketingBudget : 0;
   
   // P&L Table Data
   const pnlTable = [
     { item: 'Pendapatan', value: monthlyRevenue, isNegative: false },
-    { item: 'HPP', value: data.costOfGoods * data.avgSalesPerMonth, isNegative: true },
-    { item: 'Laba Kotor', value: monthlyRevenue - (data.costOfGoods * data.avgSalesPerMonth), isNegative: (monthlyRevenue - (data.costOfGoods * data.avgSalesPerMonth)) < 0 },
-    { item: 'Biaya Variabel Lain', value: (data.adCost + (data.sellPrice * data.otherCostsPercentage / 100)) * data.avgSalesPerMonth, isNegative: true},
-    { item: 'Biaya Pemasaran', value: data.totalMarketingBudget, isNegative: true },
-    { item: 'Biaya Tetap', value: data.fixedCostsPerMonth, isNegative: true },
-    { item: 'Laba Bersih Bulanan', value: monthlyProfit, isNegative: monthlyProfit < 0 },
+    { item: 'Harga Pokok Penjualan (HPP)', value: monthlyCostOfGoods, isNegative: true },
+    { item: 'Laba Kotor', value: grossProfit, isNegative: grossProfit < 0 },
+    { item: 'Biaya Operasional', value: operationalCosts, isNegative: true },
+    { item: 'Laba Bersih (Net Profit)', value: monthlyProfit, isNegative: monthlyProfit < 0 },
   ];
 
   // Cashflow Table Data
-  let currentCash = data.initialMarketingBudget;
-  const cashflowTable = Array.from({ length: 12 }, (_, i) => {
-    const cashIn = monthlyRevenue;
-    // For simplicity, assuming all costs are cash costs for the month
-    const cashOut = totalMonthlyVariableCosts + data.fixedCostsPerMonth + data.totalMarketingBudget;
-    const netCashFlow = cashIn - cashOut;
-    const endCash = currentCash + netCashFlow;
-    const row = {
-      month: i + 1,
-      startCash: currentCash,
-      cashIn,
-      cashOut,
-      netCashFlow,
-      endCash,
-    };
-    currentCash = endCash;
-    return row;
-  });
+  const cashIn = monthlyRevenue;
+  const cashOutHpp = monthlyCostOfGoods;
+  const cashOutAdCost = data.adCost * data.avgSalesPerMonth;
+  const cashOutOtherFixed = (monthlyRevenue * data.otherCostsPercentage / 100) + data.fixedCostsPerMonth + data.totalMarketingBudget;
+  const netCashFlow = cashIn - cashOutHpp - cashOutAdCost - cashOutOtherFixed;
 
-  const financialForecastSummary = `Proyeksi pendapatan tahunan: ${annualRevenue.toLocaleString('id-ID')}. Proyeksi profit tahunan: ${annualProfit.toLocaleString('id-ID')}. Proyeksi arus kas pada akhir tahun: ${currentCash.toLocaleString('id-ID')}.`;
+  const cashflowTable = [
+    { item: 'Kas Masuk dari Penjualan', value: cashIn, isNegative: false },
+    { item: 'Kas Keluar untuk HPP', value: cashOutHpp, isNegative: true },
+    { item: 'Kas Keluar untuk Iklan', value: cashOutAdCost, isNegative: true },
+    { item: 'Kas Keluar untuk Biaya Tetap & Lainnya', value: cashOutOtherFixed, isNegative: true },
+    { item: 'Arus Kas Bersih', value: netCashFlow, isNegative: netCashFlow < 0 },
+  ];
+  
+  const financialForecastSummary = `Proyeksi pendapatan tahunan: ${annualRevenue.toLocaleString('id-ID')}. Proyeksi profit tahunan: ${annualProfit.toLocaleString('id-ID')}.`;
 
   const marketConditionSummary = "Pasar e-commerce Indonesia sangat kompetitif, didominasi oleh Shopee dan TikTok-Shop. Konsumen sensitif terhadap harga dan promosi. Pertumbuhan didorong oleh adopsi digital di luar kota-kota besar.";
   
@@ -86,7 +80,7 @@ export async function runAnalysis(data: FormData) {
         annualProfitProjection: annualProfit,
         roas,
         monthlyProfitAndLossStatement: JSON.stringify(pnlTable.map(p => `${p.item}: ${p.value.toLocaleString('id-ID')}`)),
-        monthlyCashFlowSimulation: JSON.stringify(cashflowTable.map(c => `Bulan ${c.month} Kas Akhir: ${c.endCash.toLocaleString('id-ID')}`)),
+        monthlyCashFlowSimulation: JSON.stringify(cashflowTable.map(c => `${c.item}: ${c.value.toLocaleString('id-ID')}`)),
         socialMediaAds: data.useSocialMediaAds,
         endorsementKOL: data.useKOLs,
     })

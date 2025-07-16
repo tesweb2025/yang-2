@@ -277,18 +277,17 @@ export default function AnalystPage() {
         <section id="wawasan-pasar" className="space-y-4">
             <h2 className="text-3xl font-bold text-center">Wawasan Pasar E-Commerce Indonesia (2024)</h2>
             <div className="grid md:grid-cols-2 gap-8">
-                 <Card>
+                <Card>
                     <CardHeader>
-                        <CardTitle>Proyeksi Gross Merchandise Value (GMV)</CardTitle>
+                        <CardTitle>Proyeksi Nilai Pasar (GMV)</CardTitle>
                         <CardDescription>Pasar mulai dewasa dengan pertumbuhan 5% (YoY), fokus bergeser dari 'bakar uang' ke profitabilitas.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-4xl font-bold text-primary mb-4">US$4 Miliar</p>
+                        <p className="text-4xl font-bold text-primary mb-4">US$56,5 Miliar</p>
                         <div className="h-[120px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
                                 <ComposedChart data={gmvData} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
                                     <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                                    <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
                                     <YAxis hide={true} domain={['dataMin - 1', 'dataMax + 1']} />
                                     <RechartsTooltip cursor={{ fill: 'hsla(var(--muted))' }} />
                                     <Bar dataKey="value" barSize={15}>
@@ -299,6 +298,7 @@ export default function AnalystPage() {
                                 </ComposedChart>
                             </ResponsiveContainer>
                         </div>
+                        <p className="text-xs text-muted-foreground text-center mt-2">Visualisasi tren volatilitas pasar bulanan</p>
                     </CardContent>
                 </Card>
                 <Card>
@@ -505,7 +505,7 @@ export default function AnalystPage() {
                             </div>
                             <div className="grid md:grid-cols-2 gap-4 mt-4">
                                 <Card className="p-4 bg-muted">
-                                    <p className="text-sm text-muted-foreground">Laba/Unit</p>
+                                    <p className="text-sm text-muted-foreground">Laba/unit</p>
                                     {renderFittableNumber(calculations.netProfitPerUnit, true, calculations.netProfitPerUnit < 0)}
                                 </Card>
                                 <Card className="p-4 bg-muted">
@@ -737,5 +737,7 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    
 
     

@@ -570,7 +570,6 @@ export default function AnalystPage() {
                                         <Cell key={`cell-${index}`} fill={entry.fill} />
                                       ))}
                                     </Pie>
-                                    <Legend content={<></>} />
                                   </PieChart>
                                 </ChartContainer>
                             </ResponsiveContainer>

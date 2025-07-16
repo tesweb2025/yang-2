@@ -12,7 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { BarChart, BrainCircuit, LineChart, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle, CheckCircle, ArrowRight } from 'lucide-react';
+import { BarChart, BrainCircuit, LineChart, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle, CheckCircle, ArrowRight, Video, Users, Receipt, Share2 } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Image from 'next/image';
 import { runAnalysis } from './actions';
@@ -266,6 +266,13 @@ export default function AnalystPage() {
     );
   };
 
+  const marketingStrategies = [
+    { id: 'useVideoContent', icon: Video, title: 'Video Content & Ads', description: 'Buat konten video pendek & pasang iklan di platform sosial.' },
+    { id: 'useKOLs', icon: Users, title: 'KOL & Afiliasi', description: 'Gunakan influencer atau program afiliasi untuk promosi.' },
+    { id: 'useDiscounts', icon: Receipt, title: 'Promosi & Diskon', description: 'Tawarkan diskon, voucher, atau promo bundling ke pelanggan.' },
+    { id: 'useOtherChannels', icon: Share2, title: 'Kanal Lainnya', description: 'Manfaatkan kanal lain seperti SEO, event, atau marketplace ads.' },
+  ];
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <main className="space-y-12 md:space-y-20">
@@ -436,6 +443,39 @@ export default function AnalystPage() {
                                     <FormMessage />
                                 </FormItem>
                             )} />
+                        </div>
+                        <div className="space-y-3 pt-2">
+                            <FormLabel>Pilih Strategi Pemasaran</FormLabel>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                {marketingStrategies.map(strategy => (
+                                    <FormField
+                                        key={strategy.id}
+                                        control={form.control}
+                                        name={strategy.id as keyof FormData}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormControl>
+                                                    <Button
+                                                        type="button"
+                                                        variant={field.value ? 'default' : 'outline'}
+                                                        onClick={() => field.onChange(!field.value)}
+                                                        className="h-full p-4 flex flex-col items-start gap-2 text-left"
+                                                    >
+                                                        <div className="flex justify-between w-full items-center">
+                                                           <strategy.icon className="w-6 h-6" />
+                                                           <Switch checked={field.value} className="pointer-events-none" />
+                                                        </div>
+                                                        <div className="mt-2">
+                                                            <p className="font-semibold">{strategy.title}</p>
+                                                            <p className={cn("text-xs", field.value ? 'text-primary-foreground/80' : 'text-muted-foreground')}>{strategy.description}</p>
+                                                        </div>
+                                                    </Button>
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </CardContent>
                 </Card>

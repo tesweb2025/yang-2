@@ -169,15 +169,15 @@ export default function AnalystPage() {
 
   }, [watchedValues.useVideoContent, watchedValues.useKOLs, watchedValues.useSocialMediaAds]);
 
-  const renderFittableNumber = (value: string | number, isCurrency = true, className = "text-2xl") => {
+  const renderFittableNumber = (value: string | number, isCurrency = true, isNegative = false, className = "text-2xl") => {
     const displayValue = typeof value === 'number' && isCurrency ? formatCurrency(value) : String(value);
-    const baseLength = isCurrency ? 12 : 8; // base character length before scaling
+    const baseLength = isCurrency ? 12 : 8; 
     const scaleFactor = Math.min(1, baseLength / displayValue.length);
-    const dynamicFontSize = `calc(${scaleFactor} * 1.5rem)`; // 1.5rem is base for text-2xl
+    const dynamicFontSize = `calc(${scaleFactor} * 1.5rem)`;
   
     return (
       <div 
-        className={`${className} font-bold`}
+        className={`${className} font-bold ${isNegative ? 'text-destructive' : ''}`}
         style={{ fontSize: displayValue.length > baseLength ? dynamicFontSize : undefined }}
       >
         {displayValue}
@@ -185,14 +185,14 @@ export default function AnalystPage() {
     );
   };
   
-  const renderFittableTableCell = (value: number) => {
+  const renderFittableTableCell = (value: number, isNegative = false) => {
     const displayValue = formatCurrency(value);
-    const baseLength = 12; // base character length before scaling
+    const baseLength = 12; 
     const scaleFactor = Math.min(1, baseLength / displayValue.length);
-    const dynamicFontSize = `calc(${scaleFactor} * 0.875rem)`; // 0.875rem is base for text-sm
+    const dynamicFontSize = `calc(${scaleFactor} * 0.875rem)`;
   
     return (
-      <span style={{ fontSize: displayValue.length > baseLength ? dynamicFontSize : undefined }}>
+      <span style={{ fontSize: displayValue.length > baseLength ? dynamicFontSize : undefined }} className={isNegative ? 'text-destructive' : ''}>
         {displayValue}
       </span>
     );
@@ -403,11 +403,11 @@ export default function AnalystPage() {
                             <div className="grid md:grid-cols-2 gap-4 mt-4">
                                 <Card className="p-4 bg-muted">
                                     <p className="text-sm text-muted-foreground">Profit Bersih / Unit</p>
-                                    {renderFittableNumber(calculations.netProfitPerUnit)}
+                                    {renderFittableNumber(calculations.netProfitPerUnit, true, calculations.netProfitPerUnit < 0)}
                                 </Card>
                                 <Card className="p-4 bg-muted">
                                     <p className="text-sm text-muted-foreground">Net Profit Margin</p>
-                                    <p className="text-2xl font-bold">{calculations.netProfitMargin.toFixed(1)}%</p>
+                                    <p className={`text-2xl font-bold ${calculations.netProfitMargin < 0 ? 'text-destructive' : ''}`}>{calculations.netProfitMargin.toFixed(1)}%</p>
                                 </Card>
                             </div>
                         </div>
@@ -418,7 +418,7 @@ export default function AnalystPage() {
                                 <FormField control={form.control} name="fixedCostsPerMonth" render={({ field }) => (<FormItem><FormLabel>Total Biaya Tetap / Bulan</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
                                 <Card className="p-4 bg-muted mt-2">
                                   <p className="text-sm text-muted-foreground">BEP (Unit / Bulan)</p>
-                                  {renderFittableNumber(isFinite(calculations.bepUnit) ? Math.ceil(calculations.bepUnit) : 'N/A', false, "text-xl")}
+                                  {renderFittableNumber(isFinite(calculations.bepUnit) ? Math.ceil(calculations.bepUnit) : 'N/A', false, false, "text-xl")}
                                 </Card>
                             </div>
                             <div>
@@ -426,7 +426,7 @@ export default function AnalystPage() {
                                 <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Rata-rata Penjualan / Bulan (Unit)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
                                 <Card className="p-4 bg-muted mt-2">
                                   <p className="text-sm text-muted-foreground">Proyeksi Pendapatan / Bulan</p>
-                                  {renderFittableNumber(calculations.monthlyRevenue, true, "text-xl")}
+                                  {renderFittableNumber(calculations.monthlyRevenue, true, false, "text-xl")}
                                 </Card>
                             </div>
                         </div>
@@ -503,9 +503,7 @@ export default function AnalystPage() {
                                 <DollarSign className="h-4 w-4 text-muted-foreground" />
                               </CardHeader>
                               <CardContent className="p-0">
-                                <div className={`${analysisResult.annualProfit < 0 ? 'text-destructive' : ''}`}>
-                                  {renderFittableNumber(analysisResult.annualProfit)}
-                                </div>
+                                {renderFittableNumber(analysisResult.annualProfit, true, analysisResult.annualProfit < 0)}
                               </CardContent>
                           </Card>
                            <Card className="p-4 bg-primary/10">
@@ -528,7 +526,7 @@ export default function AnalystPage() {
                               {analysisResult.pnlTable.map(item => (
                                 <TableRow key={item.item}>
                                   <TableCell>{item.item}</TableCell>
-                                  <TableCell className={`text-right font-medium ${item.isNegative ? 'text-destructive' : ''}`}>{renderFittableTableCell(item.value)}</TableCell>
+                                  <TableCell className={`text-right font-medium`}>{renderFittableTableCell(item.value, item.isNegative)}</TableCell>
                                 </TableRow>
                               ))}
                             </TableBody>
@@ -542,8 +540,8 @@ export default function AnalystPage() {
                               {analysisResult.cashflowTable.map(row => (
                                 <TableRow key={row.month}>
                                   <TableCell>{row.month}</TableCell>
-                                  <TableCell className={`text-right font-medium ${row.netCashFlow < 0 ? 'text-destructive' : ''}`}>{renderFittableTableCell(row.netCashFlow)}</TableCell>
-                                  <TableCell className={`text-right font-bold ${row.endCash < 0 ? 'text-destructive' : ''}`}>{renderFittableTableCell(row.endCash)}</TableCell>
+                                  <TableCell className={`text-right font-medium`}>{renderFittableTableCell(row.netCashFlow, row.netCashFlow < 0)}</TableCell>
+                                  <TableCell className={`text-right font-bold`}>{renderFittableTableCell(row.endCash, row.endCash < 0)}</TableCell>
                                 </TableRow>
                               ))}
                             </TableBody>
@@ -592,3 +590,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

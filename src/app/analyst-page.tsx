@@ -87,10 +87,10 @@ const gmvData = [
   { month: 'Apr', value: 3.4 }, { month: 'May', value: 3.6 }, { month: 'Jun', value: 3.8 }
 ];
 const marketShareData = [
-  { name: 'TikTok-Toko', value: 35, fill: 'var(--color-chart-2)' },
-  { name: 'Shopee', value: 30, fill: 'var(--color-chart-3)' },
-  { name: 'Lazada', value: 15, fill: 'var(--color-chart-4)' },
-  { name: 'Lainnya', value: 20, fill: 'var(--color-chart-5)' }
+  { name: 'TikTok-Toko', value: 35, fill: 'hsl(var(--chart-2))' },
+  { name: 'Shopee', value: 30, fill: 'hsl(var(--chart-3))' },
+  { name: 'Lazada', value: 15, fill: 'hsl(var(--chart-4))' },
+  { name: 'Lainnya', value: 20, fill: 'hsl(var(--chart-5))' }
 ];
 const chartConfig: ChartConfig = {
   value: { label: 'Value' },
@@ -157,12 +157,12 @@ export default function AnalystPage() {
   const budgetAllocationData = useMemo(() => {
       const { useVideoContent, useKOLs, useSocialMediaAds } = watchedValues;
       const allocations = [];
-      if (useVideoContent) allocations.push({ name: 'Video Content & Ads', value: 40, fill: 'var(--color-chart-1)' });
-      if (useKOLs) allocations.push({ name: 'KOL & Afiliasi', value: 35, fill: 'var(--color-chart-2)' });
-      if (useSocialMediaAds) allocations.push({ name: 'Iklan Media Sosial', value: 25, fill: 'var(--color-chart-3)' });
+      if (useVideoContent) allocations.push({ name: 'Video Content & Ads', value: 40, fill: 'hsl(var(--chart-1))' });
+      if (useKOLs) allocations.push({ name: 'KOL & Afiliasi', value: 35, fill: 'hsl(var(--chart-2))' });
+      if (useSocialMediaAds) allocations.push({ name: 'Iklan Media Sosial', value: 25, fill: 'hsl(var(--chart-3))' });
       
       if (allocations.length === 0) {
-        return [{ name: 'Tidak ada alokasi', value: 100, fill: 'var(--color-muted)' }];
+        return [{ name: 'Tidak ada alokasi', value: 100, fill: 'hsl(var(--muted))' }];
       }
 
       const total = allocations.reduce((acc, item) => acc + item.value, 0);
@@ -246,7 +246,7 @@ export default function AnalystPage() {
                                 <CartesianGrid vertical={false} />
                                 <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
                                 <RechartsTooltip cursor={{fill: 'hsl(var(--muted))'}} content={<ChartTooltipContent />} />
-                                <Bar dataKey="value" fill="var(--color-chart-1)" radius={4} />
+                                <Bar dataKey="value" fill="hsl(var(--chart-1))" radius={4} />
                             </RechartsBarChart>
                         </ChartContainer>
                     </CardContent>
@@ -509,21 +509,21 @@ export default function AnalystPage() {
                             <p className="text-sm text-muted-foreground">Proyeksi Pendapatan Tahunan</p>
                             {renderFittableNumber(analysisResult.annualRevenue, true, false, "text-3xl mt-2 text-primary")}
                         </div>
-                        <div className="h-6"></div>
+                        <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Total penjualan yang diproyeksikan dalam satu tahun.</p>
                     </Card>
                     <Card className="p-6 flex flex-col justify-between text-center">
                         <div>
                             <p className="text-sm text-muted-foreground">Proyeksi Profit Tahunan</p>
                             {renderFittableNumber(analysisResult.annualProfit, true, analysisResult.annualProfit < 0, `text-3xl mt-2 ${analysisResult.annualProfit < 0 ? '' : 'text-green-600'}`)}
                         </div>
-                        <div className="h-6"></div>
+                        <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Perkiraan keuntungan bersih setelah semua biaya diperhitungkan.</p>
                     </Card>
                     <Card className="p-6 flex flex-col justify-between text-center">
                         <div>
                             <p className="text-sm text-muted-foreground">Return on Ad Spend (ROAS)</p>
                             {renderFittableNumber(`${analysisResult.roas.toFixed(2)}x`, false, false, "text-3xl mt-2 text-primary")}
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1">Setiap Rp1 iklan menghasilkan Rp{analysisResult.roas.toFixed(2)} pendapatan.</p>
+                        <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Setiap Rp1 iklan menghasilkan Rp{analysisResult.roas.toFixed(2)} pendapatan.</p>
                     </Card>
                 </div>
 

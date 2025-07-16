@@ -26,16 +26,15 @@ import { useToast } from "@/hooks/use-toast";
 const formSchema = z.object({
   productName: z.string().min(1, "Nama produk harus diisi"),
   targetSegment: z.string().min(1, "Segmentasi target harus diisi"),
-  initialMarketingBudget: z.coerce.number().min(0, "Modal tidak boleh negatif"),
   marginModel: z.enum(['tipis', 'tebal']),
   brandStrength: z.enum(['baru', 'kuat']),
-  sellPrice: z.coerce.number().min(0, "Harga harus positif"),
-  costOfGoods: z.coerce.number().min(0, "HPP harus positif"),
-  adCost: z.coerce.number().min(0, "Biaya iklan harus positif"),
-  otherCostsPercentage: z.coerce.number().min(0).max(100),
-  fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif"),
-  avgSalesPerMonth: z.coerce.number().min(0, "Penjualan harus positif"),
-  totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif"),
+  sellPrice: z.coerce.number().min(0, "Harga harus positif").optional().default(0),
+  costOfGoods: z.coerce.number().min(0, "HPP harus positif").optional().default(0),
+  adCost: z.coerce.number().min(0, "Biaya iklan harus positif").optional().default(0),
+  otherCostsPercentage: z.coerce.number().min(0).max(100).optional().default(0),
+  fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
+  avgSalesPerMonth: z.coerce.number().min(0, "Penjualan harus positif").optional().default(0),
+  totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
   useVideoContent: z.boolean(),
   useKOLs: z.boolean(),
   useDiscounts: z.boolean(),
@@ -124,8 +123,8 @@ const gmvComboData = [
 ];
 
 const gmvComboChartConfig = {
-    shopee: { label: 'Shopee', color: "hsl(212, 100%, 50%)" },
-    tokopedia: { label: 'Tokopedia', color: "hsl(158, 64.4%, 52.4%)" },
+    shopee: { label: 'Shopee', color: "hsl(212 100% 50%)" },
+    tokopedia: { label: 'Tokopedia', color: "hsl(142 71% 45%)" },
     average: { label: 'Rata-rata', color: 'hsl(var(--primary))' },
 } satisfies ChartConfig;
 
@@ -161,7 +160,6 @@ export default function AnalystPage() {
     defaultValues: {
       productName: "",
       targetSegment: "",
-      initialMarketingBudget: undefined,
       marginModel: 'tipis',
       brandStrength: 'baru',
       sellPrice: undefined,
@@ -332,7 +330,7 @@ export default function AnalystPage() {
                         <p className="text-5xl font-bold text-primary">US$56,5 M</p>
                         <div className="h-60 w-full">
                             <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
-                                <ComposedChart data={gmvComboData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
+                                <ComposedChart data={gmvComboData} margin={{ top: 20, right: 0, left: -20, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                     <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
                                     <Bar dataKey="tokopedia" barSize={20} fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />

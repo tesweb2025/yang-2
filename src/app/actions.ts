@@ -8,16 +8,15 @@ import { generateStrategicRecommendations } from "@/ai/flows/generate-strategic-
 const formSchema = z.object({
   productName: z.string().min(1, "Nama produk harus diisi"),
   targetSegment: z.string().min(1, "Segmentasi target harus diisi"),
-  initialMarketingBudget: z.coerce.number().min(0, "Modal tidak boleh negatif"),
   marginModel: z.enum(['tipis', 'tebal']),
   brandStrength: z.enum(['baru', 'kuat']),
-  sellPrice: z.coerce.number().min(0, "Harga harus positif"),
-  costOfGoods: z.coerce.number().min(0, "HPP harus positif"),
-  adCost: z.coerce.number().min(0, "Biaya iklan harus positif"),
-  otherCostsPercentage: z.coerce.number().min(0).max(100),
-  fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif"),
-  avgSalesPerMonth: z.coerce.number().min(0, "Penjualan harus positif"),
-  totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif"),
+  sellPrice: z.coerce.number().min(0, "Harga harus positif").optional().default(0),
+  costOfGoods: z.coerce.number().min(0, "HPP harus positif").optional().default(0),
+  adCost: z.coerce.number().min(0, "Biaya iklan harus positif").optional().default(0),
+  otherCostsPercentage: z.coerce.number().min(0).max(100).optional().default(0),
+  fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
+  avgSalesPerMonth: z.coerce.number().min(0, "Penjualan harus positif").optional().default(0),
+  totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
   useVideoContent: z.boolean(),
   useKOLs: z.boolean(),
   useDiscounts: z.boolean(),
@@ -70,7 +69,7 @@ export async function runAnalysis(data: FormData) {
     analyzeMarketEntry({
         productName: data.productName,
         targetSegment: data.targetSegment,
-        initialMarketingBudget: data.initialMarketingBudget,
+        initialMarketingBudget: data.totalMarketingBudget, // Using total marketing budget
         financialForecastSummary,
         marketConditionSummary
     }),
@@ -83,7 +82,7 @@ export async function runAnalysis(data: FormData) {
         roas,
         monthlyProfitAndLossStatement: JSON.stringify(pnlTable.map(p => `${p.item}: Rp ${p.value.toLocaleString('id-ID')}`)),
         monthlyCashFlowSimulation: JSON.stringify(cashflowTable.map(c => `${c.item}: Rp ${c.value.toLocaleString('id-ID')}`)),
-        socialMediaAds: data.useVideoContent, // Combined video and ads
+        socialMediaAds: data.useVideoContent,
         endorsementKOL: data.useKOLs,
     })
   ]);

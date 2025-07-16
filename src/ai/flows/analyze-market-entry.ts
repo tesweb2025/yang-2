@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -48,7 +49,7 @@ Tugasmu adalah mengevaluasi kelayakan sebuah ide bisnis berdasarkan data berikut
 
 Nama Produk: {{{productName}}}
 Target Pasar: {{{targetSegment}}}
-Modal Awal: Rp {{{initialMarketingBudget}}}
+Modal Awal (Bujet Promosi): Rp {{{initialMarketingBudget}}}
 Ringkasan Finansial: {{{financialForecastSummary}}}
 Kondisi Pasar: {{{marketConditionSummary}}}
 

@@ -171,14 +171,14 @@ export default function AnalystPage() {
   }, [watchedValues.useVideoContent, watchedValues.useKOLs, watchedValues.useSocialMediaAds]);
 
   const renderFittableNumber = (value: string | number, isCurrency = true, isNegative = false, className = "text-2xl") => {
-    const displayValue = typeof value === 'number' && isCurrency ? formatCurrency(value) : String(value);
-    const baseLength = isCurrency ? 12 : 8 : 8; 
+    const displayValue = isCurrency ? formatCurrency(Number(value)) : String(value);
+    const baseLength = isCurrency ? 12 : 8;
     const scaleFactor = Math.min(1, baseLength / displayValue.length);
     const dynamicFontSize = `calc(${scaleFactor} * 1.5rem)`;
   
     return (
       <div 
-        className={`${className} font-bold ${isNegative ? 'text-destructive' : ''}`}
+        className={cn(className, "font-bold", isNegative ? 'text-destructive' : '')}
         style={{ fontSize: displayValue.length > baseLength ? dynamicFontSize : undefined }}
       >
         {displayValue}
@@ -504,17 +504,18 @@ export default function AnalystPage() {
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-6">
-                    <Card className="p-6 text-center">
+                    <Card className="p-6 flex flex-col items-center justify-center">
                         <p className="text-sm text-muted-foreground">Proyeksi Pendapatan Tahunan</p>
-                        <p className="text-3xl font-bold text-primary mt-2">{formatCurrency(analysisResult.annualRevenue)}</p>
+                        {renderFittableNumber(analysisResult.annualRevenue, true, false, "text-3xl mt-2 text-primary")}
                     </Card>
-                    <Card className="p-6 text-center">
+                    <Card className="p-6 flex flex-col items-center justify-center">
                         <p className="text-sm text-muted-foreground">Proyeksi Profit Tahunan</p>
-                        <p className={`text-3xl font-bold mt-2 ${analysisResult.annualProfit < 0 ? 'text-destructive' : 'text-green-600'}`}>{formatCurrency(analysisResult.annualProfit)}</p>
+                         {renderFittableNumber(analysisResult.annualProfit, true, analysisResult.annualProfit < 0, `text-3xl mt-2 ${analysisResult.annualProfit < 0 ? '' : 'text-green-600'}`)}
                     </Card>
-                    <Card className="p-6 text-center">
+                    <Card className="p-6 flex flex-col items-center justify-center">
                         <p className="text-sm text-muted-foreground">Return on Ad Spend (ROAS)</p>
-                        <p className="text-3xl font-bold text-primary mt-2">{analysisResult.roas.toFixed(2)}x</p>
+                        {renderFittableNumber(`${analysisResult.roas.toFixed(2)}x`, false, false, "text-3xl mt-2 text-primary")}
+                        <p className="text-xs text-muted-foreground mt-1 text-center">Setiap Rp1 iklan menghasilkan Rp{analysisResult.roas.toFixed(2)} pendapatan.</p>
                     </Card>
                 </div>
 
@@ -526,8 +527,8 @@ export default function AnalystPage() {
                                 <TableBody>
                                 {analysisResult.pnlTable.map(item => (
                                     <TableRow key={item.item}>
-                                    <TableCell className={cn("py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih Bulanan' ? 'font-bold' : '')}>{item.item}</TableCell>
-                                    <TableCell className={cn("text-right font-medium py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih Bulanan' ? 'font-bold' : '')}>
+                                    <TableCell className={cn("py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih (Net Profit)' ? 'font-bold' : '')}>{item.item}</TableCell>
+                                    <TableCell className={cn("text-right font-medium py-2 px-4", item.item === 'Laba Kotor' || item.item === 'Laba Bersih (Net Profit)' ? 'font-bold' : '')}>
                                         {renderFittableTableCellSimple(item.value, item.isNegative)}
                                     </TableCell>
                                     </TableRow>

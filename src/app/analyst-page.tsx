@@ -204,7 +204,7 @@ export default function AnalystPage() {
         {finalDisplayValue}
       </span>
     );
-  };
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -329,23 +329,23 @@ export default function AnalystPage() {
                     </div>
                      <div className="mt-8 space-y-4">
                         <h3 className="font-semibold text-lg text-center">Analisis Medan Perang</h3>
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-4">
-                            <div className="space-y-1">
-                                <p className="font-semibold text-body">TikTok & Tokopedia</p>
-                                <p className="text-muted-foreground text-caption">Kuasai dengan konten video pendek, live streaming, dan tren viral untuk "Shoppertainment".</p>
-                            </div>
-                            <div className="space-y-1">
-                                <p className="font-semibold text-body">Shopee</p>
-                                <p className="text-muted-foreground text-caption">Menangkan pasar massal dengan perang harga, voucher, gamifikasi, dan iklan internal masif.</p>
-                            </div>
-                            <div className="space-y-1">
-                                <p className="font-semibold text-body">Lazada & Blibli</p>
-                                <p className="text-muted-foreground text-caption">Dominasi audiens berkualitas dengan branding premium, garansi (LazMall), dan layanan superior.</p>
-                            </div>
-                            <div className="space-y-1">
-                                <p className="font-semibold text-body">Social Commerce</p>
-                                <p className="text-muted-foreground text-caption">Jangkau audiens spesifik dengan targeting presisi (Meta/Google Ads) & retargeting.</p>
-                            </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-4">
+                          <div className="space-y-1">
+                            <p className="font-semibold text-body">TikTok & Tokopedia</p>
+                            <p className="text-muted-foreground text-caption">Kuasai dengan konten video pendek, live streaming, dan tren viral untuk "Shoppertainment".</p>
+                          </div>
+                          <div className="space-y-1">
+                            <p className="font-semibold text-body">Shopee</p>
+                            <p className="text-muted-foreground text-caption">Menangkan pasar massal dengan perang harga, voucher, gamifikasi, dan iklan internal masif.</p>
+                          </div>
+                          <div className="space-y-1">
+                            <p className="font-semibold text-body">Lazada & Blibli</p>
+                            <p className="text-muted-foreground text-caption">Dominasi audiens berkualitas dengan branding premium, garansi (LazMall), dan layanan superior.</p>
+                          </div>
+                          <div className="space-y-1">
+                            <p className="font-semibold text-body">Social Commerce</p>
+                            <p className="text-muted-foreground text-caption">Jangkau audiens spesifik dengan targeting presisi (Meta/Google Ads) & retargeting.</p>
+                          </div>
                         </div>
                     </div>
                 </CardContent>
@@ -601,7 +601,7 @@ export default function AnalystPage() {
 
                 </section>
                 
-                <section id="rencana-aksi" className="mt-8">
+                <section id="rencana-aksi" className="mt-12">
                   <Card className="p-6 md:p-8">
                     <CardHeader className="p-0">
                       <CardTitle className="text-h3 font-medium">Rencana Aksi Biar Cuan</CardTitle>
@@ -623,3 +623,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

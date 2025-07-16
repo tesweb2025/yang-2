@@ -89,22 +89,21 @@ const gmvData = [
   { month: 'Jan', value: 3.1 }, { month: 'Feb', value: 3.2 }, { month: 'Mar', value: 3.5 },
   { month: 'Apr', value: 3.4 }, { month: 'May', value: 3.6 }, { month: 'Jun', value: 3.8 }
 ];
+
 const marketShareData = [
-    { name: 'Shopee', value: 46, fill: 'var(--color-shopee)', label: 'Shopee' },
-    { name: 'Tokopedia', value: 23, fill: 'var(--color-tokopedia)', label: 'Tokopedia' },
-    { name: 'TikTok Shop', value: 13, fill: 'var(--color-tiktok)', label: 'TikTok Shop' },
-    { name: 'Bukalapak', value: 10, fill: 'var(--color-bukalapak)', label: 'Bukalapak' },
-    { name: 'Lazada', value: 6, fill: 'var(--color-lazada)', label: 'Lazada' },
-    { name: 'Blibli', value: 2, fill: 'var(--color-blibli)', label: 'Blibli' },
+    { name: 'Tokopedia & TikTok Shop', value: 39, fill: 'var(--color-tiktok)' },
+    { name: 'Shopee', value: 37, fill: 'var(--color-shopee)' },
+    { name: 'Lazada', value: 10, fill: 'var(--color-lazada)' },
+    { name: 'Bukalapak', value: 6, fill: 'var(--color-bukalapak)' },
+    { name: 'Blibli', value: 5, fill: 'var(--color-blibli)' },
 ];
 
 const chartConfig = {
   value: { label: 'Value' },
   shopee: { label: 'Shopee', color: 'hsl(var(--chart-shopee))' },
-  tokopedia: { label: 'Tokopedia', color: 'hsl(var(--chart-tokopedia))' },
-  tiktok: { label: 'TikTok Shop', color: 'hsl(var(--chart-tiktok))' },
-  bukalapak: { label: 'Bukalapak', color: 'hsl(var(--chart-bukalapak))' },
+  tiktok: { label: 'Tokopedia & TikTok Shop', color: 'hsl(var(--chart-tiktok))' },
   lazada: { label: 'Lazada', color: 'hsl(var(--chart-lazada))' },
+  bukalapak: { label: 'Bukalapak', color: 'hsl(var(--chart-bukalapak))' },
   blibli: { label: 'Blibli', color: 'hsl(var(--chart-blibli))' },
   'Iklan Medsos & Video': { color: 'hsl(var(--chart-1))' },
   'Endorse & KOL': { color: 'hsl(var(--chart-2))' },
@@ -274,23 +273,20 @@ export default function AnalystPage() {
         </section>
 
         <section id="wawasan-pasar" className="space-y-4">
-            <h2 className="text-3xl font-bold text-center">Wawasan Pasar E-Commerce Indonesia</h2>
+            <h2 className="text-3xl font-bold text-center">Wawasan Pasar E-Commerce Indonesia (2024)</h2>
             <div className="grid md:grid-cols-2 gap-8">
                 <Card>
                     <CardHeader>
                         <CardTitle>Proyeksi Nilai Pasar (GMV)</CardTitle>
-                        <CardDescription>Pasar e-commerce Indonesia terus tumbuh kencang. Jangan sampai ketinggalan.</CardDescription>
+                        <CardDescription>Pasar mulai dewasa, fokus bergeser dari 'bakar uang' ke profitabilitas.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-4xl font-bold text-primary mb-4">US$4 Miliar</p>
-                        <ChartContainer config={chartConfig} className="w-full h-[250px]">
-                            <RechartsBarChart data={gmvData} accessibilityLayer>
-                                <CartesianGrid vertical={false} />
-                                <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
-                                <RechartsTooltip cursor={{fill: 'hsl(var(--muted))'}} content={<ChartTooltipContent />} />
-                                <Bar dataKey="value" fill="hsl(var(--chart-1))" radius={4} />
-                            </RechartsBarChart>
-                        </ChartContainer>
+                        <p className="text-4xl font-bold text-primary mb-4">US$56,5 Miliar</p>
+                        <div className="text-center mt-4 bg-muted p-4 rounded-lg">
+                            <p className="font-semibold text-muted-foreground">Pertumbuhan Tahunan (YoY)</p>
+                            <p className="text-3xl font-bold">5%</p>
+                            <p className="text-xs text-muted-foreground">Moderasi signifikan seiring konsolidasi pasar.</p>
+                        </div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -328,7 +324,8 @@ export default function AnalystPage() {
         <section id="pangsa-pasar">
             <Card>
                 <CardHeader>
-                    <CardTitle>Siapa Raja di Pasar? (Estimasi Pangsa Pasar GMV 2025)</CardTitle>
+                    <CardTitle>Siapa Raja di Pasar? (Estimasi Pangsa Pasar GMV 2024)</CardTitle>
+                    <CardDescription>Integrasi Tokopedia & TikTok Shop menciptakan duopoli baru yang menantang dominasi Shopee.</CardDescription>
                 </CardHeader>
                 <CardContent className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="w-full h-[300px]">
@@ -341,7 +338,7 @@ export default function AnalystPage() {
                                     tickLine={false} 
                                     axisLine={false}
                                     tick={{ fill: 'hsl(var(--foreground))' }}
-                                    width={80}
+                                    width={140}
                                 />
                                 <XAxis dataKey="value" type="number" hide />
                                 <RechartsTooltip 
@@ -363,27 +360,27 @@ export default function AnalystPage() {
                             </RechartsBarChart>
                         </ChartContainer>
                     </div>
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                         <h3 className="font-bold text-lg mb-2">Analisis Medan Perang</h3>
                         <div className="space-y-1">
                             <p className="font-bold">TikTok & Tokopedia</p>
                             <p className="text-muted-foreground text-sm">Kanal untuk "Shoppertainment" & Pembelian Impulsif</p>
-                            <p className="text-muted-foreground">Kuasai dengan konten video pendek, live streaming, dan tren viral.</p>
+                            <p className="text-muted-foreground text-xs">Kuasai dengan konten video pendek, live streaming, dan tren viral.</p>
                         </div>
                         <div className="space-y-1">
                             <p className="font-bold">Shopee</p>
                             <p className="text-muted-foreground text-sm">Raksasa Pasar Massal & Promo Agresif</p>
-                            <p className="text-muted-foreground">Menangkan dengan perang harga, voucher, gamifikasi, dan iklan internal yang masif.</p>
+                            <p className="text-muted-foreground text-xs">Menangkan dengan perang harga, voucher, gamifikasi, dan iklan internal yang masif.</p>
                         </div>
                         <div className="space-y-1">
                             <p className="font-bold">Lazada & Blibli</p>
                             <p className="text-muted-foreground text-sm">Benteng untuk Brand & Audiens Berkualitas</p>
-                            <p className="text-muted-foreground">Dominasi dengan branding premium, garansi (LazMall), dan layanan superior.</p>
+                            <p className="text-muted-foreground text-xs">Dominasi dengan branding premium, garansi (LazMall), dan layanan superior.</p>
                         </div>
                         <div className="space-y-1">
                             <p className="font-bold">Social Commerce</p>
                             <p className="text-muted-foreground text-sm">Kanal untuk Targeting Presisi (Meta & Google Ads)</p>
-                            <p className="text-muted-foreground">Jangkau audiens spesifik dengan retargeting dan lead generation.</p>
+                            <p className="text-muted-foreground text-xs">Jangkau audiens spesifik dengan retargeting dan lead generation.</p>
                         </div>
                     </div>
                 </CardContent>
@@ -646,8 +643,8 @@ export default function AnalystPage() {
                             <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Setiap Rp1 buat iklan menghasilkan {formatCurrency(analysisResult.roas)} pendapatan.</p>
                         </Card>
                     </div>
-
-                    <div className="grid md:grid-cols-2 gap-8 mt-8">
+                <div className="mt-8"></div>
+                    <div className="grid md:grid-cols-2 gap-8">
                         <Card>
                             <CardHeader><CardTitle>Laporan Untung Rugi (Bulanan)</CardTitle></CardHeader>
                             <CardContent>

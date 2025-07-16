@@ -12,7 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { BarChart, BrainCircuit, LineChart, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle } from 'lucide-react';
+import { BarChart, BrainCircuit, LineChart, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle, CheckCircle } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Image from 'next/image';
 import { runAnalysis } from './actions';
@@ -106,8 +106,8 @@ const chartConfig = {
   bukalapak: { label: 'Bukalapak', color: 'hsl(var(--chart-bukalapak))' },
   lazada: { label: 'Lazada', color: 'hsl(var(--chart-lazada))' },
   blibli: { label: 'Blibli', color: 'hsl(var(--chart-blibli))' },
-  'Video Content & Ads': { color: 'hsl(var(--chart-1))' },
-  'KOL & Afiliasi': { color: 'hsl(var(--chart-2))' },
+  'Iklan Medsos & Video': { color: 'hsl(var(--chart-1))' },
+  'Endorse & KOL': { color: 'hsl(var(--chart-2))' },
   'Promosi & Diskon': { color: 'hsl(var(--chart-3))' },
   'Lainnya': { color: 'hsl(var(--chart-4))' },
 } satisfies ChartConfig;
@@ -155,7 +155,6 @@ export default function AnalystPage() {
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
     setAnalysisResult(null);
-    // Scroll to results section after a short delay to allow the loading state to render
     setTimeout(() => {
         document.getElementById('hasil-simulasi')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
@@ -166,7 +165,7 @@ export default function AnalystPage() {
     } catch (error: any) {
       console.error("Analysis failed:", error);
       let errorMessage = "Waduh, AI-nya lagi pusing. Coba lagi beberapa saat, ya.";
-      if (error.message && (error.message.includes('429') || error.message.includes('quota'))) {
+       if (error.message && (error.message.includes('429') || error.message.includes('quota'))) {
         errorMessage = "Sabar ya, lagi banyak yang pakai nih. Coba lagi beberapa menit lagi.";
       } else if (error.message && (error.message.includes('503') || error.message.includes('overloaded'))) {
         errorMessage = "Server AI lagi penuh, bro. Coba refresh dan ulangi lagi, ya.";
@@ -186,8 +185,8 @@ export default function AnalystPage() {
   const { budgetAllocationData, budgetSummary } = useMemo(() => {
     const { totalMarketingBudget, useVideoContent, useKOLs, useDiscounts, useOtherChannels } = watchedValues;
     const channels = [
-      { name: 'Video Content & Ads', active: useVideoContent, fill: 'hsl(var(--chart-1))' },
-      { name: 'KOL & Afiliasi', active: useKOLs, fill: 'hsl(var(--chart-2))' },
+      { name: 'Iklan Medsos & Video', active: useVideoContent, fill: 'hsl(var(--chart-1))' },
+      { name: 'Endorse & KOL', active: useKOLs, fill: 'hsl(var(--chart-2))' },
       { name: 'Promosi & Diskon', active: useDiscounts, fill: 'hsl(var(--chart-3))' },
       { name: 'Lainnya', active: useOtherChannels, fill: 'hsl(var(--chart-4))' },
     ];
@@ -263,7 +262,6 @@ export default function AnalystPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       <main className="space-y-12">
-        {/* 1. Hero Section */}
         <section className="text-center py-12">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 font-headline">Capek jualan tapi hasilnya gak jelas?</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-4">Cek dulu strategimu di sini. SiapJual.ai bantu kamu lihat untung-rugi sebelum promo dimulai.</p>
@@ -275,7 +273,6 @@ export default function AnalystPage() {
            </Button>
         </section>
 
-        {/* 2. Market Insights */}
         <section id="wawasan-pasar" className="space-y-4">
             <h2 className="text-3xl font-bold text-center">Wawasan Pasar E-Commerce Indonesia</h2>
             <div className="grid md:grid-cols-2 gap-8">
@@ -328,7 +325,6 @@ export default function AnalystPage() {
             </div>
         </section>
         
-        {/* 3. Market Share */}
         <section id="pangsa-pasar">
             <Card>
                 <CardHeader>
@@ -363,15 +359,18 @@ export default function AnalystPage() {
                                         className="fill-foreground font-semibold"
                                         formatter={(value: number) => `${value}%`}
                                     />
-                                </Bar>
+                                 </Bar>
                             </RechartsBarChart>
                         </ChartContainer>
                     </div>
                     <div>
                         <h3 className="font-bold text-lg mb-2">Analisis Medan Perang</h3>
-                        <p className="text-muted-foreground">
-                            Pasar dikuasai pemain besar dengan strategi beda-beda. <strong>Shopee</strong> masih memimpin dengan promo dan jangkauan luas. <strong>Tokopedia</strong> kuat di segmen loyal. <strong>TikTok Shop</strong> jago di 'shoppertainment' dan bikin orang kalap belanja. Pemain baru kayak lo harus pinter cari celah, misalnya di komunitas niche atau dengan produk yang sangat unik.
-                        </p>
+                        <ul className="space-y-3 text-muted-foreground">
+                            <li><strong>Shopee:</strong> Masih memimpin dengan promo gila-gilaan dan jangkauan paling luas. Medan perang utama untuk produk massal.</li>
+                            <li><strong>Tokopedia:</strong> Kuat di segmen pengguna loyal dan kategori spesifik seperti elektronik. Kepercayaan adalah kunci di sini.</li>
+                            <li><strong>TikTok Shop:</strong> Jagonya 'shoppertainment'. Cocok buat produk viral dan impulse buying lewat konten video.</li>
+                            <li><strong>Pemain Baru:</strong> Lo harus pinter cari celah. Fokus di komunitas niche atau tawarkan produk yang unik banget.</li>
+                        </ul>
                     </div>
                 </CardContent>
             </Card>
@@ -379,7 +378,6 @@ export default function AnalystPage() {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
-            {/* 8. AI Analyst Form */}
             <section id="cek-strategi">
                 <Card>
                     <CardHeader>
@@ -414,7 +412,6 @@ export default function AnalystPage() {
                 </Card>
             </section>
 
-            {/* 4. Business Model Validator */}
             <section id="model-bisnis">
                 <Card>
                     <CardHeader>
@@ -468,7 +465,6 @@ export default function AnalystPage() {
                 </Card>
             </section>
 
-            {/* 5. Strategy Lab */}
             <section id="cek-strategi-lanjutan">
                 <Card>
                     <CardHeader>
@@ -518,7 +514,6 @@ export default function AnalystPage() {
                 </Card>
             </section>
             
-            {/* 6. Budget Allocator */}
             <section id="alokasi-bujet">
                 <Card>
                     <CardHeader>
@@ -608,7 +603,6 @@ export default function AnalystPage() {
 
             {analysisResult && (
               <>
-                {/* 7. Strategic Impact Simulation */}
                 <section className="space-y-8">
                     <div className="text-center">
                         <h2 className="text-3xl font-bold">Hasil Simulasi Strategimu</h2>
@@ -628,7 +622,7 @@ export default function AnalystPage() {
                                 <p className="text-sm text-muted-foreground">Proyeksi Profit Tahunan</p>
                                 {renderFittableNumber(analysisResult.annualProfit, true, analysisResult.annualProfit < 0, `text-3xl mt-2 ${analysisResult.annualProfit < 0 ? '' : 'text-green-600'}`)}
                             </div>
-                            <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Perkiraan untung bersih setelah semua biaya dibayar.</p>
+                           <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Perkiraan untung bersih setelah semua biaya dibayar.</p>
                         </Card>
                         <Card className="p-6 flex flex-col justify-between text-center">
                             <div>
@@ -677,26 +671,27 @@ export default function AnalystPage() {
                     </div>
                     
                     <Card>
-                        <CardHeader><CardTitle>Kata AI Soal Strategimu</CardTitle></CardHeader>
+                        <CardHeader>
+                            <CardTitle>Kata AI Soal Strategimu</CardTitle>
+                        </CardHeader>
                         <CardContent>
                             {analysisResult.marketAnalysis.evaluation.includes("berisiko") || analysisResult.annualProfit < 0 ?
-                            (<Alert variant="destructive" className="bg-destructive/5">
-                                <AlertTriangle className="h-4 w-4" />
-                                <AlertTitle>Waduh, Gawat Nih!</AlertTitle>
-                                <AlertDescription>{analysisResult.marketAnalysis.evaluation} {analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
-                            </Alert>) :
-                            (<Alert className="bg-primary/5 border-primary/20">
-                                <Lightbulb className="h-4 w-4" />
-                                <AlertTitle>Analisis AI</AlertTitle>
-                                <AlertDescription>{analysisResult.marketAnalysis.evaluation} {analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
-                            </Alert>)
+                                (<Alert variant="destructive" className="bg-destructive/5">
+                                    <AlertTriangle className="h-4 w-4" />
+                                    <AlertTitle>Waduh, Gawat Nih!</AlertTitle>
+                                    <AlertDescription>{analysisResult.marketAnalysis.evaluation} {analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
+                                </Alert>) :
+                                (<Alert className="bg-green-500/10 border-green-500/30 text-green-700">
+                                    <CheckCircle className="h-4 w-4 text-green-500" />
+                                    <AlertTitle>Analisis AI</AlertTitle>
+                                    <AlertDescription>{analysisResult.marketAnalysis.evaluation} {analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
+                                </Alert>)
                             }
                         </CardContent>
                     </Card>
 
                 </section>
                 
-                {/* 9. Strategic Action Plan */}
                 <section id="rencana-aksi">
                   <Card>
                     <CardHeader>
@@ -719,5 +714,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

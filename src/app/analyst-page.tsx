@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo } from 'react';
@@ -36,9 +37,10 @@ const formSchema = z.object({
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif"),
   avgSalesPerMonth: z.coerce.number().min(0, "Penjualan harus positif"),
   totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif"),
-  useSocialMediaAds: z.boolean(),
-  useKOLs: z.boolean(),
   useVideoContent: z.boolean(),
+  useKOLs: z.boolean(),
+  useDiscounts: z.boolean(),
+  useOtherChannels: z.boolean(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -100,6 +102,10 @@ const chartConfig: ChartConfig = {
   'Shopee': { label: 'Shopee', color: 'hsl(var(--chart-3))' },
   'Lazada': { label: 'Lazada', color: 'hsl(var(--chart-4))' },
   'Lainnya': { label: 'Lainnya', color: 'hsl(var(--chart-5))' },
+  'Video Content & Ads': { color: 'hsl(var(--chart-1))' },
+  'KOL & Afiliasi': { color: 'hsl(var(--chart-2))' },
+  'Promosi & Diskon': { color: 'hsl(var(--chart-3))' },
+  'Lainnya': { color: 'hsl(var(--chart-4))' },
 };
 
 export default function AnalystPage() {
@@ -110,8 +116,8 @@ export default function AnalystPage() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      productName: "",
-      targetSegment: "",
+      productName: "Sambal Roa Nona Manis",
+      targetSegment: "Karyawan kantoran, suka pedas",
       initialMarketingBudget: 10000000,
       marginModel: 'tipis',
       brandStrength: 'baru',
@@ -122,9 +128,10 @@ export default function AnalystPage() {
       fixedCostsPerMonth: 5000000,
       avgSalesPerMonth: 200,
       totalMarketingBudget: 5000000,
-      useSocialMediaAds: true,
-      useKOLs: false,
       useVideoContent: true,
+      useKOLs: true,
+      useDiscounts: false,
+      useOtherChannels: false,
     },
   });
 
@@ -172,21 +179,37 @@ export default function AnalystPage() {
 
   const selectedBusinessModel = businessModelContent[`${watchedValues.marginModel}-${watchedValues.brandStrength}`];
 
-  const budgetAllocationData = useMemo(() => {
-      const { useVideoContent, useKOLs, useSocialMediaAds } = watchedValues;
-      const allocations = [];
-      if (useVideoContent) allocations.push({ name: 'Konten Video & Iklan', value: 40, fill: 'hsl(var(--chart-1))' });
-      if (useKOLs) allocations.push({ name: 'KOL & Afiliasi', value: 35, fill: 'hsl(var(--chart-2))' });
-      if (useSocialMediaAds) allocations.push({ name: 'Iklan Medsos', value: 25, fill: 'hsl(var(--chart-3))' });
-      
-      if (allocations.length === 0) {
-        return [{ name: 'Tidak ada alokasi', value: 100, fill: 'hsl(var(--muted))' }];
-      }
+  const { budgetAllocationData, budgetSummary } = useMemo(() => {
+    const { totalMarketingBudget, useVideoContent, useKOLs, useDiscounts, useOtherChannels } = watchedValues;
+    const channels = [
+      { name: 'Video Content & Ads', active: useVideoContent, fill: 'hsl(var(--chart-1))' },
+      { name: 'KOL & Afiliasi', active: useKOLs, fill: 'hsl(var(--chart-2))' },
+      { name: 'Promosi & Diskon', active: useDiscounts, fill: 'hsl(var(--chart-3))' },
+      { name: 'Lainnya', active: useOtherChannels, fill: 'hsl(var(--chart-4))' },
+    ];
+    
+    const activeChannels = channels.filter(c => c.active);
+    const count = activeChannels.length;
+    
+    const allocation = count > 0 ? totalMarketingBudget / count : 0;
+  
+    const data = channels.map(c => ({
+      name: c.name,
+      value: c.active ? allocation : 0,
+      fill: c.fill,
+      active: c.active
+    }));
+  
+    let summary = "Pilih channel promosi untuk melihat rekomendasi strategi.";
+    if (count === 1) summary = `Strategi fokus, cocok untuk menguji satu channel spesifik.`;
+    if (count === 2) summary = `Strategi seimbang, bagus untuk membandingkan dua channel.`;
+    if (count === 3) summary = `Strategi diversifikasi, menjangkau audiens lebih luas.`;
+    if (count === 4) summary = `Strategi diversifikasi penuh, ideal untuk brand mapan.`;
+    if (count === 0) summary = `Tidak ada bujet yang dialokasikan.`;
+  
+    return { budgetAllocationData: data, budgetSummary: summary };
+  }, [watchedValues.totalMarketingBudget, watchedValues.useVideoContent, watchedValues.useKOLs, watchedValues.useDiscounts, watchedValues.useOtherChannels]);
 
-      const total = allocations.reduce((acc, item) => acc + item.value, 0);
-      return allocations.map(item => ({...item, value: (item.value / total) * 100}));
-
-  }, [watchedValues.useVideoContent, watchedValues.useKOLs, watchedValues.useSocialMediaAds]);
 
   const renderFittableNumber = (value: string | number, isCurrency = true, isNegative = false, className = "text-2xl") => {
     const displayValue = isCurrency ? formatCurrency(Number(value)) : String(value);
@@ -473,26 +496,70 @@ export default function AnalystPage() {
             <section id="alokasi-bujet">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Mau Promosi di Mana Aja?</CardTitle>
+                        <CardTitle>Alokator Bujet Pemasaran</CardTitle>
                     </CardHeader>
-                    <CardContent className="grid md:grid-cols-2 gap-8 items-center">
-                        <div>
-                            <FormField control={form.control} name="totalMarketingBudget" render={({ field }) => (<FormItem><FormLabel>Bujet Promosi / Bulan</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
-                            <div className="mt-4 space-y-4">
-                                <FormField control={form.control} name="useVideoContent" render={({ field }) => (<FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"><div className="space-y-0.5"><FormLabel>Konten Video (TikTok/Reels)</FormLabel></div><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="useKOLs" render={({ field }) => (<FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"><div className="space-y-0.5"><FormLabel>Endorse KOL / Afiliator</FormLabel></div><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="useSocialMediaAds" render={({ field }) => (<FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"><div className="space-y-0.5"><FormLabel>Iklan Medsos (FB/IG/TikTok Ads)</FormLabel></div><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>)} />
-                            </div>
+                    <CardContent className="space-y-6">
+                        <FormField control={form.control} name="totalMarketingBudget" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Total Bujet Pemasaran</FormLabel>
+                                <FormControl>
+                                    <Input type="number" {...field} />
+                                </FormControl>
+                            </FormItem>
+                        )} />
+                        
+                        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
+                            <RechartsPieChart>
+                                <RechartsTooltip cursor={{ fill: 'hsl(var(--muted))' }} content={<ChartTooltipContent hideLabel />} />
+                                <Pie 
+                                    data={budgetAllocationData.filter(d => d.active)} 
+                                    dataKey="value" 
+                                    nameKey="name" 
+                                    innerRadius={60} 
+                                    outerRadius={90} 
+                                    strokeWidth={2}
+                                />
+                            </RechartsPieChart>
+                        </ChartContainer>
+
+                        <div className="space-y-4">
+                            {budgetAllocationData.map((channel, index) => (
+                                <FormField 
+                                    key={channel.name}
+                                    control={form.control}
+                                    name={
+                                        index === 0 ? "useVideoContent" :
+                                        index === 1 ? "useKOLs" :
+                                        index === 2 ? "useDiscounts" :
+                                        "useOtherChannels"
+                                    }
+                                    render={({ field }) => (
+                                    <FormItem>
+                                        <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
+                                            <div className="flex items-center gap-3">
+                                                <span className="h-2 w-2 rounded-full" style={{backgroundColor: channel.fill}}></span>
+                                                <FormLabel className="font-normal">{channel.name}</FormLabel>
+                                            </div>
+                                            <div className="flex items-center gap-4">
+                                                <span className="text-sm text-muted-foreground">{formatCurrency(channel.value)}</span>
+                                                <FormControl>
+                                                    <Switch
+                                                        checked={field.value}
+                                                        onCheckedChange={field.onChange}
+                                                        style={{
+                                                            '--switch-bg-checked': channel.fill,
+                                                            '--switch-bg-unchecked': 'hsl(var(--muted))',
+                                                        } as React.CSSProperties}
+                                                        className="data-[state=checked]:bg-[--switch-bg-checked] data-[state=unchecked]:bg-[--switch-bg-unchecked]"
+                                                    />
+                                                </FormControl>
+                                            </div>
+                                        </div>
+                                    </FormItem>
+                                )}/>
+                            ))}
                         </div>
-                        <div>
-                             <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
-                                <RechartsPieChart>
-                                    <RechartsTooltip cursor={{fill: 'hsl(var(--muted))'}} content={<ChartTooltipContent hideLabel />} />
-                                    <Pie data={budgetAllocationData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={110} />
-                                </RechartsPieChart>
-                            </ChartContainer>
-                            <p className="text-center text-sm text-muted-foreground mt-2">Estimasi alokasi bujet berdasarkan channel pilihanmu.</p>
-                        </div>
+                        <p className="text-center text-sm text-muted-foreground">{budgetSummary}</p>
                     </CardContent>
                     <CardFooter>
                        <Button type="submit" className="w-full text-lg" disabled={isLoading}>
@@ -532,7 +599,7 @@ export default function AnalystPage() {
                         </Card>
                         <Card className="p-6 flex flex-col justify-between text-center">
                             <div>
-                                <p className="text-sm text-muted-foreground">Proyeksi Untung Tahunan</p>
+                                <p className="text-sm text-muted-foreground">Proyeksi Profit Tahunan</p>
                                 {renderFittableNumber(analysisResult.annualProfit, true, analysisResult.annualProfit < 0, `text-3xl mt-2 ${analysisResult.annualProfit < 0 ? '' : 'text-green-600'}`)}
                             </div>
                             <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Perkiraan untung bersih setelah semua biaya dibayar.</p>
@@ -542,7 +609,7 @@ export default function AnalystPage() {
                                 <p className="text-sm text-muted-foreground">Return on Ad Spend (ROAS)</p>
                                 {renderFittableNumber(`${analysisResult.roas.toFixed(2)}x`, false, false, "text-3xl mt-2 text-primary")}
                             </div>
-                            <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Setiap Rp1 buat iklan menghasilkan Rp{analysisResult.roas.toFixed(2)} pendapatan.</p>
+                            <p className="text-xs text-muted-foreground mt-1 min-h-[2.5rem]">Setiap Rp1 buat iklan menghasilkan {formatCurrency(analysisResult.roas)} pendapatan.</p>
                         </Card>
                     </div>
 

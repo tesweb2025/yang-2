@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -49,8 +50,8 @@ Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi b
 **Data Bisnis:**
 - Nama Produk: {{{productName}}}
 - Target Pasar: {{{targetSegmentation}}}
-- Bujet Promosi Awal: Rp {{{initialMarketingBudget}}}
-- Pakai Iklan Medsos: {{#if socialMediaAds}}Ya{{else}}Nggak{{/if}}
+- Bujet Promosi Bulanan: Rp {{{initialMarketingBudget}}}
+- Pakai Iklan Medsos/Video: {{#if socialMediaAds}}Ya{{else}}Nggak{{/if}}
 - Pakai KOL/Endorse: {{#if endorsementKOL}}Ya{{else}}Nggak{{/if}}
 
 **Hasil Simulasi Keuangan:**

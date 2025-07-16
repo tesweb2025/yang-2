@@ -1,3 +1,4 @@
+
 "use server";
 
 import { z } from "zod";
@@ -17,9 +18,10 @@ const formSchema = z.object({
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif"),
   avgSalesPerMonth: z.coerce.number().min(0, "Penjualan harus positif"),
   totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif"),
-  useSocialMediaAds: z.boolean(),
-  useKOLs: z.boolean(),
   useVideoContent: z.boolean(),
+  useKOLs: z.boolean(),
+  useDiscounts: z.boolean(),
+  useOtherChannels: z.boolean(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -75,13 +77,13 @@ export async function runAnalysis(data: FormData) {
     generateStrategicRecommendations({
         productName: data.productName,
         targetSegmentation: data.targetSegment,
-        initialMarketingBudget: data.initialMarketingBudget,
+        initialMarketingBudget: data.totalMarketingBudget, // Using total marketing budget
         annualRevenueProjection: annualRevenue,
         annualProfitProjection: annualProfit,
         roas,
         monthlyProfitAndLossStatement: JSON.stringify(pnlTable.map(p => `${p.item}: Rp ${p.value.toLocaleString('id-ID')}`)),
         monthlyCashFlowSimulation: JSON.stringify(cashflowTable.map(c => `${c.item}: Rp ${c.value.toLocaleString('id-ID')}`)),
-        socialMediaAds: data.useSocialMediaAds,
+        socialMediaAds: data.useVideoContent, // Combined video and ads
         endorsementKOL: data.useKOLs,
     })
   ]);

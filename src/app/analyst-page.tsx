@@ -526,7 +526,7 @@ export default function AnalystPage() {
                                     </FormItem>
                                 )} />
                             </div>
-                            <div className="bg-background border p-4 rounded-lg">
+                            <div className="bg-background border p-4 rounded-lg h-full">
                               <h4 className="font-semibold text-lg text-primary">{selectedBusinessModel.persona}</h4>
                               <p className="mt-1 text-caption">{selectedBusinessModel.analysis}</p>
                               <p className="mt-2 text-caption font-semibold">{selectedBusinessModel.platforms}</p>

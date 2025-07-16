@@ -362,9 +362,6 @@ export default function AnalystPage() {
                                     tickLine={false} 
                                     axisLine={false}
                                     tickMargin={10}
-                                    angle={-45}
-                                    textAnchor="end"
-                                    height={60}
                                     interval={0}
                                     tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
                                 />
@@ -758,3 +755,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

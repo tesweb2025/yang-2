@@ -113,8 +113,8 @@ const gmvComboData = [
 ];
 
 const gmvComboChartConfig = {
-  shopee: { label: 'Shopee', color: 'hsl(158 64.4% 52.4%)' },
-  tokopedia: { label: 'Tokopedia', color: 'hsl(220 84.8% 60.2%)' },
+  shopee: { label: 'Shopee', color: "hsl(220 84.8% 60.2%)" },
+  tokopedia: { label: 'Tokopedia', color: "hsl(158 64.4% 52.4%)" },
   average: { label: 'Rata-rata', color: 'hsl(var(--primary))' },
 } satisfies ChartConfig;
 
@@ -294,13 +294,13 @@ export default function AnalystPage() {
             </div>
             <div className="grid md:grid-cols-2 gap-6">
                  <Card className="p-6">
-                    <CardHeader className="p-0">
+                    <CardHeader className="p-0 mb-4">
                         <CardTitle className="text-h3 font-medium">Proyeksi Gross Merchandise Value (GMV)</CardTitle>
                         <CardDescription>Pasar mulai dewasa, fokus bergeser dari 'bakar uang' ke profitabilitas. Pertumbuhan melambat ke 5% (YoY).</CardDescription>
                     </CardHeader>
-                    <CardContent className="p-0 mt-6">
-                        <p className="text-5xl font-bold text-primary mb-4">US$56,5 M</p>
-                        <div className="relative h-60 w-full">
+                    <CardContent className="p-0 space-y-4">
+                        <p className="text-5xl font-bold text-primary">US$56,5 M</p>
+                        <div className="h-60 w-full">
                             <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
                                 <ComposedChart data={gmvComboData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -311,7 +311,7 @@ export default function AnalystPage() {
                                 </ComposedChart>
                             </ChartContainer>
                         </div>
-                        <p className="text-caption text-muted-foreground mt-4 text-center">Visualisasi tren GMV antar platform besar.</p>
+                        <p className="text-caption text-muted-foreground text-center">Visualisasi tren GMV antar platform besar.</p>
                     </CardContent>
                 </Card>
                 <Card className="p-6">
@@ -362,15 +362,14 @@ export default function AnalystPage() {
                 <CardContent className="p-0 mt-8">
                      <div className="w-full h-[300px]">
                         <ChartContainer config={marketShareChartConfig} className="h-full w-full">
-                            <RechartsBarChart data={marketShareData} barCategoryGap="20%" margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
+                            <RechartsBarChart data={marketShareData} barCategoryGap="20%" margin={{ top: 20, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                 <XAxis 
                                     dataKey="name" 
                                     tickLine={false} 
                                     axisLine={false}
                                     tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
-                                    angle={0}
-                                    dy={10}
+                                    interval={0}
                                 />
                                 <YAxis hide />
                                 <RechartsTooltip 

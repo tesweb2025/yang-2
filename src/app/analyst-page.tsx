@@ -113,7 +113,7 @@ const gmvComboData = [
 ];
 
 const gmvComboChartConfig = {
-    shopee: { label: 'Shopee', color: "hsl(220, 84.8%, 60.2%)" },
+    shopee: { label: 'Shopee', color: "hsl(212, 100%, 50%)" },
     tokopedia: { label: 'Tokopedia', color: "hsl(158, 64.4%, 52.4%)" },
     average: { label: 'Rata-rata', color: 'hsl(var(--primary))' },
 } satisfies ChartConfig;
@@ -324,8 +324,8 @@ export default function AnalystPage() {
                                 <ComposedChart data={gmvComboData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                     <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
-                                    <Bar dataKey="tokopedia" barSize={20} fill="var(--color-tokopedia)" radius={[4, 4, 0, 0]} />
-                                    <Bar dataKey="shopee" barSize={20} fill="var(--color-shopee)" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="tokopedia" barSize={20} fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="shopee" barSize={20} fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
                                     <Line type="monotone" dataKey="average" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
                                 </ComposedChart>
                             </ChartContainer>
@@ -381,7 +381,7 @@ export default function AnalystPage() {
                 <CardContent className="p-0 mt-8">
                      <div className="w-full h-[300px]">
                         <ChartContainer config={marketShareChartConfig} className="h-full w-full">
-                            <RechartsBarChart data={marketShareData} barCategoryGap="20%" margin={{ top: 20, right: 0, left: 0, bottom: 5 }}>
+                            <RechartsBarChart data={marketShareData} barCategoryGap="20%">
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                 <XAxis 
                                     dataKey="name" 
@@ -558,7 +558,7 @@ export default function AnalystPage() {
                             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <FormField control={form.control} name="sellPrice" render={({ field }) => (<FormItem><FormLabel>Harga Jual</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
                                 <FormField control={form.control} name="costOfGoods" render={({ field }) => (<FormItem><FormLabel>Modal Produk (HPP)</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="adCost" render={({ field }) => (<FormItem><FormLabel>Biaya Iklan / Produk</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="adCost" render={({ field }) => (<FormItem><FormLabel>Biaya Iklan (CAC)</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
                                 <FormField control={form.control} name="otherCostsPercentage" render={({ field }) => (<FormItem><FormLabel>Biaya Lain (%)</FormLabel><FormControl><Input type="number" placeholder="0%" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
                             </div>
                         </div>
@@ -573,13 +573,23 @@ export default function AnalystPage() {
                             <div>
                                 <h3 className="font-semibold text-lg mb-2">Estimasi Profitabilitas</h3>
                                  <div className="grid grid-cols-2 gap-4">
-                                    <Card className="p-4 bg-muted/50">
-                                        <p className="text-caption text-muted-foreground">Laba/unit</p>
-                                        <p className={`text-xl font-bold ${calculations.netProfitPerUnit < 0 ? 'text-destructive' : 'text-foreground'}`}>{formatCurrency(calculations.netProfitPerUnit)}</p>
+                                    <Card className="p-4 bg-muted/50 flex flex-col justify-between">
+                                        <div>
+                                            <p className="text-caption text-muted-foreground">Laba/unit</p>
+                                            <p className={cn(
+                                                "text-xl font-bold",
+                                                calculations.netProfitPerUnit > 0 ? "text-green-600" :
+                                                calculations.netProfitPerUnit < 0 ? "text-destructive" : "text-foreground"
+                                            )}>{formatCurrency(calculations.netProfitPerUnit)}</p>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground mt-1">Keuntungan bersih setelah semua biaya dari satu produk terjual.</p>
                                     </Card>
-                                    <Card className="p-4 bg-muted/50">
-                                        <p className="text-caption text-muted-foreground">BEP (unit)</p>
-                                        <p className={`text-xl font-bold`}>{isFinite(calculations.bepUnit) ? Math.ceil(calculations.bepUnit) : 'N/A'}</p>
+                                    <Card className="p-4 bg-muted/50 flex flex-col justify-between">
+                                        <div>
+                                            <p className="text-caption text-muted-foreground">BEP (unit)</p>
+                                            <p className="text-xl font-bold">{isFinite(calculations.bepUnit) ? Math.ceil(calculations.bepUnit) : 'N/A'}</p>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground mt-1">Jumlah produk yang harus terjual untuk balik modal setiap bulan.</p>
                                     </Card>
                                 </div>
                             </div>

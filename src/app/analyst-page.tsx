@@ -113,9 +113,9 @@ const gmvComboData = [
 ];
 
 const gmvComboChartConfig = {
-  shopee: { label: 'Shopee', color: "hsl(220 84.8% 60.2%)" },
-  tokopedia: { label: 'Tokopedia', color: "hsl(158 64.4% 52.4%)" },
-  average: { label: 'Rata-rata', color: 'hsl(var(--primary))' },
+    shopee: { label: 'Shopee', color: 'hsl(var(--chart-1))' },
+    tokopedia: { label: 'Tokopedia', color: 'hsl(var(--chart-2))' },
+    average: { label: 'Rata-rata', color: 'hsl(var(--primary))' },
 } satisfies ChartConfig;
 
 const budgetChartConfig = {
@@ -148,20 +148,20 @@ export default function AnalystPage() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      productName: "Sambal Roa Nona Manis",
-      targetSegment: "Karyawan kantoran, suka pedas",
-      initialMarketingBudget: 10000000,
+      productName: "",
+      targetSegment: "",
+      initialMarketingBudget: undefined,
       marginModel: 'tipis',
       brandStrength: 'baru',
-      sellPrice: 150000,
-      costOfGoods: 80000,
-      adCost: 20000,
-      otherCostsPercentage: 15,
-      fixedCostsPerMonth: 5000000,
-      avgSalesPerMonth: 200,
-      totalMarketingBudget: 1000000,
-      useVideoContent: true,
-      useKOLs: true,
+      sellPrice: undefined,
+      costOfGoods: undefined,
+      adCost: undefined,
+      otherCostsPercentage: undefined,
+      fixedCostsPerMonth: undefined,
+      avgSalesPerMonth: undefined,
+      totalMarketingBudget: undefined,
+      useVideoContent: false,
+      useKOLs: false,
       useDiscounts: false,
       useOtherChannels: false,
     },
@@ -171,11 +171,11 @@ export default function AnalystPage() {
 
   const calculations = useMemo(() => {
     const { sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth, avgSalesPerMonth } = watchedValues;
-    const grossProfitPerUnit = sellPrice - costOfGoods;
-    const netProfitPerUnit = grossProfitPerUnit - adCost - (sellPrice * otherCostsPercentage / 100);
-    const netProfitMargin = sellPrice > 0 ? (netProfitPerUnit / sellPrice) * 100 : 0;
-    const bepUnit = netProfitPerUnit > 0 ? fixedCostsPerMonth / netProfitPerUnit : Infinity;
-    const monthlyRevenue = sellPrice * avgSalesPerMonth;
+    const grossProfitPerUnit = (sellPrice || 0) - (costOfGoods || 0);
+    const netProfitPerUnit = grossProfitPerUnit - (adCost || 0) - ((sellPrice || 0) * (otherCostsPercentage || 0) / 100);
+    const netProfitMargin = (sellPrice || 0) > 0 ? (netProfitPerUnit / (sellPrice || 1)) * 100 : 0;
+    const bepUnit = netProfitPerUnit > 0 ? (fixedCostsPerMonth || 0) / netProfitPerUnit : Infinity;
+    const monthlyRevenue = (sellPrice || 0) * (avgSalesPerMonth || 0);
 
     return { netProfitPerUnit, netProfitMargin, bepUnit, monthlyRevenue };
   }, [watchedValues]);
@@ -189,10 +189,10 @@ export default function AnalystPage() {
       { name: "Kanal Lainnya", active: useOtherChannels, color: "hsl(var(--chart-4))" },
     ];
     const activeChannels = channels.filter(c => c.active);
-    if (activeChannels.length === 0 || totalMarketingBudget <= 0) {
+    if (activeChannels.length === 0 || (totalMarketingBudget || 0) <= 0) {
       return [{ name: 'Belum ada alokasi', value: 1, fill: 'hsl(var(--muted))' }];
     }
-    const valuePerChannel = totalMarketingBudget / activeChannels.length;
+    const valuePerChannel = (totalMarketingBudget || 0) / activeChannels.length;
     return activeChannels.map(c => ({ name: c.name, value: valuePerChannel, fill: c.color }));
   }, [watchedValues]);
 
@@ -202,11 +202,11 @@ export default function AnalystPage() {
       { id: 'useVideoContent', name: "Video Content & Ads", active: useVideoContent, color: "hsl(var(--chart-1))", switchClass: "data-[state=checked]:bg-green-500" },
       { id: 'useKOLs', name: "KOL & Afiliasi", active: useKOLs, color: "hsl(var(--chart-2))", switchClass: "data-[state=checked]:bg-green-500" },
       { id: 'useDiscounts', name: "Promosi & Diskon", active: useDiscounts, color: "hsl(var(--chart-3))", switchClass: "data-[state=checked]:bg-green-500" },
-      { id: 'Lainnya', name: "Lainnya", active: useOtherChannels, color: "hsl(var(--chart-4))", switchClass: "data-[state=checked]:bg-green-500" },
+      { id: 'useOtherChannels', name: "Lainnya", active: useOtherChannels, color: "hsl(var(--chart-4))", switchClass: "data-[state=checked]:bg-green-500" },
     ];
 
     const activeChannelsCount = channels.filter(c => c.active).length;
-    const budgetPerChannel = activeChannelsCount > 0 ? totalMarketingBudget / activeChannelsCount : 0;
+    const budgetPerChannel = activeChannelsCount > 0 ? (totalMarketingBudget || 0) / activeChannelsCount : 0;
 
     return {
       channels,
@@ -305,8 +305,8 @@ export default function AnalystPage() {
                                 <ComposedChart data={gmvComboData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                     <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
-                                    <Bar dataKey="tokopedia" barSize={20} fill="var(--color-tokopedia)" radius={[4, 4, 0, 0]} />
-                                    <Bar dataKey="shopee" barSize={20} fill="var(--color-shopee)" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="tokopedia" barSize={20} fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="shopee" barSize={20} fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
                                     <Line type="monotone" dataKey="average" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
                                 </ComposedChart>
                             </ChartContainer>
@@ -537,18 +537,18 @@ export default function AnalystPage() {
                         <div>
                             <h3 className="font-semibold text-lg mb-4">Kalkulator Harga & Biaya per Produk</h3>
                             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <FormField control={form.control} name="sellPrice" render={({ field }) => (<FormItem><FormLabel>Harga Jual</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="costOfGoods" render={({ field }) => (<FormItem><FormLabel>Modal Produk (HPP)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="adCost" render={({ field }) => (<FormItem><FormLabel>Biaya Iklan / Produk</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="otherCostsPercentage" render={({ field }) => (<FormItem><FormLabel>Biaya Lain (%)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="sellPrice" render={({ field }) => (<FormItem><FormLabel>Harga Jual</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="costOfGoods" render={({ field }) => (<FormItem><FormLabel>Modal Produk (HPP)</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="adCost" render={({ field }) => (<FormItem><FormLabel>Biaya Iklan / Produk</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="otherCostsPercentage" render={({ field }) => (<FormItem><FormLabel>Biaya Lain (%)</FormLabel><FormControl><Input type="number" placeholder="0%" {...field} /></FormControl></FormItem>)} />
                             </div>
                         </div>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div>
                                 <h3 className="font-semibold text-lg mb-2">Biaya Tetap & Target Penjualan</h3>
                                 <div className="grid grid-cols-2 gap-4">
-                                  <FormField control={form.control} name="fixedCostsPerMonth" render={({ field }) => (<FormItem><FormLabel>Biaya Tetap / Bulan</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
-                                  <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Target Jual / Bulan</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>)} />
+                                  <FormField control={form.control} name="fixedCostsPerMonth" render={({ field }) => (<FormItem><FormLabel>Biaya Tetap / Bulan</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl></FormItem>)} />
+                                  <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Target Jual / Bulan</FormLabel><FormControl><Input type="number" placeholder="0" {...field} /></FormControl></FormItem>)} />
                                 </div>
                             </div>
                             <div>
@@ -582,7 +582,7 @@ export default function AnalystPage() {
                                 <FormItem>
                                     <FormLabel>Total Bujet Pemasaran</FormLabel>
                                     <FormControl>
-                                        <Input type="number" {...field} className="text-2xl font-bold h-auto py-3" />
+                                        <Input type="number" placeholder="Rp 0" {...field} className="text-2xl font-bold h-auto py-3" />
                                     </FormControl>
                                 </FormItem>
                             )}

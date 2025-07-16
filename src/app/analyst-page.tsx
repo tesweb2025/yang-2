@@ -616,14 +616,14 @@ export default function AnalystPage() {
             )}
 
             {analysisResult && (
-              <>
-                <section className="space-y-8">
+              <div className="space-y-8">
+                <section>
                     <div className="text-center">
                         <h2 className="text-3xl font-bold">Hasil Simulasi Strategimu</h2>
                         <p className="text-muted-foreground mt-2">Ini dia prediksi kesehatan bisnismu berdasarkan data yang kamu isi.</p>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-6">
+                    <div className="grid md:grid-cols-3 gap-6 mt-8">
                         <Card className="p-6 flex flex-col justify-between text-center">
                            <div>
                              <p className="text-sm text-muted-foreground">Proyeksi Pendapatan Tahunan</p>
@@ -647,7 +647,7 @@ export default function AnalystPage() {
                         </Card>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-8">
+                    <div className="grid md:grid-cols-2 gap-8 mt-8">
                         <Card>
                             <CardHeader><CardTitle>Laporan Untung Rugi (Bulanan)</CardTitle></CardHeader>
                             <CardContent>
@@ -706,7 +706,7 @@ export default function AnalystPage() {
 
                 </section>
                 
-                <section id="rencana-aksi">
+                <section id="rencana-aksi" className="mt-8">
                   <Card>
                     <CardHeader>
                       <CardTitle>Rencana Aksi Biar Cuan</CardTitle>
@@ -721,10 +721,12 @@ export default function AnalystPage() {
                     </CardContent>
                   </Card>
                 </section>
-              </>
+              </div>
             )}
         </div>
       </main>
     </div>
   );
 }
+
+    

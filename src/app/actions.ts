@@ -30,7 +30,7 @@ export async function runAnalysis(data: FormData) {
   const annualRevenue = monthlyRevenue * 12;
   const monthlyVariableCostsPerUnit = data.costOfGoods + data.adCost + (data.sellPrice * data.otherCostsPercentage / 100);
   const totalMonthlyVariableCosts = monthlyVariableCostsPerUnit * data.avgSalesPerMonth;
-  const totalMonthlyCosts = data.fixedCostsPerMonth + totalMonthlyVariableCosts; // Marketing budget is part of fixed costs in this simple model
+  const totalMonthlyCosts = data.fixedCostsPerMonth + totalMonthlyVariableCosts + data.totalMarketingBudget; // Marketing budget is a monthly cost.
   const monthlyProfit = monthlyRevenue - totalMonthlyCosts;
   const annualProfit = monthlyProfit * 12;
   const roas = data.totalMarketingBudget > 0 ? monthlyRevenue / data.totalMarketingBudget : 0;
@@ -41,6 +41,7 @@ export async function runAnalysis(data: FormData) {
     { item: 'HPP', value: data.costOfGoods * data.avgSalesPerMonth, isNegative: true },
     { item: 'Laba Kotor', value: monthlyRevenue - (data.costOfGoods * data.avgSalesPerMonth), isNegative: (monthlyRevenue - (data.costOfGoods * data.avgSalesPerMonth)) < 0 },
     { item: 'Biaya Variabel Lain', value: (data.adCost + (data.sellPrice * data.otherCostsPercentage / 100)) * data.avgSalesPerMonth, isNegative: true},
+    { item: 'Biaya Pemasaran', value: data.totalMarketingBudget, isNegative: true },
     { item: 'Biaya Tetap', value: data.fixedCostsPerMonth, isNegative: true },
     { item: 'Laba Bersih Bulanan', value: monthlyProfit, isNegative: monthlyProfit < 0 },
   ];
@@ -49,7 +50,8 @@ export async function runAnalysis(data: FormData) {
   let currentCash = data.initialMarketingBudget;
   const cashflowTable = Array.from({ length: 12 }, (_, i) => {
     const cashIn = monthlyRevenue;
-    const cashOut = totalMonthlyCosts;
+    // For simplicity, assuming all costs are cash costs for the month
+    const cashOut = totalMonthlyVariableCosts + data.fixedCostsPerMonth + data.totalMarketingBudget;
     const netCashFlow = cashIn - cashOut;
     const endCash = currentCash + netCashFlow;
     const row = {

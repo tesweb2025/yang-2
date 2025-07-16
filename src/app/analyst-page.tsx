@@ -7,18 +7,18 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label as UILabel } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { BarChart, BrainCircuit, DollarSign, LineChart, Loader2, Minus, Percent, PieChart, Plus, Target, TrendingUp, Truck, MapPin, Package, AlertTriangle, Lightbulb } from 'lucide-react';
+import { BarChart, BrainCircuit, DollarSign, LineChart, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Image from 'next/image';
 import { runAnalysis } from './actions';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from '@/components/ui/chart';
-import { Pie, Label, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip } from 'recharts';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
+import { Pie, Label, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend } from 'recharts';
 import { PieChart as RechartsPieChart, BarChart as RechartsBarChart } from 'recharts';
+import Link from 'next/link';
 
 const formSchema = z.object({
   productName: z.string().min(1, "Nama produk harus diisi"),
@@ -86,17 +86,17 @@ const gmvData = [
   { month: 'Apr', value: 3.4 }, { month: 'May', value: 3.6 }, { month: 'Jun', value: 3.8 }
 ];
 const marketShareData = [
-  { name: 'TikTok-Toko', value: 35, fill: 'var(--color-chart-1)' },
-  { name: 'Shopee', value: 30, fill: 'var(--color-chart-2)' },
-  { name: 'Lazada', value: 15, fill: 'var(--color-chart-3)' },
-  { name: 'Lainnya', value: 20, fill: 'var(--color-chart-4)' }
+  { name: 'TikTok-Toko', value: 35, fill: 'var(--color-chart-2)' },
+  { name: 'Shopee', value: 30, fill: 'var(--color-chart-3)' },
+  { name: 'Lazada', value: 15, fill: 'var(--color-chart-4)' },
+  { name: 'Lainnya', value: 20, fill: 'var(--color-chart-5)' }
 ];
 const chartConfig: ChartConfig = {
   value: { label: 'Value' },
-  'TikTok-Toko': { label: 'TikTok-Toko', color: 'hsl(var(--chart-1))' },
-  'Shopee': { label: 'Shopee', color: 'hsl(var(--chart-2))' },
-  'Lazada': { label: 'Lazada', color: 'hsl(var(--chart-3))' },
-  'Lainnya': { label: 'Lainnya', color: 'hsl(var(--chart-4))' },
+  'TikTok-Toko': { label: 'TikTok-Toko', color: 'hsl(var(--chart-2))' },
+  'Shopee': { label: 'Shopee', color: 'hsl(var(--chart-3))' },
+  'Lazada': { label: 'Lazada', color: 'hsl(var(--chart-4))' },
+  'Lainnya': { label: 'Lainnya', color: 'hsl(var(--chart-5))' },
 };
 
 export default function AnalystPage() {
@@ -127,10 +127,10 @@ export default function AnalystPage() {
   const watchedValues = form.watch();
 
   const calculations = useMemo(() => {
-    const { sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth, avgSalesPerMonth, totalMarketingBudget } = watchedValues;
+    const { sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth } = watchedValues;
     const netProfitPerUnit = sellPrice - costOfGoods - adCost - (sellPrice * otherCostsPercentage / 100);
     const netProfitMargin = sellPrice > 0 ? (netProfitPerUnit / sellPrice) * 100 : 0;
-    const bepUnit = netProfitPerUnit > 0 ? fixedCostsPerMonth / (sellPrice - costOfGoods - (sellPrice * otherCostsPercentage / 100)) : Infinity;
+    const bepUnit = netProfitPerUnit > 0 ? fixedCostsPerMonth / (sellPrice - costOfGoods - adCost - (sellPrice * otherCostsPercentage / 100)) : Infinity;
 
     return { netProfitPerUnit, netProfitMargin, bepUnit };
   }, [watchedValues]);
@@ -168,11 +168,14 @@ export default function AnalystPage() {
       <main className="space-y-12">
         {/* 1. Hero Section */}
         <section className="text-center py-12">
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-primary mb-4 font-headline">Simulasikan Strategi Bisnismu.</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">Gunakan AI Marketplace Analyst untuk memvalidasi ide, merencanakan keuangan, dan menyusun strategi aksi yang solid untuk pasar e-commerce Indonesia.</p>
-          <div className="mt-8 relative aspect-video max-w-2xl mx-auto bg-white/50 rounded-xl shadow-lg p-4">
-            <Image src="https://placehold.co/800x450" alt="3D Illustration of e-commerce logistics" layout="fill" objectFit="contain" className="rounded-lg" data-ai-hint="delivery truck boxes" />
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 font-headline">Simulasikan Strategi<br/>Bisnismu.</h1>
+          <div className="mt-8 relative aspect-video max-w-lg mx-auto p-4">
+            <Image src="https://placehold.co/600x400" alt="3D Illustration of e-commerce logistics" layout="fill" objectFit="contain" className="rounded-lg" data-ai-hint="delivery truck" />
           </div>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-4">Gunakan AI Marketplace Analyst untuk memvalidasi ide, merencanakan keuangan, dan menyusun strategi aksi yang solid untuk pasar e-commerce Indonesia.</p>
+           <Button asChild size="lg" className="mt-8">
+             <Link href="#ai-analyst-form">Mulai Simulasi</Link>
+           </Button>
         </section>
 
         {/* 2. Market Insights */}
@@ -185,7 +188,7 @@ export default function AnalystPage() {
                         <CardDescription>Pertumbuhan pasar e-commerce di Indonesia terus melesat.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-3xl font-bold text-primary mb-4">US$4 Miliar</p>
+                        <p className="text-4xl font-bold text-primary mb-4">US$4 Miliar</p>
                         <ChartContainer config={chartConfig} className="w-full h-[250px]">
                             <RechartsBarChart data={gmvData} accessibilityLayer>
                                 <CartesianGrid vertical={false} />
@@ -239,15 +242,9 @@ export default function AnalystPage() {
                         <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
                             <RechartsPieChart>
                                 <RechartsTooltip cursor={{fill: 'hsl(var(--muted))'}} content={<ChartTooltipContent hideLabel />} />
-                                <Pie data={marketShareData} dataKey="value" nameKey="name" innerRadius={60} strokeWidth={5}>
-                                    <Label
-                                        dataKey="name"
-                                        className="fill-background"
-                                        stroke="none"
-                                        fontSize={12}
-                                        position="inside"
-                                    />
+                                <Pie data={marketShareData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={110} strokeWidth={2}>
                                 </Pie>
+                                <ChartLegend content={<ChartLegendContent layout="vertical" align="right" verticalAlign="middle" />} />
                             </RechartsPieChart>
                         </ChartContainer>
                     </div>
@@ -421,7 +418,7 @@ export default function AnalystPage() {
                              <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
                                 <RechartsPieChart>
                                     <RechartsTooltip cursor={{fill: 'hsl(var(--muted))'}} content={<ChartTooltipContent hideLabel />} />
-                                    <Pie data={budgetAllocationData} dataKey="value" nameKey="name" innerRadius={60} strokeWidth={5} />
+                                    <Pie data={budgetAllocationData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={110} />
                                 </RechartsPieChart>
                             </ChartContainer>
                             <p className="text-center text-sm text-muted-foreground mt-2">Estimasi alokasi bujet berdasarkan channel yang aktif.</p>
@@ -477,7 +474,7 @@ export default function AnalystPage() {
                            <Card className="p-4 bg-primary/10">
                               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0">
                                 <CardTitle className="text-sm font-medium">Return on Ad Spend (ROAS)</CardTitle>
-                                <Percent className="h-4 w-4 text-muted-foreground" />
+                                <DollarSign className="h-4 w-4 text-muted-foreground" />
                               </CardHeader>
                               <CardContent className="p-0">
                                 <div className="text-2xl font-bold">{analysisResult.roas.toFixed(2)}x</div>

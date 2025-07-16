@@ -12,7 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { BarChart, BrainCircuit, LineChart, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle, CheckCircle, ArrowRight, Video, Users, Receipt, Share2 } from 'lucide-react';
+import { BarChart, BrainCircuit, LineChart, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle, CheckCircle, ArrowRight, Video, Users, Receipt, Share2, Clock, Percent, Zap, Sparkles } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Image from 'next/image';
 import { runAnalysis } from './actions';
@@ -302,15 +302,15 @@ export default function AnalystPage() {
                          <div>
                             <p className="text-5xl font-bold text-primary">US$56,5 M</p>
                         </div>
-                        <div className="relative h-64 w-full mt-4">
+                        <div className="relative h-60 w-full mt-4 -mb-4">
                              <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
                                 <ComposedChart data={gmvComboData} margin={{ top: 5, right: 0, left: -20, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                     <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `$${value / 1000}k`} />
                                     <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
-                                    <Bar dataKey="tokopedia" barSize={20} fill="var(--color-tokopedia)" radius={[4, 4, 0, 0]} />
-                                    <Bar dataKey="shopee" barSize={20} fill="var(--color-shopee)" radius={[4, 4, 0, 0]} />
-                                    <Line type="monotone" dataKey="average" stroke="var(--color-average)" strokeWidth={2} dot={false} />
+                                    <Bar dataKey="tokopedia" barSize={20} fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="shopee" barSize={20} fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
+                                    <Line type="monotone" dataKey="average" stroke="var(--color-primary)" strokeWidth={2} dot={false} />
                                 </ComposedChart>
                             </ChartContainer>
                         </div>
@@ -319,29 +319,36 @@ export default function AnalystPage() {
                 </Card>
                 <Card className="p-6">
                     <CardHeader className="p-0">
-                        <CardTitle className="text-h3 font-medium">Profil Pembeli Digital</CardTitle>
-                        <CardDescription>Kenali siapa dan bagaimana mereka belanja.</CardDescription>
+                        <CardTitle className="text-h3 font-medium">Wawasan Penting Pembeli Digital</CardTitle>
+                        <CardDescription>Pola perilaku kunci yang mendorong penjualan.</CardDescription>
                     </CardHeader>
-                    <CardContent className="p-0 mt-6 space-y-4">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-primary/10 rounded-full"><Target className="w-6 h-6 text-primary" /></div>
+                    <CardContent className="p-0 mt-6 grid grid-cols-2 gap-x-6 gap-y-8">
+                        <div className="flex items-start gap-3">
+                             <div className="p-2.5 bg-primary/10 rounded-lg"><Clock className="w-5 h-5 text-primary" /></div>
                             <div>
-                                <p className="font-semibold text-body">Usia Dominan</p>
-                                <p className="text-xl font-bold">26-35 Tahun</p>
+                                <p className="font-semibold text-body">Puncak Belanja</p>
+                                <p className="text-muted-foreground text-sm">Jam 19-21 & Hari Gajian</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-primary/10 rounded-full"><LineChart className="w-6 h-6 text-primary" /></div>
-                            <div>
-                                <p className="font-semibold text-body">Akses Utama</p>
-                                <p className="text-xl font-bold">67% via Mobile</p>
-                            </div>
-                        </div>
-                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-primary/10 rounded-full"><TrendingUp className="w-6 h-6 text-primary" /></div>
+                        <div className="flex items-start gap-3">
+                           <div className="p-2.5 bg-primary/10 rounded-lg"><Sparkles className="w-5 h-5 text-primary" /></div>
                             <div>
                                 <p className="font-semibold text-body">Pendorong Utama</p>
-                                <p className="text-xl font-bold">Promo & Gratis Ongkir</p>
+                                <p className="text-muted-foreground text-sm">82% karena Promo & Diskon</p>
+                            </div>
+                        </div>
+                         <div className="flex items-start gap-3">
+                           <div className="p-2.5 bg-primary/10 rounded-lg"><Percent className="w-5 h-5 text-primary" /></div>
+                            <div>
+                                <p className="font-semibold text-body">Sensitivitas Harga</p>
+                                <p className="text-muted-foreground text-sm">65% membandingkan harga</p>
+                            </div>
+                        </div>
+                         <div className="flex items-start gap-3">
+                             <div className="p-2.5 bg-primary/10 rounded-lg"><Zap className="w-5 h-5 text-primary" /></div>
+                            <div>
+                                <p className="font-semibold text-body">Pengiriman Cepat</p>
+                                <p className="text-muted-foreground text-sm">55% batal jika estimasi lama</p>
                             </div>
                         </div>
                     </CardContent>
@@ -775,5 +782,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

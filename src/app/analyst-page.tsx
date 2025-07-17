@@ -284,7 +284,7 @@ export default function AnalystPage() {
     const budgetPerStrategy = (watchedValues.totalMarketingBudget || 0) / selectedStrategies.length;
     
     return selectedStrategies.map(s => ({
-      name: s.title,
+      name: s.channel,
       value: budgetPerStrategy,
       fill: s.color,
     }));
@@ -795,34 +795,34 @@ export default function AnalystPage() {
                                         <ChartContainer config={budgetChartConfig} className="h-full w-full">
                                             <RechartsBarChart
                                                 data={budgetChartData}
-                                                layout="vertical"
-                                                margin={{ left: 10, right: 30 }}
+                                                margin={{ top: 20, right: 10, left: -10, bottom: 5 }}
                                             >
-                                                <CartesianGrid horizontal={false} strokeDasharray="3 3" />
-                                                <XAxis type="number" hide />
-                                                <YAxis
+                                                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                                                <XAxis
                                                     dataKey="name"
-                                                    type="category"
                                                     tickLine={false}
                                                     axisLine={false}
                                                     tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
-                                                    width={120}
                                                 />
+                                                <YAxis hide />
                                                 <RechartsTooltip
                                                     cursor={{ fill: 'hsl(var(--muted))' }}
                                                     content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />}
                                                 />
-                                                <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                                                <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                                                     {budgetChartData.map((entry, index) => (
                                                         <Cell key={`cell-${index}`} fill={entry.fill} />
                                                     ))}
                                                      <LabelList
                                                         dataKey="value"
-                                                        position="right"
+                                                        position="top"
                                                         offset={8}
                                                         className="fill-foreground font-medium"
                                                         fontSize={12}
-                                                        formatter={(value: number) => formatCurrency(value)}
+                                                        formatter={(value: number) => {
+                                                            const num = value / 1_000_000;
+                                                            return `${num.toFixed(0)} Jt`;
+                                                        }}
                                                     />
                                                 </Bar>
                                             </RechartsBarChart>
@@ -995,3 +995,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BrainCircuit, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle, CheckCircle, ArrowRight, Video, Users, Receipt, Share2, Clock, Percent, Zap, Sparkles } from 'lucide-react';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormDescription, FormMessage } from '@/components/ui/form';
 import Image from 'next/image';
 import { runAnalysis } from './actions';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from '@/components/ui/chart';
@@ -54,28 +54,28 @@ type AnalysisResult = {
 
 const marketingStrategies = [
     {
-        id: 'useVideoContent',
+        id: 'useVideoContent' as const,
         title: "Video Content & Ads",
         description: "Buat konten video pendek & pasang iklan di platform sosial.",
         channel: "Iklan Medsos & Video",
         color: "hsl(var(--chart-1))"
     },
     {
-        id: 'useKOL',
+        id: 'useKOL' as const,
         title: "KOL & Afiliasi",
         description: "Gunakan influencer atau program afiliasi untuk promosi.",
         channel: "Endorse & KOL",
         color: "hsl(var(--chart-2))"
     },
     {
-        id: 'usePromo',
+        id: 'usePromo' as const,
         title: "Promosi & Diskon",
         description: "Tawarkan diskon, voucher, atau promo bundling ke pelanggan.",
         channel: "Promosi & Diskon",
         color: "hsl(var(--chart-3))"
     },
     {
-        id: 'useOtherChannels',
+        id: 'useOtherChannels' as const,
         title: "Kanal Lainnya",
         description: "Manfaatkan kanal lain seperti SEO, event, atau marketplace ads.",
         channel: "Kanal Lainnya",
@@ -161,8 +161,8 @@ const gmvComboChartConfig = {
 } satisfies ChartConfig;
 
 const budgetChartConfig = {
-  channels: {
-    label: "Channels",
+  value: {
+    label: "Value",
   },
   "Video Content & Ads": {
     label: "Video Content & Ads",
@@ -561,6 +561,38 @@ export default function AnalystPage() {
                 </Card>
             </section>
             
+            <section id="pilih-strategi">
+                <Card className="p-6 md:p-8">
+                    <CardHeader className="p-0">
+                        <CardTitle className="text-h3 font-medium">Pilih Strategi Pemasaran</CardTitle>
+                        <CardDescription>Pilih satu atau lebih strategi yang ingin Anda simulasikan.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0 mt-6 space-y-4">
+                        {marketingStrategies.map((strategy) => (
+                             <FormField
+                                key={strategy.id}
+                                control={form.control}
+                                name={strategy.id}
+                                render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                                    <div className="space-y-0.5">
+                                        <FormLabel className="text-base">{strategy.title}</FormLabel>
+                                        <FormDescription>{strategy.description}</FormDescription>
+                                    </div>
+                                    <FormControl>
+                                    <Switch
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                    </FormControl>
+                                </FormItem>
+                                )}
+                            />
+                        ))}
+                    </CardContent>
+                </Card>
+            </section>
+
             <section id="model-bisnis">
                 <Card className="p-6 md:p-8">
                     <CardHeader className="p-0">
@@ -658,7 +690,7 @@ export default function AnalystPage() {
                                         </FormItem>
                                     )}
                                 />
-                                <FormField control={form.control} name="otherCostsPercentage" render={({ field }) => (<FormItem><FormLabel>Biaya Lain (%)</FormLabel><FormControl><Input type="number" placeholder="0%" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name="otherCostsPercentage" render={({ field }) => (<FormItem><FormLabel>Biaya Lain (%)</FormLabel><FormControl><Input type="number" placeholder="0%" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem>)} />
                             </div>
                         </div>
                         <div className="grid md:grid-cols-2 gap-4">
@@ -682,7 +714,7 @@ export default function AnalystPage() {
                                           </FormItem>
                                       )}
                                   />
-                                  <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Target Jual / Bulan</FormLabel><FormControl><Input type="number" placeholder="0" {...field} value={field.value ?? ''} /></FormControl></FormItem>)} />
+                                  <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Target Jual / Bulan</FormLabel><FormControl><Input type="number" placeholder="0" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem>)} />
                                 </div>
                             </div>
                             <div>
@@ -722,7 +754,7 @@ export default function AnalystPage() {
                  <Card className="p-6 md:p-8">
                     <CardHeader className="p-0 text-center">
                         <CardTitle className="text-h3 font-medium">Alokator Bujet Pemasaran</CardTitle>
-                         <CardDescription>Pilih strategi, lalu isi bujet untuk melihat alokasinya.</CardDescription>
+                        <CardDescription>Masukkan total dana yang akan Anda gunakan untuk semua aktivitas pemasaran dalam sebulan.</CardDescription>
                     </CardHeader>
                     <CardContent className="p-0 mt-6 flex flex-col items-center">
                        <div className="w-full max-w-sm mx-auto">
@@ -752,6 +784,7 @@ export default function AnalystPage() {
                             <ChartContainer config={budgetChartConfig} className="h-full w-full">
                                 <ResponsiveContainer width="100%" height="100%">
                                   <PieChart>
+                                    <RechartsTooltip content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />} />
                                     <Pie
                                       data={budgetChartData}
                                       dataKey="value"
@@ -768,47 +801,14 @@ export default function AnalystPage() {
                                         <Cell key={`cell-${index}`} fill={entry.fill} />
                                       ))}
                                     </Pie>
-                                    <RechartsTooltip content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />} />
                                   </PieChart>
                                 </ResponsiveContainer>
                             </ChartContainer>
                           </div>
                         )}
-                        
-                        <div className="w-full max-w-sm mx-auto space-y-2 mt-4">
-                            {marketingStrategies.map(strategy => {
-                                const count = budgetChartData.length || 1;
-                                const value = watchedValues[strategy.id as keyof FormData] ? (watchedValues.totalMarketingBudget || 0) / count : 0;
-                                return (
-                                <FormField
-                                    key={strategy.id}
-                                    control={form.control}
-                                    name={strategy.id as keyof FormData}
-                                    render={({ field }) => (
-                                    <FormItem className="flex items-center justify-between p-2 rounded-lg transition-colors hover:bg-muted/50">
-                                        <FormLabel htmlFor={strategy.id} className="flex items-center gap-2 cursor-pointer text-sm">
-                                            <span className="w-2 h-2 rounded-full" style={{backgroundColor: strategy.color}}></span>
-                                            {strategy.title}
-                                        </FormLabel>
-                                        <div className="flex items-center gap-4">
-                                            <span className="text-sm font-medium text-muted-foreground">{formatCurrency(value)}</span>
-                                            <FormControl>
-                                                <Switch
-                                                    id={strategy.id}
-                                                    checked={field.value}
-                                                    onCheckedChange={field.onChange}
-                                                />
-                                            </FormControl>
-                                        </div>
-                                    </FormItem>
-                                    )}
-                                />
-                                )
-                            })}
-                            <p className="text-center text-muted-foreground text-caption pt-2">
-                                Strategi terfokus, bagus untuk memaksimalkan kanal pilihan.
-                            </p>
-                        </div>
+                        <p className="text-center text-muted-foreground text-caption pt-2">
+                           Diagram akan muncul setelah Anda memilih strategi dan mengisi bujet.
+                        </p>
                     </CardContent>
                     <div className="border-t -mx-8 my-8"></div>
                     <Button type="submit" className="w-full h-14 text-lg rounded-full" disabled={isLoading}>
@@ -940,3 +940,6 @@ export default function AnalystPage() {
     </div>
   );
 }
+    
+
+    

@@ -542,7 +542,7 @@ export default function AnalystPage() {
                                       className={cn(
                                         "p-4 rounded-lg border transition-all relative cursor-pointer",
                                         field.value
-                                          ? "bg-success text-success-foreground border-green-500/30"
+                                          ? "bg-primary text-primary-foreground"
                                           : "bg-muted/30 hover:bg-muted/60"
                                       )}
                                       onClick={() => field.onChange(!field.value)}
@@ -556,9 +556,9 @@ export default function AnalystPage() {
                                         />
                                       </div>
                                       <div className="flex flex-col gap-1">
-                                        <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-success-foreground" : "text-muted-foreground")} />
+                                        <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-muted-foreground")} />
                                         <label className="font-semibold cursor-pointer">{strategy.title}</label>
-                                        <p className={cn("text-sm", field.value ? "text-success-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
+                                        <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
                                       </div>
                                     </div>
                                   </FormControl>
@@ -951,5 +951,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

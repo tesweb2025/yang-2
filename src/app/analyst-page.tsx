@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo } from 'react';
@@ -17,7 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import Image from 'next/image';
 import { runAnalysis } from './actions';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from '@/components/ui/chart';
-import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell, ComposedChart, Line, PieChart, Pie, Sector } from 'recharts';
+import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell, ComposedChart, Line } from 'recharts';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -140,7 +139,7 @@ const marketShareData = [
     { name: 'Shopee', value: 37, fill: 'var(--color-chart-shopee)' },
     { name: 'Lazada', value: 10, fill: 'var(--color-chart-lazada)' },
     { name: 'Bukalapak', value: 6, fill: 'var(--color-chart-bukalapak)' },
-    { name: 'Blibli', value: 5, fill: 'var(--color-chart-blibli)' },
+    { name: 'Blibli', value: 5, fill: 'var(--color-chart-blibli))' },
 ];
 
 const marketShareChartConfig = {
@@ -262,17 +261,14 @@ export default function AnalystPage() {
     
     const totalPercentage = activeStrategies.reduce((sum, s) => sum + s.percentage, 0);
 
-    const allocations = {
-      useVideoContent: 0,
-      useKOL: 0,
-      usePromo: 0,
-      useOtherChannels: 0,
-    };
+    const allocations: { [key: string]: number } = {};
 
-    if (totalBudget > 0 && totalPercentage > 0) {
-      for (const strategy of activeStrategies) {
-        allocations[strategy.id] = (totalBudget * strategy.percentage) / totalPercentage;
-      }
+    for (const strategy of marketingStrategies) {
+        if (watchedValues[strategy.id as keyof FormData] && totalBudget > 0 && totalPercentage > 0) {
+            allocations[strategy.id] = (totalBudget * strategy.percentage) / totalPercentage;
+        } else {
+            allocations[strategy.id] = 0;
+        }
     }
     
     return allocations;
@@ -289,7 +285,7 @@ export default function AnalystPage() {
       .filter(s => watchedValues[s.id as keyof FormData])
       .map(s => ({
         name: s.channel,
-        value: budgetAllocations[s.id as keyof typeof budgetAllocations],
+        value: budgetAllocations[s.id],
         fill: s.color,
       }));
   }, [budgetAllocations, watchedValues]);
@@ -365,7 +361,7 @@ export default function AnalystPage() {
                 <p className="text-subtitle text-muted-foreground mt-2">Data terbaru untuk membantumu mengambil keputusan.</p>
             </div>
             <Card className="p-6">
-                <div className="grid md:grid-cols-2 gap-8">
+                <div className="grid md:grid-cols-2 gap-8 items-start">
                     <div>
                         <CardHeader className="p-0 mb-4">
                             <CardTitle className="text-h3 font-medium">Proyeksi Gross Merchandise Value (GMV)</CardTitle>
@@ -526,6 +522,41 @@ export default function AnalystPage() {
                           <FormMessage />
                       </FormItem>
                     )} />
+                  </div>
+                  <div className="border-t -mx-8 my-8"></div>
+                  <div>
+                    <h3 className="font-semibold text-lg mb-1">Pilih Strategi Pemasaran</h3>
+                    <p className="text-sm text-muted-foreground mb-4">Pilih satu atau lebih strategi yang ingin kamu simulasikan.</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {marketingStrategies.map((strategy) => (
+                          <FormField
+                              key={strategy.id}
+                              control={form.control}
+                              name={strategy.id}
+                              render={({ field }) => (
+                                  <FormItem className={cn(
+                                      "p-4 rounded-lg border transition-all flex flex-row items-start justify-between space-x-3 space-y-0",
+                                      field.value ? "bg-primary/5 border-primary/30" : "bg-muted/30"
+                                  )}>
+                                      <label htmlFor={strategy.id} className="flex flex-col gap-1 cursor-pointer">
+                                        <div className="flex items-center gap-2">
+                                          <strategy.icon className={cn("w-5 h-5", field.value ? "text-primary" : "text-muted-foreground")} />
+                                          <FormLabel className="font-semibold cursor-pointer">{strategy.title}</FormLabel>
+                                        </div>
+                                        <p className="text-sm text-muted-foreground">{strategy.description}</p>
+                                      </label>
+                                      <FormControl>
+                                        <Switch
+                                          id={strategy.id}
+                                          checked={field.value}
+                                          onCheckedChange={field.onChange}
+                                        />
+                                      </FormControl>
+                                  </FormItem>
+                              )}
+                          />
+                      ))}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -694,7 +725,7 @@ export default function AnalystPage() {
                         <CardTitle className="text-h3 font-medium">Alokator Bujet Pemasaran</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
-                       <div className="mb-8">
+                       <div className="mb-8 max-w-sm mx-auto">
                          <Controller
                               name="totalMarketingBudget"
                               control={form.control}
@@ -724,29 +755,26 @@ export default function AnalystPage() {
                                             <RechartsBarChart
                                                 data={budgetChartData}
                                                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                                                layout="vertical"
                                             >
-                                                <CartesianGrid horizontal={false} strokeDasharray="3 3" />
-                                                <YAxis
+                                                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                                                <XAxis
                                                     dataKey="name"
-                                                    type="category"
                                                     tickLine={false}
                                                     axisLine={false}
                                                     tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
-                                                    width={80}
                                                 />
-                                                <XAxis type="number" hide />
+                                                <YAxis type="number" hide />
                                                 <RechartsTooltip
                                                     cursor={{ fill: 'hsl(var(--muted))' }}
                                                     content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />}
                                                 />
-                                                <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                                                <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                                                     {budgetChartData.map((entry, index) => (
                                                         <Cell key={`cell-${index}`} fill={entry.fill} />
                                                     ))}
                                                      <LabelList
                                                         dataKey="value"
-                                                        position="right"
+                                                        position="top"
                                                         offset={8}
                                                         className="fill-foreground font-medium"
                                                         fontSize={12}
@@ -768,31 +796,13 @@ export default function AnalystPage() {
 
                             <div className="space-y-4">
                                 {marketingStrategies.map(strategy => (
-                                    <FormField
-                                        key={strategy.id}
-                                        control={form.control}
-                                        name={strategy.id}
-                                        render={({ field }) => (
-                                            <FormItem 
-                                                className="flex items-center justify-between rounded-lg border p-3"
-                                            >
-                                                <label htmlFor={strategy.id} className="flex items-center gap-3 cursor-pointer">
-                                                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                    <FormLabel className="font-normal cursor-pointer">{strategy.title}</FormLabel>
-                                                </label>
-                                                <div className="flex items-center gap-4">
-                                                    <span className="font-medium text-sm">{formatCurrency(budgetAllocations[strategy.id as keyof typeof budgetAllocations])}</span>
-                                                    <FormControl>
-                                                        <Switch
-                                                            id={strategy.id}
-                                                            checked={field.value}
-                                                            onCheckedChange={field.onChange}
-                                                        />
-                                                    </FormControl>
-                                                </div>
-                                            </FormItem>
-                                        )}
-                                    />
+                                    <div key={strategy.id} className="flex items-center justify-between rounded-lg border p-3">
+                                      <div className="flex items-center gap-3">
+                                          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
+                                          <span className="font-normal">{strategy.title}</span>
+                                      </div>
+                                      <span className="font-medium text-sm">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
+                                    </div>
                                 ))}
                             </div>
                         </div>

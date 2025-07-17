@@ -129,11 +129,11 @@ const businessModelContent: any = {
 };
 
 const marketShareData = [
-    { name: 'Tokopedia & TikTok Shop', value: 39 },
-    { name: 'Shopee', value: 37 },
-    { name: 'Lazada', value: 10 },
-    { name: 'Bukalapak', value: 6 },
-    { name: 'Blibli', value: 5 },
+    { name: 'Tokopedia & TikTok Shop', value: 39, fill: 'var(--color-chart-tiktok)' },
+    { name: 'Shopee', value: 37, fill: 'var(--color-chart-shopee)' },
+    { name: 'Lazada', value: 10, fill: 'var(--color-chart-lazada)' },
+    { name: 'Bukalapak', value: 6, fill: 'var(--color-chart-bukalapak)' },
+    { name: 'Blibli', value: 5, fill: 'var(--color-chart-blibli)' },
 ];
 
 const marketShareChartConfig = {
@@ -382,12 +382,12 @@ export default function AnalystPage() {
                     <p className="text-5xl font-bold text-primary">US$56,5 M</p>
                     <div className="h-60 w-full">
                         <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
-                            <ComposedChart data={gmvComboData} barCategoryGap="20%" margin={{ top: 20, right: 0, left: -20, bottom: 5 }}>
+                            <ComposedChart data={gmvComboData} barCategoryGap="30%" margin={{ top: 20, right: 0, left: -20, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                 <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
                                 <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
-                                <Bar dataKey="tokopedia" barSize={15} fill="var(--color-tokopedia)" radius={[4, 4, 0, 0]} />
-                                <Bar dataKey="shopee" barSize={15} fill="var(--color-shopee)" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="tokopedia" barSize={25} fill="var(--color-tokopedia)" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="shopee" barSize={25} fill="var(--color-shopee)" radius={[4, 4, 0, 0]} />
                                 <Line type="monotone" dataKey="average" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
                             </ComposedChart>
                         </ChartContainer>
@@ -397,7 +397,7 @@ export default function AnalystPage() {
 
                 <Separator className="my-8"/>
 
-                <CardHeader className="p-0">
+                <CardHeader className="p-0 mt-6">
                     <CardTitle className="text-h3 font-medium">Wawasan Penting Pembeli Digital</CardTitle>
                     <CardDescription>Pola perilaku kunci yang mendorong penjualan.</CardDescription>
                 </CardHeader>
@@ -478,7 +478,10 @@ export default function AnalystPage() {
                                     cursor={{ fill: 'hsl(var(--muted))' }} 
                                     content={<ChartTooltipContent formatter={(value) => `${value}%`} />}
                                 />
-                                <Bar dataKey="value" radius={[8, 8, 0, 0]} fill="var(--color-chart-1)">
+                                <Bar dataKey="value" radius={[8, 8, 0, 0]}>
+                                    {marketShareData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                                    ))}
                                     <LabelList 
                                         dataKey="value" 
                                         position="top" 

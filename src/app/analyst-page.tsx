@@ -190,51 +190,26 @@ const budgetChartConfig = {
   },
 } satisfies ChartConfig;
 
-
-const platformStrategies = [
+const platformStrategyDescriptions = [
     {
         title: "TikTok & Tokopedia",
-        subtitle: "Kombinasi Konten + Checkout Seketika",
-        description: "Kanal untuk Shoppertainment & Pembelian Impulsif",
-        strategyPoints: [
-            "Kuasai konten pendek yang nempel di FYP",
-            "Manfaatkan Live Selling + kolaborasi influencer",
-            "Integrasi checkout langsung dari konten"
-        ],
-        audience: "Produk lifestyle, murah-meriah, atau tren cepat. Target anak muda (18–34), impulsif, FOMO-driven."
+        subtitle: "Kanal untuk \"Shoppertainment\" & Pembelian Impulsif",
+        description: "Kuasai dengan konten video pendek, live streaming, dan tren viral."
     },
     {
         title: "Shopee",
-        subtitle: "Platform Perang Harga & Volume Besar",
-        description: "Raksasa Pasar Massal & Promo Agresif",
-        strategyPoints: [
-            "Manfaatkan flash sale & campaign harian",
-            "Main di harga kompetitif + voucher",
-            "Gunakan iklan Shopee Ads buat dorong visibility"
-        ],
-        audience: "Produk mass market, margin tipis, brand baru yang butuh traffic."
+        subtitle: "Raksasa Pasar Massal & Promo Agresif",
+        description: "Menangkan dengan perang harga, voucher, gamifikasi, dan iklan internal yang masif."
     },
     {
         title: "Lazada & Blibli",
-        subtitle: "Panggung Brand Premium & Customer Trust",
-        description: "Benteng untuk Brand & Audiens Berkualitas",
-        strategyPoints: [
-            "Fokus ke pengalaman belanja: packaging, garansi, testimoni",
-            "Bangun citra premium lewat visual dan deskripsi produk",
-            "Mainkan brand trust lewat rating, LazMall, atau curated collection"
-        ],
-        audience: "Produk bernilai tinggi, lifestyle premium, brand lokal yang udah punya equity."
+        subtitle: "Benteng untuk Brand & Audiens Berkualitas",
+        description: "Dominasi dengan branding premium, garansi (LazMall), dan layanan superior."
     },
     {
-        title: "Meta & Google Ads",
-        subtitle: "Targeting Presisi & Scale Demand",
-        description: "Kanal untuk Konversi Terukur & Lead Generation",
-        strategyPoints: [
-            "Gunakan pixel & event tracking buat retargeting",
-            "Scale campaign dari awareness → consideration → conversion",
-            "Cocok dipakai bareng landing page dan WhatsApp funnel"
-        ],
-        audience: "Bisnis direct-to-consumer (DTC), brand niche, produk solusi spesifik."
+        title: "Social Commerce",
+        subtitle: "Kanal untuk Targeting Presisi (Meta & Google Ads)",
+        description: "Jangkau audiens spesifik dengan retargeting dan lead generation."
     }
 ];
 
@@ -457,7 +432,7 @@ export default function AnalystPage() {
                     <CardTitle className="text-h3 font-medium">Siapa Raja di Pasar? (Estimasi Pangsa Pasar GMV 2024)</CardTitle>
                     <CardDescription>Integrasi Tokopedia & TikTok Shop menciptakan duopoli baru yang menantang dominasi Shopee.</CardDescription>
                 </CardHeader>
-                <CardContent className="p-0 mt-8">
+                <CardContent className="p-0 mt-8 space-y-8">
                     <div className="w-full h-[300px]">
                         <ChartContainer config={marketShareChartConfig} className="h-full w-full">
                             <RechartsBarChart data={marketShareData} barCategoryGap="20%">
@@ -511,40 +486,17 @@ export default function AnalystPage() {
                             </RechartsBarChart>
                         </ChartContainer>
                     </div>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-4">
+                        {platformStrategyDescriptions.map((platform, index) => (
+                            <div key={index}>
+                                <h4 className="font-semibold text-body">{platform.title}</h4>
+                                <p className="text-primary text-sm font-medium">{platform.subtitle}</p>
+                                <p className="text-sm text-muted-foreground mt-1">{platform.description}</p>
+                            </div>
+                        ))}
+                    </div>
                 </CardContent>
             </Card>
-        </section>
-
-        <section id="platform-strategies" className="space-y-8">
-            <div className="text-center">
-                <h2 className="text-h2 font-semibold">Arena Pertempuran Marketplace</h2>
-                <p className="text-subtitle text-muted-foreground mt-2">Pilih medan perang yang tepat untuk produkmu.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {platformStrategies.map((platform, index) => (
-                    <Card key={index} className="flex flex-col">
-                        <CardHeader className="p-6 pb-2">
-                             <h3 className="text-h3 font-semibold mb-1">{platform.title}</h3>
-                             <p className="font-semibold text-primary mb-1">{platform.subtitle}</p>
-                             <p className="text-sm text-muted-foreground">{platform.description}</p>
-                        </CardHeader>
-                        <CardContent className="p-6 pt-2 flex-grow flex flex-col justify-between">
-                            <div className="space-y-4">
-                               <div>
-                                  <h4 className="font-semibold text-body mb-2">Strategi Utama:</h4>
-                                  <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
-                                      {platform.strategyPoints.map((point, i) => <li key={i}>{point}</li>)}
-                                  </ul>
-                               </div>
-                               <div>
-                                  <h4 className="font-semibold text-body mb-2">Cocok untuk:</h4>
-                                  <p className="text-sm text-muted-foreground">{platform.audience}</p>
-                               </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
-            </div>
         </section>
 
         <Form {...form}>
@@ -768,7 +720,7 @@ export default function AnalystPage() {
                                         <ChartContainer config={budgetChartConfig} className="h-full w-full">
                                             <RechartsBarChart
                                                 data={budgetChartData}
-                                                margin={{ top: 20, right: 30, left: -10, bottom: 5 }}
+                                                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                                             >
                                                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                                 <XAxis

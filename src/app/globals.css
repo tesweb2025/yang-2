@@ -6,7 +6,7 @@
   :root {
     --background: 240 10% 99%; /* #fcfcfd - Almost white */
     --foreground: 240 10% 3.9%;
-    --card: 240 4.8% 95.9%; /* #f2f2f7 - iOS light gray */
+    --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
@@ -33,11 +33,11 @@
     --chart-5: 262 82% 62%; /* iOS Purple */
 
     /* Custom platform colors */
-    --chart-tiktok: 142 71% 45%; /* Bright Green */
-    --chart-shopee: 22 95% 65%;
-    --chart-lazada: 262 82% 62%; /* Purple */
-    --chart-bukalapak: 0 84% 60%;
-    --chart-blibli: 205 90% 60%;
+    --color-chart-tiktok: 142 71% 45%; /* Bright Green */
+    --color-chart-shopee: 22 95% 65%;
+    --color-chart-lazada: 262 82% 62%; /* Purple */
+    --color-chart-bukalapak: 0 84% 60%;
+    --color-chart-blibli: 205 90% 60%;
   }
 
   .dark {

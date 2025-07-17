@@ -447,8 +447,8 @@ export default function AnalystPage() {
                 </CardHeader>
                 <CardContent className="p-0 mt-4 space-y-4">
                     <p className="text-5xl font-bold text-primary">US$56,5 M</p>
-                    <div className="h-60 w-full">
-                        <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
+                    <div className="h-60 w-full overflow-x-auto">
+                        <ChartContainer config={gmvComboChartConfig} className="h-full min-w-[600px]">
                             <ComposedChart data={gmvComboData} barCategoryGap="30%" margin={{ top: 20, right: 0, left: -20, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                 <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
@@ -468,7 +468,7 @@ export default function AnalystPage() {
                     <CardTitle className="text-h3 font-medium">Wawasan Penting Pembeli Digital</CardTitle>
                     <CardDescription>Pola perilaku kunci yang mendorong penjualan.</CardDescription>
                 </CardHeader>
-                <CardContent className="p-0 mt-6 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8">
+                <CardContent className="p-0 mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-8">
                     <div className="flex items-start gap-3">
                          <div className="p-2.5 bg-primary/10 rounded-lg"><Clock className="w-5 h-5 text-primary" /></div>
                         <div>
@@ -508,8 +508,8 @@ export default function AnalystPage() {
                     <CardDescription>Integrasi Tokopedia & TikTok Shop menciptakan duopoli baru yang menantang dominasi Shopee.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-0 mt-8 space-y-8">
-                    <div className="w-full h-[300px]">
-                        <ChartContainer config={marketShareChartConfig} className="h-full w-full">
+                    <div className="w-full h-[300px] overflow-x-auto">
+                        <ChartContainer config={marketShareChartConfig} className="h-full min-w-[500px]">
                             <RechartsBarChart data={marketShareData} barCategoryGap="20%" margin={{ bottom: 20 }}>
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                 <XAxis 
@@ -701,19 +701,19 @@ export default function AnalystPage() {
                         <div className="grid md:grid-cols-2 gap-4">
                             <div>
                                 <h3 className="font-semibold text-lg mb-2">Biaya Tetap & Target Penjualan</h3>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <NumericInput name="fixedCostsPerMonth" control={form.control} label="Biaya Tetap / Bulan" />
                                     <NumericInput name="avgSalesPerMonth" control={form.control} label="Target Jual / Bulan" />
                                 </div>
                             </div>
                             <div>
                                 <h3 className="font-semibold text-lg mb-2">Estimasi Profitabilitas</h3>
-                                 <div className="grid grid-cols-2 gap-4">
+                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <Card className="p-4 bg-muted/50 flex flex-col justify-between rounded-xl">
                                         <div>
                                             <p className="text-caption text-muted-foreground">Laba/unit</p>
                                             <p className={cn(
-                                                "text-xl font-bold break-all",
+                                                "text-xl font-bold break-words",
                                                 calculations.netProfitPerUnit > 0 ? "text-green-600" :
                                                 calculations.netProfitPerUnit < 0 ? "text-destructive" : "text-foreground"
                                             )}>{formatCurrency(calculations.netProfitPerUnit)}</p>
@@ -724,7 +724,7 @@ export default function AnalystPage() {
                                         <div>
                                             <p className="text-caption text-muted-foreground">BEP (unit)</p>
                                             <p className={cn(
-                                                "text-xl font-bold break-all",
+                                                "text-xl font-bold break-words",
                                                 isFinite(calculations.bepUnit) && calculations.bepUnit > 0
                                                     ? "text-green-600"
                                                     : "text-destructive"
@@ -752,13 +752,13 @@ export default function AnalystPage() {
                         </div>
                         
                         <div className="grid md:grid-cols-2 gap-8 items-center">
-                            <div>
+                            <div className="overflow-x-auto">
                                 {budgetChartData.length > 0 ? (
-                                    <div className="w-full h-64">
+                                    <div className="w-full h-64 min-w-[500px]">
                                         <ChartContainer config={budgetChartConfig} className="h-full w-full">
                                             <RechartsBarChart
                                                 data={budgetChartData}
-                                                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                                                margin={{ top: 20, right: 10, left: 10, bottom: 5 }}
                                             >
                                                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                                 <XAxis

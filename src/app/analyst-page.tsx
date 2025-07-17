@@ -394,7 +394,7 @@ export default function AnalystPage() {
   const renderFittableTableCellSimple = (value: number, isNegative = false) => {
     const displayValue = formatCurrency(value);
     return (
-        <span className={cn(isNegative ? 'text-destructive' : 'text-foreground')}>
+        <span className={cn('break-all', isNegative ? 'text-destructive' : 'text-foreground')}>
             {isNegative ? `- ${displayValue}`: displayValue}
         </span>
     );
@@ -405,7 +405,7 @@ export default function AnalystPage() {
     const prefix = addSign ? (isNegative ? '− ' : '+ ') : (isNegative ? '− ' : '');
     const finalDisplayValue = prefix + displayValue.replace('Rp', '').trim();
     return (
-       <span className={cn(isNegative ? 'text-destructive' : 'text-green-600', {'text-foreground': !addSign && !isNegative})}>
+       <span className={cn('break-all', isNegative ? 'text-destructive' : 'text-green-600', {'text-foreground': !addSign && !isNegative})}>
         {finalDisplayValue}
       </span>
     );
@@ -713,7 +713,7 @@ export default function AnalystPage() {
                                         <div>
                                             <p className="text-caption text-muted-foreground">Laba/unit</p>
                                             <p className={cn(
-                                                "text-xl font-bold",
+                                                "text-xl font-bold break-all",
                                                 calculations.netProfitPerUnit > 0 ? "text-green-600" :
                                                 calculations.netProfitPerUnit < 0 ? "text-destructive" : "text-foreground"
                                             )}>{formatCurrency(calculations.netProfitPerUnit)}</p>
@@ -724,7 +724,7 @@ export default function AnalystPage() {
                                         <div>
                                             <p className="text-caption text-muted-foreground">BEP (unit)</p>
                                             <p className={cn(
-                                                "text-xl font-bold",
+                                                "text-xl font-bold break-all",
                                                 isFinite(calculations.bepUnit) && calculations.bepUnit > 0
                                                     ? "text-green-600"
                                                     : "text-destructive"
@@ -809,10 +809,10 @@ export default function AnalystPage() {
                                               <FormLabel htmlFor={strategy.id} className="flex items-center justify-between rounded-xl border p-3 cursor-pointer">
                                                   <div className="flex items-center gap-3">
                                                       <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                      <span className="flex-1">{strategy.title}</span>
+                                                      <span className="flex-1 font-medium">{strategy.title}</span>
                                                   </div>
                                                   <div className="flex items-center gap-4">
-                                                    <span className="font-medium text-sm w-24 text-right">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
+                                                    <span className="font-medium text-sm w-28 text-right break-all">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
                                                     <FormControl>
                                                       <Switch
                                                         id={strategy.id}
@@ -877,7 +877,7 @@ export default function AnalystPage() {
                         <Card className="p-6 text-center flex flex-col justify-between">
                             <div>
                                <p className="text-body font-semibold">Return on Ad Spend (ROAS)</p>
-                               <p className="text-2xl md:text-3xl mt-2 font-bold text-primary break-all">{`${analysisResult.roas.toFixed(2)}x`}</p>
+                               <p className="text-2xl md:text-3xl mt-2 font-bold break-all">{`${analysisResult.roas.toFixed(2)}x`}</p>
                             </div>
                             <p className="text-caption text-muted-foreground mt-2">Pengembalian dari setiap Rupiah untuk iklan.</p>
                         </Card>
@@ -891,7 +891,7 @@ export default function AnalystPage() {
                                     {analysisResult.pnlTable.map(item => (
                                         <TableRow key={item.item}>
                                         <TableCell className={cn("py-3 px-4", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>{item.item}</TableCell>
-                                        <TableCell className={cn("text-right font-medium py-3 px-4 text-sm break-all", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>
+                                        <TableCell className={cn("text-right font-medium py-3 px-4 text-sm", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>
                                             {renderFittableTableCellSimple(item.value, item.isNegative)}
                                         </TableCell>
                                         </TableRow>
@@ -908,7 +908,7 @@ export default function AnalystPage() {
                                     {analysisResult.cashflowTable.map((row, index) => (
                                         <TableRow key={index}>
                                             <TableCell className={cn("py-3 px-4", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>{row.item}</TableCell>
-                                            <TableCell className={cn("text-right font-medium py-3 px-4 text-sm break-all", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>
+                                            <TableCell className={cn("text-right font-medium py-3 px-4 text-sm", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>
                                             {renderFittableTableCell(row.value, row.isNegative, true)}
                                             </TableCell>
                                         </TableRow>

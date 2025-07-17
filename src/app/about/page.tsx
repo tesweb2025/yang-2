@@ -56,10 +56,7 @@ export default function AboutPage() {
            <Card className="bg-primary text-primary-foreground border-none">
             <CardContent className="text-center p-6">
                <p className="font-semibold text-lg">
-                Karena di dunia bisnis, yang dipertaruhkan bukan cuma uang... tapi waktu, tenaga, dan harapan.
-              </p>
-              <p className="mt-2 text-primary-foreground/90">
-                Petakan.ai bantu lo ngambil langkah pertama — dengan data, bukan tebak-tebakan.
+                Karena di dunia bisnis, yang dipertaruhkan bukan cuma uang, tapi juga waktu, tenaga, dan harapan. Petakan.ai bantu lo ngambil langkah pertama — dengan data, bukan tebak-tebakan.
               </p>
             </CardContent>
           </Card>

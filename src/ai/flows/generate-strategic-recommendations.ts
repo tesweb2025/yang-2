@@ -10,6 +10,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'genkit';
 
 const StrategicRecommendationsInputSchema = z.object({
@@ -42,6 +43,7 @@ const prompt = ai.definePrompt({
   name: 'strategicRecommendationsPrompt',
   input: {schema: StrategicRecommendationsInputSchema},
   output: {schema: StrategicRecommendationsOutputSchema},
+  model: googleAI({apiKey: 'AIzaSyAsV-2PwQZ4QxlkE9Jr-Vy4hoFZzR_SpR0'}),
   prompt: `Kamu adalah seorang Business Strategist AI yang jago banget ngasih saran praktis buat UMKM di Indonesia. Gaya bicaramu santai, memotivasi, dan solutif.
 
 Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi bisnis ini. Fokus pada saran yang paling besar dampaknya.

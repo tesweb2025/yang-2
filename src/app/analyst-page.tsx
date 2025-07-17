@@ -413,7 +413,7 @@ export default function AnalystPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <main className="space-y-12 md:space-y-20">
-        <section className="text-center pt-12 md:pt-20">
+        <section className="text-center pt-8 md:pt-12">
           <h1 className="text-h1 font-bold tracking-tight mb-4">Lihat Untung-Ruginya,<br />Sebelum Kamu Jalanin Strateginya.</h1>
            <div className="my-4 flex justify-center">
             <Image 
@@ -750,7 +750,7 @@ export default function AnalystPage() {
                         </div>
                         
                         <div className="grid md:grid-cols-2 gap-8 items-center">
-                            <div className="overflow-x-auto flex justify-center">
+                             <div className="overflow-x-auto flex justify-center">
                                 {budgetChartData.length > 0 ? (
                                     <div className="w-full h-64">
                                         <ChartContainer config={budgetChartConfig} className="h-full w-full">
@@ -861,21 +861,21 @@ export default function AnalystPage() {
                         <Card className="p-6 text-center flex flex-col justify-between">
                             <div>
                                <p className="text-body font-semibold">Proyeksi Pendapatan Tahunan</p>
-                               <p className="text-2xl md:text-3xl mt-2 font-bold text-primary break-all">{formatCurrency(analysisResult.annualRevenue)}</p>
+                               <p className="text-2xl md:text-3xl mt-2 font-bold text-primary break-words">{formatCurrency(analysisResult.annualRevenue)}</p>
                             </div>
                             <p className="text-caption text-muted-foreground mt-2">Total omzet kotor sebelum dikurangi biaya.</p>
                         </Card>
                         <Card className="p-6 text-center flex flex-col justify-between">
                              <div>
                                 <p className="text-body font-semibold">Proyeksi Profit Tahunan</p>
-                                <p className={`text-2xl md:text-3xl mt-2 font-bold break-all ${analysisResult.annualProfit < 0 ? 'text-destructive' : 'text-green-600'}`}>{formatCurrency(analysisResult.annualProfit)}</p>
+                                <p className={`text-2xl md:text-3xl mt-2 font-bold break-words ${analysisResult.annualProfit < 0 ? 'text-destructive' : 'text-green-600'}`}>{formatCurrency(analysisResult.annualProfit)}</p>
                             </div>
                             <p className="text-caption text-muted-foreground mt-2">Sisa uang setelah semua biaya terbayar.</p>
                         </Card>
                         <Card className="p-6 text-center flex flex-col justify-between">
                             <div>
                                <p className="text-body font-semibold">Return on Ad Spend (ROAS)</p>
-                               <p className="text-2xl md:text-3xl mt-2 font-bold break-all">{`${analysisResult.roas.toFixed(2)}x`}</p>
+                               <p className="text-2xl md:text-3xl mt-2 font-bold break-words">{`${analysisResult.roas.toFixed(2)}x`}</p>
                             </div>
                             <p className="text-caption text-muted-foreground mt-2">Pengembalian dari setiap Rupiah untuk iklan.</p>
                         </Card>

@@ -104,17 +104,6 @@ const formatCurrency = (value: number) => {
   }).format(value);
 };
 
-const formatNumberWithCommas = (value: number | undefined) => {
-  if (value === undefined || value === null || isNaN(value)) return '';
-  return new Intl.NumberFormat('id-ID').format(value);
-};
-
-const parseNumberWithCommas = (value: string) => {
-  const parsed = parseInt(value.replace(/\./g, ''), 10);
-  return isNaN(parsed) ? undefined : parsed;
-};
-
-
 const businessModelContent: any = {
   'tipis-baru': {
     persona: "Pejuang Volume",
@@ -228,13 +217,13 @@ export default function AnalystPage() {
       targetSegment: "",
       marginModel: 'tipis',
       brandStrength: 'baru',
-      sellPrice: undefined,
-      costOfGoods: undefined,
-      adCost: undefined,
-      otherCostsPercentage: undefined,
-      fixedCostsPerMonth: undefined,
-      avgSalesPerMonth: undefined,
-      totalMarketingBudget: undefined,
+      sellPrice: 0,
+      costOfGoods: 0,
+      adCost: 0,
+      otherCostsPercentage: 0,
+      fixedCostsPerMonth: 0,
+      avgSalesPerMonth: 0,
+      totalMarketingBudget: 0,
       useVideoContent: false,
       useKOL: false,
       usePromo: false,
@@ -247,9 +236,15 @@ export default function AnalystPage() {
   const { sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth, totalMarketingBudget, useVideoContent, useKOL, usePromo, useOtherChannels } = watchedValues;
 
   const calculations = useMemo(() => {
-    const grossProfitPerUnit = (sellPrice || 0) - (costOfGoods || 0);
-    const netProfitPerUnit = grossProfitPerUnit - (adCost || 0) - ((sellPrice || 0) * (otherCostsPercentage || 0) / 100);
-    const bepUnit = netProfitPerUnit > 0 ? (fixedCostsPerMonth || 0) / netProfitPerUnit : Infinity;
+    const sp = sellPrice || 0;
+    const cogs = costOfGoods || 0;
+    const ac = adCost || 0;
+    const ocp = otherCostsPercentage || 0;
+    const fcm = fixedCostsPerMonth || 0;
+
+    const grossProfitPerUnit = sp - cogs;
+    const netProfitPerUnit = grossProfitPerUnit - ac - (sp * ocp / 100);
+    const bepUnit = netProfitPerUnit > 0 ? fcm / netProfitPerUnit : Infinity;
     
     return { netProfitPerUnit, bepUnit };
   }, [
@@ -646,82 +641,18 @@ export default function AnalystPage() {
                         <div>
                             <h3 className="font-semibold text-lg mb-4">Kalkulator Harga & Biaya per Produk</h3>
                             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <Controller
-                                    name="sellPrice"
-                                    control={form.control}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Harga Jual</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    placeholder="Rp 0"
-                                                    value={formatNumberWithCommas(field.value)}
-                                                    onChange={(e) => field.onChange(parseNumberWithCommas(e.target.value))}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <Controller
-                                    name="costOfGoods"
-                                    control={form.control}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Modal Produk (HPP)</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    placeholder="Rp 0"
-                                                    value={formatNumberWithCommas(field.value)}
-                                                    onChange={(e) => field.onChange(parseNumberWithCommas(e.target.value))}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <Controller
-                                    name="adCost"
-                                    control={form.control}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Biaya Iklan (CAC)</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    placeholder="Rp 0"
-                                                    value={formatNumberWithCommas(field.value)}
-                                                    onChange={(e) => field.onChange(parseNumberWithCommas(e.target.value))}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField control={form.control} name="otherCostsPercentage" render={({ field }) => (<FormItem><FormLabel>Biaya Lain (%)</FormLabel><FormControl><Input type="number" placeholder="0%" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem>)} />
+                                <FormField control={form.control} name="sellPrice" render={({ field }) => (<FormItem><FormLabel>Harga Jual</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                <FormField control={form.control} name="costOfGoods" render={({ field }) => (<FormItem><FormLabel>Modal Produk (HPP)</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                <FormField control={form.control} name="adCost" render={({ field }) => (<FormItem><FormLabel>Biaya Iklan (CAC)</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                <FormField control={form.control} name="otherCostsPercentage" render={({ field }) => (<FormItem><FormLabel>Biaya Lain (%)</FormLabel><FormControl><Input type="number" placeholder="0%" {...field} /></FormControl><FormMessage /></FormItem>)} />
                             </div>
                         </div>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div>
                                 <h3 className="font-semibold text-lg mb-2">Biaya Tetap & Target Penjualan</h3>
                                 <div className="grid grid-cols-2 gap-4">
-                                  <Controller
-                                      name="fixedCostsPerMonth"
-                                      control={form.control}
-                                      render={({ field }) => (
-                                          <FormItem>
-                                              <FormLabel>Biaya Tetap / Bulan</FormLabel>
-                                              <FormControl>
-                                                  <Input
-                                                      placeholder="Rp 0"
-                                                      value={formatNumberWithCommas(field.value)}
-                                                      onChange={(e) => field.onChange(parseNumberWithCommas(e.target.value))}
-                                                  />
-                                              </FormControl>
-                                              <FormMessage />
-                                          </FormItem>
-                                      )}
-                                  />
-                                  <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Target Jual / Bulan</FormLabel><FormControl><Input type="number" placeholder="0" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem>)} />
+                                  <FormField control={form.control} name="fixedCostsPerMonth" render={({ field }) => (<FormItem><FormLabel>Biaya Tetap / Bulan</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                  <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Target Jual / Bulan</FormLabel><FormControl><Input type="number" placeholder="0" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                 </div>
                             </div>
                             <div>
@@ -764,25 +695,20 @@ export default function AnalystPage() {
                     </CardHeader>
                     <CardContent className="p-0">
                        <div className="mb-8 max-w-sm mx-auto">
-                         <Controller
-                              name="totalMarketingBudget"
-                              control={form.control}
-                              render={({ field }) => (
-                                  <FormItem>
-                                      <FormLabel className="text-center block mb-2">Total Bujet Pemasaran</FormLabel>
-                                      <FormControl>
-                                          <Input
-                                              type="text"
-                                              placeholder="Rp 0"
-                                              className="text-2xl font-bold h-auto py-3 text-center"
-                                              value={formatNumberWithCommas(field.value)}
-                                              onChange={(e) => field.onChange(parseNumberWithCommas(e.target.value))}
-                                          />
-                                      </FormControl>
-                                      <FormMessage className="text-center"/>
-                                  </FormItem>
-                              )}
-                          />
+                         <FormField control={form.control} name="totalMarketingBudget" render={({ field }) => (
+                           <FormItem>
+                             <FormLabel className="text-center block mb-2">Total Bujet Pemasaran</FormLabel>
+                             <FormControl>
+                               <Input
+                                 type="number"
+                                 placeholder="Rp 0"
+                                 className="text-2xl font-bold h-auto py-3 text-center"
+                                 {...field}
+                               />
+                             </FormControl>
+                             <FormMessage className="text-center"/>
+                           </FormItem>
+                         )} />
                         </div>
                         
                         <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -842,7 +768,7 @@ export default function AnalystPage() {
                                             <FormItem className="flex items-center justify-between rounded-lg border p-3">
                                                 <div className="flex items-center gap-3">
                                                     <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                    <FormLabel className="font-normal flex-1">{strategy.title}</FormLabel>
+                                                    <FormLabel className="font-normal flex-1 cursor-pointer" onClick={() => field.onChange(!field.value)}>{strategy.title}</FormLabel>
                                                 </div>
                                                 <div className="flex items-center gap-4">
                                                   <span className="font-medium text-sm w-24 text-right">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>

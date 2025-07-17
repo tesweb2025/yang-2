@@ -57,21 +57,25 @@ const marketingStrategies = [
         id: 'useVideoContent',
         title: "Video Content & Ads",
         description: "Buat konten video pendek & pasang iklan di platform sosial.",
+        channel: "Iklan Medsos & Video",
     },
     {
         id: 'useKOL',
         title: "KOL & Afiliasi",
         description: "Gunakan influencer atau program afiliasi untuk promosi.",
+        channel: "Endorse & KOL",
     },
     {
         id: 'usePromo',
         title: "Promosi & Diskon",
         description: "Tawarkan diskon, voucher, atau promo bundling ke pelanggan.",
+        channel: "Promosi & Diskon",
     },
     {
         id: 'useOtherChannels',
         title: "Kanal Lainnya",
         description: "Manfaatkan kanal lain seperti SEO, event, atau marketplace ads.",
+        channel: "Kanal Lainnya",
     }
 ];
 
@@ -268,6 +272,24 @@ export default function AnalystPage() {
     watchedValues.fixedCostsPerMonth
   ]);
 
+  const budgetChartData = useMemo(() => {
+    const selectedStrategies = marketingStrategies.filter(s => watchedValues[s.id as keyof FormData]);
+    if (selectedStrategies.length === 0) return [];
+    
+    const budgetPerStrategy = (watchedValues.totalMarketingBudget || 0) / selectedStrategies.length;
+    
+    return selectedStrategies.map(s => ({
+      name: s.channel,
+      value: budgetPerStrategy,
+      fill: `var(--color-${s.channel.replace(/ & | /g, "-").toLowerCase()})`
+    }));
+  }, [
+    watchedValues.totalMarketingBudget,
+    watchedValues.useVideoContent,
+    watchedValues.useKOL,
+    watchedValues.usePromo,
+    watchedValues.useOtherChannels,
+  ]);
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
@@ -558,7 +580,7 @@ export default function AnalystPage() {
                                     </div>
                                     <FormControl>
                                         <Switch
-                                            checked={field.value}
+                                            checked={field.value as boolean}
                                             onCheckedChange={field.onChange}
                                         />
                                     </FormControl>
@@ -729,32 +751,73 @@ export default function AnalystPage() {
             
             <section id="alokasi-bujet">
                  <Card className="p-6 md:p-8">
-                    <CardHeader className="p-0 text-center">
-                        <CardTitle className="text-h3 font-medium">Alokator Bujet Pemasaran</CardTitle>
+                    <CardHeader className="p-0">
+                        <CardTitle className="text-h3 font-medium text-center">Alokator Bujet Pemasaran</CardTitle>
                     </CardHeader>
-                    <CardContent className="p-0 mt-6 max-w-lg mx-auto">
-                        <Controller
-                            name="totalMarketingBudget"
-                            control={form.control}
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Total Bujet Pemasaran Bulanan</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="text"
-                                            placeholder="Rp 0"
-                                            className="text-2xl font-bold h-auto py-3"
-                                            value={formatNumberWithCommas(field.value)}
-                                            onChange={(e) => field.onChange(parseNumberWithCommas(e.target.value))}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <p className="text-center text-muted-foreground text-caption mt-6">
-                          Masukkan total dana yang akan Anda gunakan untuk semua aktivitas pemasaran dalam sebulan.
-                        </p>
+                    <CardContent className="p-0 mt-6">
+                       <div className="max-w-lg mx-auto">
+                         <Controller
+                              name="totalMarketingBudget"
+                              control={form.control}
+                              render={({ field }) => (
+                                  <FormItem>
+                                      <FormLabel>Total Bujet Pemasaran Bulanan</FormLabel>
+                                      <FormControl>
+                                          <Input
+                                              type="text"
+                                              placeholder="Rp 0"
+                                              className="text-2xl font-bold h-auto py-3"
+                                              value={formatNumberWithCommas(field.value)}
+                                              onChange={(e) => field.onChange(parseNumberWithCommas(e.target.value))}
+                                          />
+                                      </FormControl>
+                                      <FormMessage />
+                                  </FormItem>
+                              )}
+                          />
+                          <p className="text-center text-muted-foreground text-caption mt-2">
+                            Masukkan total dana yang akan Anda gunakan untuk semua aktivitas pemasaran dalam sebulan.
+                          </p>
+                        </div>
+
+                        {budgetChartData.length > 0 && (
+                          <div className="mt-8">
+                              <h4 className="text-center font-semibold mb-4">Estimasi Alokasi Bujet per Kanal</h4>
+                              <div className="w-full h-60">
+                                  <ChartContainer config={budgetChartConfig} className="h-full w-full">
+                                      <RechartsBarChart layout="vertical" data={budgetChartData} margin={{ left: 20, right: 30 }}>
+                                          <CartesianGrid horizontal={false} strokeDasharray="3 3" />
+                                          <YAxis 
+                                              dataKey="name" 
+                                              type="category" 
+                                              tickLine={false} 
+                                              axisLine={false} 
+                                              tick={{ fontSize: 12 }} 
+                                              width={120}
+                                          />
+                                          <XAxis type="number" hide />
+                                          <RechartsTooltip 
+                                              cursor={{ fill: 'hsl(var(--muted))' }} 
+                                              content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />}
+                                          />
+                                          <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                                              {budgetChartData.map((entry) => (
+                                                  <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+                                              ))}
+                                              <LabelList 
+                                                  dataKey="value" 
+                                                  position="right" 
+                                                  offset={8} 
+                                                  className="fill-foreground font-medium"
+                                                  fontSize={12}
+                                                  formatter={(value: number) => formatCurrency(value)}
+                                              />
+                                          </Bar>
+                                      </RechartsBarChart>
+                                  </ChartContainer>
+                              </div>
+                          </div>
+                        )}
                     </CardContent>
                     <div className="border-t -mx-8 my-8"></div>
                     <Button type="submit" className="w-full h-14 text-lg rounded-full" disabled={isLoading}>
@@ -765,7 +828,7 @@ export default function AnalystPage() {
           </form>
         </Form>
         
-         <div id="hasil-simulasi" className="scroll-mt-24 space-y-12">
+         <div id="hasil-simulasi" className="scroll-mt-24 space-y-8">
             {isLoading && (
               <div className="flex flex-col items-center justify-center text-center p-8">
                 <Loader2 className="w-12 h-12 animate-spin text-primary" />
@@ -886,3 +949,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

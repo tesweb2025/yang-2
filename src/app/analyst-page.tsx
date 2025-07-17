@@ -292,7 +292,7 @@ export default function AnalystPage() {
         value: budgetAllocations[s.id],
         fill: s.color,
       }));
-  }, [budgetAllocations, watchedValues]);
+  }, [budgetAllocations, watchedValues.useVideoContent, watchedValues.useKOL, watchedValues.usePromo, watchedValues.useOtherChannels]);
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
@@ -540,31 +540,31 @@ export default function AnalystPage() {
                               name={strategy.id}
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormControl>
-                                    <div
-                                      className={cn(
-                                        "p-4 rounded-lg border transition-all relative cursor-pointer",
-                                        field.value
-                                          ? "bg-primary text-primary-foreground"
-                                          : "bg-muted/30 hover:bg-muted/60"
-                                      )}
-                                      onClick={() => field.onChange(!field.value)}
-                                    >
-                                      <div className="absolute top-4 right-4">
+                                  <div
+                                    className={cn(
+                                      "p-4 rounded-lg border transition-all relative cursor-pointer",
+                                      field.value
+                                        ? "bg-primary text-primary-foreground"
+                                        : "bg-muted/30 hover:bg-muted/60"
+                                    )}
+                                    onClick={() => field.onChange(!field.value)}
+                                  >
+                                    <div className="absolute top-4 right-4">
+                                      <FormControl>
                                         <Switch
                                           checked={field.value}
                                           onCheckedChange={field.onChange}
                                           className="cursor-pointer"
                                           onClick={(e) => e.stopPropagation()}
                                         />
-                                      </div>
-                                      <div className="flex flex-col gap-1">
-                                        <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-muted-foreground")} />
-                                        <label className="font-semibold cursor-pointer">{strategy.title}</label>
-                                        <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
-                                      </div>
+                                      </FormControl>
                                     </div>
-                                  </FormControl>
+                                    <div className="flex flex-col gap-1">
+                                      <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-muted-foreground")} />
+                                      <FormLabel className="cursor-pointer">{strategy.title}</FormLabel>
+                                      <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
+                                    </div>
+                                  </div>
                                 </FormItem>
                               )}
                           />
@@ -809,30 +809,29 @@ export default function AnalystPage() {
 
                             <div className="space-y-4">
                                 {marketingStrategies.map(strategy => (
-                                    <FormItem key={strategy.id}>
-                                        <FormField
-                                            control={form.control}
-                                            name={strategy.id}
-                                            render={({ field }) => (
-                                                <div className="flex items-center justify-between rounded-lg border p-3">
-                                                    <div className="flex items-center gap-3">
-                                                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                        <FormLabel htmlFor={strategy.id} className="font-normal cursor-pointer flex-1">{strategy.title}</FormLabel>
-                                                    </div>
-                                                    <div className="flex items-center gap-4">
-                                                      <span className="font-medium text-sm w-24 text-right">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
-                                                      <FormControl>
-                                                        <Switch
-                                                          id={strategy.id}
-                                                          checked={field.value}
-                                                          onCheckedChange={field.onChange}
-                                                        />
-                                                      </FormControl>
-                                                    </div>
+                                    <FormField
+                                        key={strategy.id}
+                                        control={form.control}
+                                        name={strategy.id}
+                                        render={({ field }) => (
+                                            <FormItem className="flex items-center justify-between rounded-lg border p-3">
+                                                <div className="flex items-center gap-3">
+                                                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
+                                                    <FormLabel htmlFor={strategy.id} className="font-normal cursor-pointer flex-1">{strategy.title}</FormLabel>
                                                 </div>
-                                            )}
-                                        />
-                                    </FormItem>
+                                                <div className="flex items-center gap-4">
+                                                  <span className="font-medium text-sm w-24 text-right">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
+                                                  <FormControl>
+                                                    <Switch
+                                                      id={strategy.id}
+                                                      checked={field.value}
+                                                      onCheckedChange={field.onChange}
+                                                    />
+                                                  </FormControl>
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
                                 ))}
                             </div>
                         </div>

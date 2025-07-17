@@ -58,28 +58,32 @@ const marketingStrategies = [
         title: "Video Content & Ads",
         description: "Buat konten video pendek & pasang iklan di platform sosial.",
         channel: "Iklan Medsos & Video",
-        color: "hsl(var(--chart-1))"
+        color: "hsl(var(--chart-1))",
+        icon: Video
     },
     {
         id: 'useKOL' as const,
         title: "KOL & Afiliasi",
         description: "Gunakan influencer atau program afiliasi untuk promosi.",
         channel: "Endorse & KOL",
-        color: "hsl(var(--chart-2))"
+        color: "hsl(var(--chart-2))",
+        icon: Users
     },
     {
         id: 'usePromo' as const,
         title: "Promosi & Diskon",
         description: "Tawarkan diskon, voucher, atau promo bundling ke pelanggan.",
         channel: "Promosi & Diskon",
-        color: "hsl(var(--chart-3))"
+        color: "hsl(var(--chart-3))",
+        icon: Receipt
     },
     {
         id: 'useOtherChannels' as const,
         title: "Kanal Lainnya",
         description: "Manfaatkan kanal lain seperti SEO, event, atau marketplace ads.",
         channel: "Kanal Lainnya",
-        color: "hsl(var(--chart-4))"
+        color: "hsl(var(--chart-4))",
+        icon: Share2
     }
 ];
 
@@ -575,9 +579,12 @@ export default function AnalystPage() {
                                 name={strategy.id}
                                 render={({ field }) => (
                                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                                    <div className="space-y-0.5">
-                                        <FormLabel className="text-base">{strategy.title}</FormLabel>
-                                        <FormDescription>{strategy.description}</FormDescription>
+                                    <div className="flex items-center space-x-4">
+                                        <strategy.icon className="w-6 h-6 text-primary"/>
+                                        <div className="space-y-0.5">
+                                            <FormLabel className="text-base">{strategy.title}</FormLabel>
+                                            <FormDescription>{strategy.description}</FormDescription>
+                                        </div>
                                     </div>
                                     <FormControl>
                                     <Switch
@@ -947,3 +954,4 @@ export default function AnalystPage() {
     
 
     
+

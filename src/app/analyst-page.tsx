@@ -517,7 +517,7 @@ export default function AnalystPage() {
                                     tickLine={false} 
                                     axisLine={false}
                                     interval={0}
-                                    dy={15}
+                                    dy={10}
                                     tick={(props) => {
                                         const { x, y, payload } = props;
                                         const value = payload.value;
@@ -525,7 +525,7 @@ export default function AnalystPage() {
                                           const parts = value.split(' & ');
                                           return (
                                             <g transform={`translate(${x},${y})`}>
-                                              <text x={0} y={0} dy={0} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
+                                              <text x={0} y={0} dy={5} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
                                                 <tspan x="0" dy="0em">{parts[0]}</tspan>
                                                 <tspan x="0" dy="1.2em">&amp; {parts[1]}</tspan>
                                               </text>
@@ -534,7 +534,7 @@ export default function AnalystPage() {
                                         }
                                         return (
                                           <g transform={`translate(${x},${y})`}>
-                                            <text x={0} y={0} dy={0} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
+                                            <text x={0} y={0} dy={16} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
                                               {value}
                                             </text>
                                           </g>

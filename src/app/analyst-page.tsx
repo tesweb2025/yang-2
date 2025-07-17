@@ -809,29 +809,30 @@ export default function AnalystPage() {
 
                             <div className="space-y-4">
                                 {marketingStrategies.map(strategy => (
-                                    <FormField
-                                        key={strategy.id}
-                                        control={form.control}
-                                        name={strategy.id}
-                                        render={({ field }) => (
-                                            <div className="flex items-center justify-between rounded-lg border p-3">
-                                                <div className="flex items-center gap-3">
-                                                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                    <FormLabel htmlFor={strategy.id} className="font-normal cursor-pointer flex-1">{strategy.title}</FormLabel>
+                                    <FormItem key={strategy.id}>
+                                        <FormField
+                                            control={form.control}
+                                            name={strategy.id}
+                                            render={({ field }) => (
+                                                <div className="flex items-center justify-between rounded-lg border p-3">
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
+                                                        <FormLabel htmlFor={strategy.id} className="font-normal cursor-pointer flex-1">{strategy.title}</FormLabel>
+                                                    </div>
+                                                    <div className="flex items-center gap-4">
+                                                      <span className="font-medium text-sm w-24 text-right">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
+                                                      <FormControl>
+                                                        <Switch
+                                                          id={strategy.id}
+                                                          checked={field.value}
+                                                          onCheckedChange={field.onChange}
+                                                        />
+                                                      </FormControl>
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-4">
-                                                  <span className="font-medium text-sm w-24 text-right">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
-                                                  <FormControl>
-                                                    <Switch
-                                                      id={strategy.id}
-                                                      checked={field.value}
-                                                      onCheckedChange={field.onChange}
-                                                    />
-                                                  </FormControl>
-                                                </div>
-                                            </div>
-                                        )}
-                                    />
+                                            )}
+                                        />
+                                    </FormItem>
                                 ))}
                             </div>
                         </div>

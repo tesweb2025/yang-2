@@ -752,9 +752,9 @@ export default function AnalystPage() {
                         </div>
                         
                         <div className="grid md:grid-cols-2 gap-8 items-center">
-                            <div className="overflow-x-auto">
+                            <div className="overflow-x-auto flex justify-center">
                                 {budgetChartData.length > 0 ? (
-                                    <div className="w-full h-64 min-w-[500px]">
+                                    <div className="w-full h-64">
                                         <ChartContainer config={budgetChartConfig} className="h-full w-full">
                                             <RechartsBarChart
                                                 data={budgetChartData}

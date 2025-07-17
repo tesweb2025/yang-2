@@ -364,66 +364,69 @@ export default function AnalystPage() {
                 <h2 className="text-h2 font-semibold">Wawasan Pasar E-Commerce 2024</h2>
                 <p className="text-subtitle text-muted-foreground mt-2">Data terbaru untuk membantumu mengambil keputusan.</p>
             </div>
-            <div className="grid md:grid-cols-2 gap-6">
-                 <Card className="p-6">
-                    <CardHeader className="p-0 mb-4">
-                        <CardTitle className="text-h3 font-medium">Proyeksi Gross Merchandise Value (GMV)</CardTitle>
-                        <CardDescription>Pasar mulai dewasa, fokus bergeser dari 'bakar uang' ke profitabilitas. Pertumbuhan melambat ke 5% (YoY).</CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-0 space-y-4">
-                        <p className="text-5xl font-bold text-primary">US$56,5 M</p>
-                        <div className="h-60 w-full">
-                            <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
-                                <ComposedChart data={gmvComboData} margin={{ top: 20, right: 0, left: -20, bottom: 5 }}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                    <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
-                                    <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
-                                    <Bar dataKey="tokopedia" barSize={20} fill="var(--color-tokopedia)" radius={[4, 4, 0, 0]} />
-                                    <Bar dataKey="shopee" barSize={20} fill="var(--color-shopee)" radius={[4, 4, 0, 0]} />
-                                    <Line type="monotone" dataKey="average" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
-                                </ComposedChart>
-                            </ChartContainer>
-                        </div>
-                        <p className="text-caption text-muted-foreground text-center">Visualisasi tren GMV antar platform besar.</p>
-                    </CardContent>
-                </Card>
-                <Card className="p-6">
-                    <CardHeader className="p-0">
-                        <CardTitle className="text-h3 font-medium">Wawasan Penting Pembeli Digital</CardTitle>
-                        <CardDescription>Pola perilaku kunci yang mendorong penjualan.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-0 mt-6 grid grid-cols-2 gap-x-6 gap-y-8">
-                        <div className="flex items-start gap-3">
-                             <div className="p-2.5 bg-primary/10 rounded-lg"><Clock className="w-5 h-5 text-primary" /></div>
-                            <div>
-                                <p className="font-semibold text-body">Puncak Belanja</p>
-                                <p className="text-muted-foreground text-sm">Jam 19-21 & Hari Gajian</p>
+            <Card className="p-6">
+                <div className="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <CardHeader className="p-0 mb-4">
+                            <CardTitle className="text-h3 font-medium">Proyeksi Gross Merchandise Value (GMV)</CardTitle>
+                            <CardDescription>Pasar mulai dewasa, fokus bergeser dari 'bakar uang' ke profitabilitas. Pertumbuhan melambat ke 5% (YoY).</CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-0 space-y-4">
+                            <p className="text-5xl font-bold text-primary">US$56,5 M</p>
+                            <div className="h-60 w-full">
+                                <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
+                                    <ComposedChart data={gmvComboData} margin={{ top: 20, right: 0, left: -20, bottom: 5 }}>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                        <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
+                                        <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
+                                        <Bar dataKey="tokopedia" barSize={20} fill="var(--color-tokopedia)" radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey="shopee" barSize={20} fill="var(--color-shopee)" radius={[4, 4, 0, 0]} />
+                                        <Line type="monotone" dataKey="average" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
+                                    </ComposedChart>
+                                </ChartContainer>
                             </div>
-                        </div>
-                        <div className="flex items-start gap-3">
-                           <div className="p-2.5 bg-primary/10 rounded-lg"><Sparkles className="w-5 h-5 text-primary" /></div>
-                            <div>
-                                <p className="font-semibold text-body">Pendorong Utama</p>
-                                <p className="text-muted-foreground text-sm">82% karena Promo & Diskon</p>
+                            <p className="text-caption text-muted-foreground text-center">Visualisasi tren GMV antar platform besar.</p>
+                        </CardContent>
+                    </div>
+                    <div className="border-l border-border -my-6 hidden md:block"></div>
+                    <div>
+                        <CardHeader className="p-0">
+                            <CardTitle className="text-h3 font-medium">Wawasan Penting Pembeli Digital</CardTitle>
+                            <CardDescription>Pola perilaku kunci yang mendorong penjualan.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-0 mt-6 grid grid-cols-2 gap-x-6 gap-y-8">
+                            <div className="flex items-start gap-3">
+                                 <div className="p-2.5 bg-primary/10 rounded-lg"><Clock className="w-5 h-5 text-primary" /></div>
+                                <div>
+                                    <p className="font-semibold text-body">Puncak Belanja</p>
+                                    <p className="text-muted-foreground text-sm">Jam 19-21 & Hari Gajian</p>
+                                </div>
                             </div>
-                        </div>
-                         <div className="flex items-start gap-3">
-                           <div className="p-2.5 bg-primary/10 rounded-lg"><Percent className="w-5 h-5 text-primary" /></div>
-                            <div>
-                                <p className="font-semibold text-body">Sensitivitas Harga</p>
-                                <p className="text-muted-foreground text-sm">65% membandingkan harga</p>
+                            <div className="flex items-start gap-3">
+                               <div className="p-2.5 bg-primary/10 rounded-lg"><Sparkles className="w-5 h-5 text-primary" /></div>
+                                <div>
+                                    <p className="font-semibold text-body">Pendorong Utama</p>
+                                    <p className="text-muted-foreground text-sm">82% karena Promo & Diskon</p>
+                                </div>
                             </div>
-                        </div>
-                         <div className="flex items-start gap-3">
-                             <div className="p-2.5 bg-primary/10 rounded-lg"><Zap className="w-5 h-5 text-primary" /></div>
-                            <div>
-                                <p className="font-semibold text-body">Pengiriman Cepat</p>
-                                <p className="text-muted-foreground text-sm">55% batal jika estimasi lama</p>
+                             <div className="flex items-start gap-3">
+                               <div className="p-2.5 bg-primary/10 rounded-lg"><Percent className="w-5 h-5 text-primary" /></div>
+                                <div>
+                                    <p className="font-semibold text-body">Sensitivitas Harga</p>
+                                    <p className="text-muted-foreground text-sm">65% membandingkan harga</p>
+                                </div>
                             </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
+                             <div className="flex items-start gap-3">
+                                 <div className="p-2.5 bg-primary/10 rounded-lg"><Zap className="w-5 h-5 text-primary" /></div>
+                                <div>
+                                    <p className="font-semibold text-body">Pengiriman Cepat</p>
+                                    <p className="text-muted-foreground text-sm">55% batal jika estimasi lama</p>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </div>
+                </div>
+            </Card>
         </section>
         
         <section id="pangsa-pasar">
@@ -691,7 +694,7 @@ export default function AnalystPage() {
                         <CardTitle className="text-h3 font-medium">Alokator Bujet Pemasaran</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
-                       <div className="mx-auto mb-8">
+                       <div className="max-w-md mx-auto mb-8">
                          <Controller
                               name="totalMarketingBudget"
                               control={form.control}

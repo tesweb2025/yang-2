@@ -11,6 +11,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import {googleAI} from '@genkit-ai/googleai';
 
 const StrategicRecommendationsInputSchema = z.object({
   annualRevenueProjection: z.number().describe('The projected annual revenue.'),
@@ -40,6 +41,7 @@ export async function generateStrategicRecommendations(
 
 const prompt = ai.definePrompt({
   name: 'strategicRecommendationsPrompt',
+  model: googleAI.model('gemini-1.5-flash-preview'),
   input: {schema: StrategicRecommendationsInputSchema},
   output: {schema: StrategicRecommendationsOutputSchema},
   prompt: `Kamu adalah seorang Business Strategist AI yang jago banget ngasih saran praktis buat UMKM di Indonesia. Gaya bicaramu santai, memotivasi, dan solutif.

@@ -11,6 +11,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import {googleAI} from '@genkit-ai/googleai';
 
 const AnalyzeMarketEntryInputSchema = z.object({
   productName: z.string().describe('The name of the product or business.'),
@@ -41,6 +42,7 @@ export async function analyzeMarketEntry(input: AnalyzeMarketEntryInput): Promis
 
 const prompt = ai.definePrompt({
   name: 'analyzeMarketEntryPrompt',
+  model: googleAI.model('gemini-1.5-flash-preview'),
   input: {schema: AnalyzeMarketEntryInputSchema},
   output: {schema: AnalyzeMarketEntryOutputSchema},
   prompt: `Kamu adalah seorang Business Analyst AI yang ahli di pasar e-commerce Indonesia. Gaya bicaramu santai, to the point, dan mudah dimengerti UMKM.

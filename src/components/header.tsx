@@ -12,6 +12,7 @@ const navLinks = [
     { href: '#pangsa-pasar', label: 'Pangsa Pasar' },
     { href: '#cek-strategi', label: 'Simulasi' },
     { href: '#hasil-simulasi', label: 'Hasil AI' },
+    { href: '#about', label: 'About' },
 ];
 
 export function Header() {

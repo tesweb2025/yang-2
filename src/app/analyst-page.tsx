@@ -362,7 +362,7 @@ export default function AnalystPage() {
           <p className="text-subtitle text-muted-foreground max-w-2xl mx-auto">Lihat proyeksi untung-rugi dari idemu, sebelum nekat keluar modal. Gratis & tanpa risiko.</p>
            <Button asChild size="lg" className="mt-8 rounded-full h-12 px-8">
              <Link href="#cek-strategi">
-                Coba Simulasi Gratis
+                Mulai Simulasi Gratis
                 <ArrowRight className="ml-2"/>
              </Link>
            </Button>
@@ -406,28 +406,28 @@ export default function AnalystPage() {
                          <div className="p-2.5 bg-primary/10 rounded-lg"><Clock className="w-5 h-5 text-primary" /></div>
                         <div>
                             <p className="font-semibold text-body">Puncak Belanja</p>
-                            <p className="text-muted-foreground text-sm">Jam 19-21 & Hari Gajian</p>
+                            <p className="text-muted-foreground text-sm">Pembelian memuncak di jam 19-21 malam & saat tanggal gajian tiba.</p>
                         </div>
                     </div>
                     <div className="flex items-start gap-3">
                        <div className="p-2.5 bg-primary/10 rounded-lg"><Sparkles className="w-5 h-5 text-primary" /></div>
                         <div>
                             <p className="font-semibold text-body">Pendorong Utama</p>
-                            <p className="text-muted-foreground text-sm">82% karena Promo & Diskon</p>
+                            <p className="text-muted-foreground text-sm">82% pelanggan membeli karena ada promo, diskon, atau gratis ongkir.</p>
                         </div>
                     </div>
                      <div className="flex items-start gap-3">
                        <div className="p-2.5 bg-primary/10 rounded-lg"><Percent className="w-5 h-5 text-primary" /></div>
                         <div>
                             <p className="font-semibold text-body">Sensitivitas Harga</p>
-                            <p className="text-muted-foreground text-sm">65% membandingkan harga</p>
+                            <p className="text-muted-foreground text-sm">65% audiens aktif membandingkan harga di beberapa toko sebelum checkout.</p>
                         </div>
                     </div>
                      <div className="flex items-start gap-3">
                          <div className="p-2.5 bg-primary/10 rounded-lg"><Zap className="w-5 h-5 text-primary" /></div>
                         <div>
                             <p className="font-semibold text-body">Pengiriman Cepat</p>
-                            <p className="text-muted-foreground text-sm">55% batal jika estimasi lama</p>
+                            <p className="text-muted-foreground text-sm">55% cenderung membatalkan pesanan jika estimasi pengiriman terlalu lama.</p>
                         </div>
                     </div>
                 </CardContent>

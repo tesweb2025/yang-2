@@ -549,40 +549,39 @@ export default function AnalystPage() {
                     <h3 className="font-medium text-sm">Pilih Strategi Pemasaran</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {marketingStrategies.map((strategy) => (
-                          <FormField
-                              key={strategy.id}
-                              control={form.control}
-                              name={strategy.id}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <div
-                                    className={cn(
-                                      "p-4 rounded-lg border transition-all relative cursor-pointer",
-                                      field.value
-                                        ? "bg-primary text-primary-foreground"
-                                        : "bg-muted/30 hover:bg-muted/60"
-                                    )}
-                                    onClick={() => field.onChange(!field.value)}
-                                  >
-                                    <div className="absolute top-4 right-4">
-                                      <FormControl>
-                                        <Switch
-                                          checked={field.value}
-                                          onCheckedChange={field.onChange}
-                                          className="cursor-pointer"
-                                          onClick={(e) => e.stopPropagation()}
-                                        />
-                                      </FormControl>
-                                    </div>
-                                    <div className="flex flex-col gap-1">
-                                      <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-muted-foreground")} />
-                                      <FormLabel className="cursor-pointer">{strategy.title}</FormLabel>
-                                      <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
-                                    </div>
-                                  </div>
-                                </FormItem>
-                              )}
-                          />
+                        <FormField
+                          key={strategy.id}
+                          control={form.control}
+                          name={strategy.id}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel
+                                className={cn(
+                                  "p-4 rounded-lg border transition-all relative cursor-pointer font-normal",
+                                  field.value
+                                    ? "bg-primary text-primary-foreground"
+                                    : "bg-muted/30 hover:bg-muted/60"
+                                )}
+                              >
+                                <div className="absolute top-4 right-4">
+                                  <FormControl>
+                                    <Switch
+                                      checked={field.value}
+                                      onCheckedChange={field.onChange}
+                                      className="cursor-pointer"
+                                      onClick={(e) => e.stopPropagation()}
+                                    />
+                                  </FormControl>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                  <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-muted-foreground")} />
+                                  <span className="font-semibold">{strategy.title}</span>
+                                  <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                          )}
+                        />
                       ))}
                     </div>
                   </div>

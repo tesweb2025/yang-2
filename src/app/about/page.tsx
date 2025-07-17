@@ -21,13 +21,10 @@ export default function AboutPage() {
           <Card>
             <CardContent className="space-y-4 text-body text-muted-foreground pt-6">
               <p>
-                Petakan.ai bukan cuma alat. Ini refleksi dari pengalaman, kegagalan, dan kebutuhan nyata para pebisnis di lapangan.
+                Petakan.ai bukan cuma alat, tapi refleksi dari pengalaman, kegagalan, dan kebutuhan nyata para pebisnis di lapangan. Dibangun oleh RizkyFadil, platform ini lahir karena satu alasan: banyak sekali ide bagus yang kandas hanya karena tak punya cara untuk melihat potensi risiko sebelum nekat jalan.
               </p>
               <p>
-                Dibangun oleh RizkyFadil, Petakan lahir karena satu hal: banyak banget orang punya ide bagus, tapi gak punya alat untuk ngelihat kemungkinan sebelum nekat jalan.
-              </p>
-              <p>
-                Kebanyakan platform bantu kamu setelah jualan. <strong className="text-foreground">Petakan bantu kamu sebelum kamu pasang iklan pertama.</strong> Sebelum kamu nyetok produk. Sebelum kamu kehabisan modal.
+                Saat platform lain membantumu setelah penjualan terjadi, <strong className="text-foreground">Petakan hadir sebelum kamu memasang iklan pertama,</strong> sebelum menyetok produk, dan sebelum kehabisan modal.
               </p>
             </CardContent>
           </Card>

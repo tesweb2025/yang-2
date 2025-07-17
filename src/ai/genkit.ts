@@ -6,7 +6,7 @@ export const ai = genkit({
   plugins: [
     next(),
     googleAI({
-      apiKey: process.env.GOOGLE_API_KEY,
+      apiKey: 'AIzaSyBGPmo-WzowPYjnl3-CQYHsb-98k9eGbYU',
     }),
   ],
   logLevel: 'debug',

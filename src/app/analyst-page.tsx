@@ -359,10 +359,10 @@ export default function AnalystPage() {
       <main className="space-y-12 md:space-y-20">
         <section className="text-center pt-12 md:pt-20">
           <h1 className="text-h1 font-bold tracking-tight mb-4">Uji Strategi Bisnismu, Bukan Uangmu.</h1>
-          <p className="text-subtitle text-muted-foreground max-w-2xl mx-auto">Gunakan Simulasi AI untuk melihat proyeksi untung-rugi sebelum mengambil risiko. Gratis, cepat, dan akurat.</p>
+          <p className="text-subtitle text-muted-foreground max-w-2xl mx-auto">Lihat proyeksi untung-rugi dari idemu, sebelum nekat keluar modal. Gratis & tanpa risiko.</p>
            <Button asChild size="lg" className="mt-8 rounded-full h-12 px-8">
              <Link href="#cek-strategi">
-                Mulai Simulasi Gratis
+                Coba Simulasi Gratis
                 <ArrowRight className="ml-2"/>
              </Link>
            </Button>
@@ -370,8 +370,8 @@ export default function AnalystPage() {
 
         <section id="wawasan-pasar" className="space-y-8 scroll-mt-24">
             <div className="text-center">
-                <h2 className="text-h2 font-semibold">Wawasan Pasar E-Commerce 2024</h2>
-                <p className="text-subtitle text-muted-foreground mt-2">Data terbaru untuk membantumu mengambil keputusan.</p>
+                <h2 className="text-h2 font-semibold">Peta Persaingan E-Commerce 2024</h2>
+                <p className="text-subtitle text-muted-foreground mt-2">Data terbaru untuk bantu lo ambil keputusan yang lebih cerdas.</p>
             </div>
             <Card className="p-6 md:p-8">
                 <CardHeader className="p-0">

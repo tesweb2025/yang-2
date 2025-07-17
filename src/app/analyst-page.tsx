@@ -358,8 +358,8 @@ export default function AnalystPage() {
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <main className="space-y-12 md:space-y-20">
         <section className="text-center pt-12 md:pt-20">
-          <h1 className="text-h1 font-bold tracking-tight mb-4">Uji Strategi Bisnismu, Bukan Uangmu.</h1>
-          <p className="text-subtitle text-muted-foreground max-w-2xl mx-auto">Lihat proyeksi untung-rugi dari idemu, sebelum nekat keluar modal. Gratis & tanpa risiko.</p>
+          <h1 className="text-h1 font-bold tracking-tight mb-4">Lihat Untung-Ruginya, Sebelum Kamu Jalanin Strateginya.</h1>
+          <p className="text-subtitle text-muted-foreground max-w-2xl mx-auto">Simulasikan ide bisnis kamu dalam hitungan detik. Gratis, cepat, dan bantu ambil keputusan lebih tenang.</p>
            <Button asChild size="lg" className="mt-8 rounded-full h-12 px-8">
              <Link href="#cek-strategi">
                 Mulai Simulasi Gratis

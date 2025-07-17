@@ -359,6 +359,16 @@ export default function AnalystPage() {
       <main className="space-y-12 md:space-y-20">
         <section className="text-center pt-12 md:pt-20">
           <h1 className="text-h1 font-bold tracking-tight mb-4">Lihat Untung-Ruginya, Sebelum Kamu Jalanin Strateginya.</h1>
+           <div className="my-8 flex justify-center">
+            <Image 
+              src="https://placehold.co/400x300.png" 
+              alt="Ilustrasi Truk Pengiriman dan Pin Lokasi"
+              width={400} 
+              height={300}
+              className="max-w-xs md:max-w-sm"
+              data-ai-hint="delivery truck"
+            />
+          </div>
           <p className="text-subtitle text-muted-foreground max-w-2xl mx-auto">Simulasikan ide bisnis kamu dalam hitungan detik. Gratis, cepat, dan bantu ambil keputusan lebih tenang.</p>
            <Button asChild size="lg" className="mt-8 rounded-full h-12 px-8">
              <Link href="#cek-strategi">

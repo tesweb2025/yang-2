@@ -59,7 +59,8 @@ const marketingStrategies = [
         description: "Buat konten video pendek & pasang iklan di platform sosial.",
         channel: "Iklan Medsos & Video",
         color: "hsl(var(--chart-1))",
-        icon: Video
+        icon: Video,
+        percentage: 0.479
     },
     {
         id: 'useKOL' as const,
@@ -67,7 +68,8 @@ const marketingStrategies = [
         description: "Gunakan influencer atau program afiliasi untuk promosi.",
         channel: "Endorse & KOL",
         color: "hsl(var(--chart-2))",
-        icon: Users
+        icon: Users,
+        percentage: 0.394
     },
     {
         id: 'usePromo' as const,
@@ -75,7 +77,8 @@ const marketingStrategies = [
         description: "Tawarkan diskon, voucher, atau promo bundling ke pelanggan.",
         channel: "Promosi & Diskon",
         color: "hsl(var(--chart-3))",
-        icon: Receipt
+        icon: Receipt,
+        percentage: 0.0635
     },
     {
         id: 'useOtherChannels' as const,
@@ -83,7 +86,8 @@ const marketingStrategies = [
         description: "Manfaatkan kanal lain seperti SEO, event, atau marketplace ads.",
         channel: "Kanal Lainnya",
         color: "hsl(var(--chart-4))",
-        icon: Share2
+        icon: Share2,
+        percentage: 0.0635
     }
 ];
 
@@ -277,17 +281,31 @@ export default function AnalystPage() {
     watchedValues.fixedCostsPerMonth
   ]);
 
-  const budgetChartData = useMemo(() => {
-    const selectedStrategies = marketingStrategies.filter(s => watchedValues[s.id as keyof FormData]);
-    if (selectedStrategies.length === 0) return [];
+  const budgetAllocations = useMemo(() => {
+    const totalBudget = watchedValues.totalMarketingBudget || 0;
+    const allocations = {
+      useVideoContent: 0,
+      useKOL: 0,
+      usePromo: 0,
+      useOtherChannels: 0,
+    };
+
+    if (totalBudget > 0) {
+      if (watchedValues.useVideoContent) {
+        allocations.useVideoContent = totalBudget * 0.479;
+      }
+      if (watchedValues.useKOL) {
+        allocations.useKOL = totalBudget * 0.394;
+      }
+      if (watchedValues.usePromo) {
+        allocations.usePromo = totalBudget * 0.0635;
+      }
+      if (watchedValues.useOtherChannels) {
+        allocations.useOtherChannels = totalBudget * 0.0635;
+      }
+    }
     
-    const budgetPerStrategy = (watchedValues.totalMarketingBudget || 0) / selectedStrategies.length;
-    
-    return selectedStrategies.map(s => ({
-      name: s.channel,
-      value: budgetPerStrategy,
-      fill: s.color,
-    }));
+    return allocations;
   }, [
     watchedValues.totalMarketingBudget,
     watchedValues.useVideoContent,
@@ -295,6 +313,16 @@ export default function AnalystPage() {
     watchedValues.usePromo,
     watchedValues.useOtherChannels,
   ]);
+
+  const budgetChartData = useMemo(() => {
+    return marketingStrategies
+      .filter(s => watchedValues[s.id as keyof FormData])
+      .map(s => ({
+        name: s.channel,
+        value: budgetAllocations[s.id as keyof typeof budgetAllocations],
+        fill: s.color,
+      }));
+  }, [budgetAllocations, watchedValues]);
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
@@ -346,8 +374,6 @@ export default function AnalystPage() {
     );
   };
 
-  const selectedStrategiesCount = marketingStrategies.filter(s => watchedValues[s.id as keyof FormData]).length;
-  const budgetPerStrategy = selectedStrategiesCount > 0 ? (watchedValues.totalMarketingBudget || 0) / selectedStrategiesCount : 0;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -820,6 +846,7 @@ export default function AnalystPage() {
                                                         className="fill-foreground font-medium"
                                                         fontSize={12}
                                                         formatter={(value: number) => {
+                                                            if (value === 0) return '';
                                                             const num = value / 1_000_000;
                                                             return `${num.toFixed(0)} Jt`;
                                                         }}
@@ -846,7 +873,7 @@ export default function AnalystPage() {
                                                     <FormLabel className="font-normal cursor-pointer">{strategy.title}</FormLabel>
                                                 </div>
                                                 <div className="flex items-center gap-4">
-                                                    <span className="font-medium text-sm">{formatCurrency(watchedValues[strategy.id] ? budgetPerStrategy : 0)}</span>
+                                                    <span className="font-medium text-sm">{formatCurrency(budgetAllocations[strategy.id as keyof typeof budgetAllocations])}</span>
                                                     <FormControl>
                                                         <Switch
                                                             checked={field.value}
@@ -862,7 +889,7 @@ export default function AnalystPage() {
                         </div>
 
                         <p className="text-center text-muted-foreground text-caption pt-4">
-                           Bujet dibagi rata berdasarkan strategi yang aktif.
+                           Bujet dibagi secara proporsional berdasarkan strategi yang aktif.
                         </p>
                     </CardContent>
                     <div className="border-t -mx-8 my-8"></div>
@@ -995,5 +1022,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

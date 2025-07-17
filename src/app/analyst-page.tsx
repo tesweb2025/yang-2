@@ -175,8 +175,7 @@ const gmvComboData = [
 ];
 
 const gmvComboChartConfig = {
-    shopee: { label: 'Shopee', color: "hsl(var(--primary))" },
-    tokopedia: { label: 'Tokopedia', color: "hsl(var(--primary))" },
+    shopee: { label: 'GMV', color: "hsl(var(--primary))" },
     average: { label: 'Rata-rata', color: 'hsl(var(--success))' },
 } satisfies ChartConfig;
 
@@ -453,8 +452,7 @@ export default function AnalystPage() {
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                 <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
                                 <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
-                                <Bar dataKey="tokopedia" barSize={25} fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                                <Bar dataKey="shopee" barSize={25} fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="shopee" barSize={20} fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                                 <Line type="monotone" dataKey="average" stroke="hsl(var(--success))" strokeWidth={2} dot={false} />
                             </ComposedChart>
                         </ChartContainer>

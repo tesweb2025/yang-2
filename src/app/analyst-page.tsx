@@ -93,6 +93,9 @@ const marketingStrategies = [
 
 
 const formatCurrency = (value: number) => {
+  if (typeof value !== 'number' || isNaN(value)) {
+    return 'Rp 0';
+  }
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR',

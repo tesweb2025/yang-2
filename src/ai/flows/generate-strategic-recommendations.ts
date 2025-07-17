@@ -21,8 +21,6 @@ const StrategicRecommendationsInputSchema = z.object({
   productName: z.string().describe('The name of the product or business.'),
   targetSegmentation: z.string().describe('The primary target segmentation.'),
   initialMarketingBudget: z.number().describe('The initial marketing budget.'),
-  socialMediaAds: z.boolean().describe('Whether social media ads are used.'),
-  endorsementKOL: z.boolean().describe('Whether endorsement and KOL marketing are used.'),
 });
 export type StrategicRecommendationsInput = z.infer<typeof StrategicRecommendationsInputSchema>;
 
@@ -51,8 +49,6 @@ Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi b
 - Nama Produk: {{{productName}}}
 - Target Pasar: {{{targetSegmentation}}}
 - Bujet Promosi Bulanan: Rp {{{initialMarketingBudget}}}
-- Pakai Iklan Medsos/Video: {{#if socialMediaAds}}Ya{{else}}Nggak{{/if}}
-- Pakai KOL/Endorse: {{#if endorsementKOL}}Ya{{else}}Nggak{{/if}}
 
 **Hasil Simulasi Keuangan:**
 - Proyeksi Omzet Tahunan: Rp {{{annualRevenueProjection}}}

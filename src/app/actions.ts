@@ -17,25 +17,29 @@ const formSchema = z.object({
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
   avgSalesPerMonth: z.coerce.number().min(0, "Penjualan harus positif").optional().default(0),
   totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
-  useVideoContent: z.boolean(),
-  useKOLs: z.boolean(),
-  useDiscounts: z.boolean(),
-  useOtherChannels: z.boolean(),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 export async function runAnalysis(data: FormData) {
+  const sellPrice = data.sellPrice ?? 0;
+  const avgSalesPerMonth = data.avgSalesPerMonth ?? 0;
+  const costOfGoods = data.costOfGoods ?? 0;
+  const adCost = data.adCost ?? 0;
+  const otherCostsPercentage = data.otherCostsPercentage ?? 0;
+  const totalMarketingBudget = data.totalMarketingBudget ?? 0;
+  const fixedCostsPerMonth = data.fixedCostsPerMonth ?? 0;
+
   // Financial Calculations
-  const monthlyRevenue = data.sellPrice * data.avgSalesPerMonth;
+  const monthlyRevenue = sellPrice * avgSalesPerMonth;
   const annualRevenue = monthlyRevenue * 12;
-  const monthlyCostOfGoods = data.costOfGoods * data.avgSalesPerMonth;
+  const monthlyCostOfGoods = costOfGoods * avgSalesPerMonth;
   const grossProfit = monthlyRevenue - monthlyCostOfGoods;
-  const otherVariableCosts = (data.adCost * data.avgSalesPerMonth) + (monthlyRevenue * data.otherCostsPercentage / 100);
-  const operationalCosts = otherVariableCosts + data.totalMarketingBudget + data.fixedCostsPerMonth;
+  const otherVariableCosts = (adCost * avgSalesPerMonth) + (monthlyRevenue * otherCostsPercentage / 100);
+  const operationalCosts = otherVariableCosts + totalMarketingBudget + fixedCostsPerMonth;
   const monthlyProfit = grossProfit - operationalCosts;
   const annualProfit = monthlyProfit * 12;
-  const roas = data.totalMarketingBudget > 0 ? monthlyRevenue / data.totalMarketingBudget : 0;
+  const roas = totalMarketingBudget > 0 ? monthlyRevenue / totalMarketingBudget : 0;
   
   // P&L Table Data
   const pnlTable = [
@@ -49,8 +53,8 @@ export async function runAnalysis(data: FormData) {
   // Cashflow Table Data
   const cashIn = monthlyRevenue;
   const cashOutHpp = monthlyCostOfGoods;
-  const cashOutAdCost = data.adCost * data.avgSalesPerMonth;
-  const cashOutOtherFixed = (monthlyRevenue * data.otherCostsPercentage / 100) + data.fixedCostsPerMonth + data.totalMarketingBudget;
+  const cashOutAdCost = adCost * avgSalesPerMonth;
+  const cashOutOtherFixed = (monthlyRevenue * otherCostsPercentage / 100) + fixedCostsPerMonth + totalMarketingBudget;
   const netCashFlow = cashIn - cashOutHpp - cashOutAdCost - cashOutOtherFixed;
 
   const cashflowTable = [
@@ -69,21 +73,19 @@ export async function runAnalysis(data: FormData) {
     analyzeMarketEntry({
         productName: data.productName,
         targetSegment: data.targetSegment,
-        initialMarketingBudget: data.totalMarketingBudget, // Using total marketing budget
+        initialMarketingBudget: totalMarketingBudget,
         financialForecastSummary,
         marketConditionSummary
     }),
     generateStrategicRecommendations({
         productName: data.productName,
         targetSegmentation: data.targetSegment,
-        initialMarketingBudget: data.totalMarketingBudget, // Using total marketing budget
+        initialMarketingBudget: totalMarketingBudget,
         annualRevenueProjection: annualRevenue,
         annualProfitProjection: annualProfit,
         roas,
         monthlyProfitAndLossStatement: JSON.stringify(pnlTable.map(p => `${p.item}: Rp ${p.value.toLocaleString('id-ID')}`)),
         monthlyCashFlowSimulation: JSON.stringify(cashflowTable.map(c => `${c.item}: Rp ${c.value.toLocaleString('id-ID')}`)),
-        socialMediaAds: data.useVideoContent,
-        endorsementKOL: data.useKOLs,
     })
   ]);
 

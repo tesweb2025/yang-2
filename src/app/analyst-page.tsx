@@ -35,10 +35,6 @@ const formSchema = z.object({
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
   avgSalesPerMonth: z.coerce.number().min(0, "Penjualan harus positif").optional().default(0),
   totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
-  useVideoContent: z.boolean(),
-  useKOLs: z.boolean(),
-  useDiscounts: z.boolean(),
-  useOtherChannels: z.boolean(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -123,8 +119,8 @@ const gmvComboData = [
 ];
 
 const gmvComboChartConfig = {
-    shopee: { label: 'Shopee', color: "hsl(220, 84.8%, 60.2%)" },
-    tokopedia: { label: 'Tokopedia', color: "hsl(158, 64.4%, 52.4%)" },
+    shopee: { label: 'Shopee', color: "hsl(var(--chart-shopee))" },
+    tokopedia: { label: 'Tokopedia', color: "hsl(var(--chart-tiktok))" },
     average: { label: 'Rata-rata', color: 'hsl(var(--primary))' },
 } satisfies ChartConfig;
 
@@ -150,6 +146,57 @@ const budgetChartConfig = {
   },
 } satisfies ChartConfig
 
+const platformStrategies = [
+    {
+        emoji: "🧨",
+        title: "TikTok & Tokopedia",
+        subtitle: "Kombinasi Konten + Checkout Seketika",
+        description: "⚡ Kanal untuk Shoppertainment & Pembelian Impulsif",
+        strategyPoints: [
+            "Kuasai konten pendek yang nempel di FYP",
+            "Manfaatkan Live Selling + kolaborasi influencer",
+            "Integrasi checkout langsung dari konten"
+        ],
+        audience: "Produk lifestyle, murah-meriah, atau tren cepat. Target anak muda (18–34), impulsif, FOMO-driven."
+    },
+    {
+        emoji: "🛒",
+        title: "Shopee",
+        subtitle: "Platform Perang Harga & Volume Besar",
+        description: "🔥 Raksasa Pasar Massal & Promo Agresif",
+        strategyPoints: [
+            "Manfaatkan flash sale & campaign harian",
+            "Main di harga kompetitif + voucher",
+            "Gunakan iklan Shopee Ads buat dorong visibility"
+        ],
+        audience: "Produk mass market, margin tipis, brand baru yang butuh traffic."
+    },
+    {
+        emoji: "🏛️",
+        title: "Lazada & Blibli",
+        subtitle: "Panggung Brand Premium & Customer Trust",
+        description: "🧱 Benteng untuk Brand & Audiens Berkualitas",
+        strategyPoints: [
+            "Fokus ke pengalaman belanja: packaging, garansi, testimoni",
+            "Bangun citra premium lewat visual dan deskripsi produk",
+            "Mainkan brand trust lewat rating, LazMall, atau curated collection"
+        ],
+        audience: "Produk bernilai tinggi, lifestyle premium, brand lokal yang udah punya equity."
+    },
+    {
+        emoji: "🎯",
+        title: "Meta & Google Ads",
+        subtitle: "Targeting Presisi & Scale Demand",
+        description: "🎯 Kanal untuk Konversi Terukur & Lead Generation",
+        strategyPoints: [
+            "Gunakan pixel & event tracking buat retargeting",
+            "Scale campaign dari awareness → consideration → conversion",
+            "Cocok dipakai bareng landing page dan WhatsApp funnel"
+        ],
+        audience: "Bisnis direct-to-consumer (DTC), brand niche, produk solusi spesifik."
+    }
+];
+
 export default function AnalystPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
@@ -169,78 +216,24 @@ export default function AnalystPage() {
       fixedCostsPerMonth: undefined,
       avgSalesPerMonth: undefined,
       totalMarketingBudget: undefined,
-      useVideoContent: false,
-      useKOLs: false,
-      useDiscounts: false,
-      useOtherChannels: false,
     },
   });
 
   const watchedValues = form.watch();
 
   const calculations = useMemo(() => {
-    const { sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth, avgSalesPerMonth } = watchedValues;
+    const { sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth } = watchedValues;
     const grossProfitPerUnit = (sellPrice || 0) - (costOfGoods || 0);
     const netProfitPerUnit = grossProfitPerUnit - (adCost || 0) - ((sellPrice || 0) * (otherCostsPercentage || 0) / 100);
-    const netProfitMargin = (sellPrice || 0) > 0 ? (netProfitPerUnit / (sellPrice || 1)) * 100 : 0;
     const bepUnit = netProfitPerUnit > 0 ? (fixedCostsPerMonth || 0) / netProfitPerUnit : Infinity;
-    const monthlyRevenue = (sellPrice || 0) * (avgSalesPerMonth || 0);
-
-    return { netProfitPerUnit, netProfitMargin, bepUnit, monthlyRevenue };
+    
+    return { netProfitPerUnit, bepUnit };
   }, [
     watchedValues.sellPrice,
     watchedValues.costOfGoods,
     watchedValues.adCost,
     watchedValues.otherCostsPercentage,
-    watchedValues.fixedCostsPerMonth,
-    watchedValues.avgSalesPerMonth,
-  ]);
-
-    const budgetAllocation = useMemo(() => {
-    const { totalMarketingBudget, useVideoContent, useKOLs, useDiscounts, useOtherChannels } = watchedValues;
-    const channels = [
-      { name: "Iklan Medsos & Video", active: useVideoContent, color: "hsl(var(--chart-1))" },
-      { name: "Endorse & KOL", active: useKOLs, color: "hsl(var(--chart-2))" },
-      { name: "Promosi & Diskon", active: useDiscounts, color: "hsl(var(--chart-3))" },
-      { name: "Kanal Lainnya", active: useOtherChannels, color: "hsl(var(--chart-4))" },
-    ];
-    const activeChannels = channels.filter(c => c.active);
-    if (activeChannels.length === 0 || (totalMarketingBudget || 0) <= 0) {
-      return [{ name: 'Belum ada alokasi', value: 1, fill: 'hsl(var(--muted))' }];
-    }
-    const valuePerChannel = (totalMarketingBudget || 0) / activeChannels.length;
-    return activeChannels.map(c => ({ name: c.name, value: valuePerChannel, fill: c.color }));
-  }, [
-    watchedValues.totalMarketingBudget,
-    watchedValues.useVideoContent,
-    watchedValues.useKOLs,
-    watchedValues.useDiscounts,
-    watchedValues.useOtherChannels,
-  ]);
-
-  const channelConfig = useMemo(() => {
-    const { totalMarketingBudget, useVideoContent, useKOLs, useDiscounts, useOtherChannels } = watchedValues;
-    const channels = [
-      { id: 'useVideoContent', name: "Video Content & Ads", active: useVideoContent, color: "hsl(var(--chart-1))", switchClass: "data-[state=checked]:bg-green-500" },
-      { id: 'useKOLs', name: "KOL & Afiliasi", active: useKOLs, color: "hsl(var(--chart-2))", switchClass: "data-[state=checked]:bg-green-500" },
-      { id: 'useDiscounts', name: "Promosi & Diskon", active: useDiscounts, color: "hsl(var(--chart-3))", switchClass: "data-[state=checked]:bg-green-500" },
-      { id: 'useOtherChannels', name: "Lainnya", active: useOtherChannels, color: "hsl(var(--chart-4))", switchClass: "data-[state=checked]:bg-green-500" },
-    ];
-
-    const activeChannelsCount = channels.filter(c => c.active).length;
-    const budgetPerChannel = activeChannelsCount > 0 ? (totalMarketingBudget || 0) / activeChannelsCount : 0;
-
-    return {
-      channels,
-      budgetPerChannel,
-      activeChannelsCount
-    }
-  }, [
-    watchedValues.totalMarketingBudget,
-    watchedValues.useVideoContent,
-    watchedValues.useKOLs,
-    watchedValues.useDiscounts,
-    watchedValues.useOtherChannels,
+    watchedValues.fixedCostsPerMonth
   ]);
 
 
@@ -294,13 +287,6 @@ export default function AnalystPage() {
     );
   };
 
-  const marketingStrategies = [
-    { id: 'useVideoContent', icon: Video, title: 'Video Content & Ads', description: 'Buat konten video pendek & pasang iklan di platform sosial.' },
-    { id: 'useKOLs', icon: Users, title: 'KOL & Afiliasi', description: 'Gunakan influencer atau program afiliasi untuk promosi.' },
-    { id: 'useDiscounts', icon: Receipt, title: 'Promosi & Diskon', description: 'Tawarkan diskon, voucher, atau promo bundling ke pelanggan.' },
-    { id: 'useOtherChannels', icon: Share2, title: 'Kanal Lainnya', description: 'Manfaatkan kanal lain seperti SEO, event, atau marketplace ads.' },
-  ];
-
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <main className="space-y-12 md:space-y-20">
@@ -332,6 +318,7 @@ export default function AnalystPage() {
                             <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
                                 <ComposedChart data={gmvComboData} margin={{ top: 20, right: 0, left: -20, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                    <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
                                     <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
                                     <Bar dataKey="tokopedia" barSize={20} fill="var(--color-tokopedia)" radius={[4, 4, 0, 0]} />
                                     <Bar dataKey="shopee" barSize={20} fill="var(--color-shopee)" radius={[4, 4, 0, 0]} />
@@ -388,7 +375,7 @@ export default function AnalystPage() {
                     <CardDescription>Integrasi Tokopedia & TikTok Shop menciptakan duopoli baru yang menantang dominasi Shopee.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-0 mt-8">
-                     <div className="w-full h-[300px]">
+                    <div className="w-full h-[300px]">
                         <ChartContainer config={marketShareChartConfig} className="h-full w-full">
                             <RechartsBarChart data={marketShareData} barCategoryGap="20%">
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
@@ -396,9 +383,10 @@ export default function AnalystPage() {
                                     dataKey="name" 
                                     tickLine={false} 
                                     axisLine={false}
-                                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
+                                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12, lineHeight: '1.2' }}
                                     interval={0}
-                                    tickFormatter={(value) => value.includes(' & ') ? value.split(' & ')[0] + '\n& ' + value.split(' & ')[1] : value}
+                                    tickFormatter={(value) => value.includes(' & ') ? value.split(' & ').join('\n') : value}
+                                    height={30}
                                 />
                                 <YAxis hide />
                                 <RechartsTooltip 
@@ -421,32 +409,41 @@ export default function AnalystPage() {
                             </RechartsBarChart>
                         </ChartContainer>
                     </div>
-                     <div className="mt-8 space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-4">
-                           <div className="space-y-2">
-                                <p className="font-bold text-base">TikTok & Tokopedia</p>
-                                <p className="text-muted-foreground text-caption font-semibold">Kanal untuk "Shoppertainment" & Pembelian Impulsif</p>
-                                <p className="text-muted-foreground text-sm">Kuasai dengan konten video pendek, live streaming, dan tren viral.</p>
-                            </div>
-                            <div className="space-y-2">
-                                <p className="font-bold text-base">Shopee</p>
-                                <p className="text-muted-foreground text-caption font-semibold">Raksasa Pasar Massal & Promo Agresif</p>
-                                <p className="text-muted-foreground text-sm">Menangkan dengan perang harga, voucher, gamifikasi, dan iklan internal yang masif.</p>
-                            </div>
-                            <div className="space-y-2">
-                                <p className="font-bold text-base">Lazada & Blibli</p>
-                                <p className="text-muted-foreground text-caption font-semibold">Benteng untuk Brand & Audiens Berkualitas</p>
-                                <p className="text-muted-foreground text-sm">Dominasi dengan branding premium, garansi (LazMall), dan layanan superior.</p>
-                            </div>
-                            <div className="space-y-2">
-                                <p className="font-bold text-base">Social Commerce</p>
-                                <p className="text-muted-foreground text-caption font-semibold">Kanal untuk Targeting Presisi (Meta & Google Ads)</p>
-                                <p className="text-muted-foreground text-sm">Jangkau audiens spesifik dengan retargeting dan lead generation.</p>
-                            </div>
-                        </div>
-                    </div>
                 </CardContent>
             </Card>
+        </section>
+
+        <section id="platform-strategies" className="space-y-8">
+            <div className="text-center">
+                <h2 className="text-h2 font-semibold">Arena Pertempuran Marketplace</h2>
+                <p className="text-subtitle text-muted-foreground mt-2">Pilih medan perang yang tepat untuk produkmu.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {platformStrategies.map((platform, index) => (
+                    <Card key={index} className="flex flex-col">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-h3">
+                                <span className="text-2xl">{platform.emoji}</span>
+                                {platform.title}
+                            </CardTitle>
+                            <CardDescription className="font-semibold !mt-2">{platform.subtitle}</CardDescription>
+                            <p className="text-sm text-muted-foreground">{platform.description}</p>
+                        </CardHeader>
+                        <CardContent className="flex-grow flex flex-col justify-between">
+                            <div>
+                                <h4 className="font-semibold text-body mb-2">📌 Strategi Utama:</h4>
+                                <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                                    {platform.strategyPoints.map((point, i) => <li key={i}>{point}</li>)}
+                                </ul>
+                            </div>
+                            <div className="mt-4">
+                                <h4 className="font-semibold text-body mb-2">📌 Cocok untuk:</h4>
+                                <p className="text-sm text-muted-foreground">{platform.audience}</p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
         </section>
 
         <Form {...form}>
@@ -473,47 +470,6 @@ export default function AnalystPage() {
                                     <FormMessage />
                                 </FormItem>
                             )} />
-                        </div>
-                        <div className="space-y-3 pt-2">
-                            <FormLabel>Pilih Strategi Pemasaran</FormLabel>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                                {marketingStrategies.map(strategy => (
-                                    <FormField
-                                        key={strategy.id}
-                                        control={form.control}
-                                        name={strategy.id as keyof FormData}
-                                        render={({ field }) => (
-                                            <FormItem className={cn(
-                                                "h-full p-4 flex flex-col items-start gap-2 text-left rounded-lg border transition-all",
-                                                field.value
-                                                    ? 'bg-primary text-primary-foreground border-primary'
-                                                    : 'bg-transparent hover:bg-accent'
-                                                )}
-                                            >
-                                                <div className="flex justify-between w-full items-center">
-                                                    <FormLabel className="cursor-pointer">
-                                                        <strategy.icon className="w-6 h-6" />
-                                                    </FormLabel>
-                                                    <FormControl>
-                                                        <Switch
-                                                            checked={field.value}
-                                                            onCheckedChange={field.onChange}
-                                                            className={cn(
-                                                                "data-[state=unchecked]:bg-input",
-                                                                    field.value ? 'data-[state=checked]:bg-green-500' : ''
-                                                            )}
-                                                        />
-                                                    </FormControl>
-                                                </div>
-                                                <div className="mt-2 cursor-pointer" onClick={() => field.onChange(!field.value)}>
-                                                    <p className="font-semibold">{strategy.title}</p>
-                                                    <p className={cn("text-xs", field.value ? 'text-primary-foreground/80' : 'text-muted-foreground')}>{strategy.description}</p>
-                                                </div>
-                                            </FormItem>
-                                        )}
-                                    />
-                                ))}
-                            </div>
                         </div>
                     </CardContent>
                 </Card>
@@ -568,7 +524,7 @@ export default function AnalystPage() {
                                 <Controller
                                     name="sellPrice"
                                     control={form.control}
-                                    render={({ field, fieldState }) => (
+                                    render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Harga Jual</FormLabel>
                                             <FormControl>
@@ -585,7 +541,7 @@ export default function AnalystPage() {
                                 <Controller
                                     name="costOfGoods"
                                     control={form.control}
-                                    render={({ field, fieldState }) => (
+                                    render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Modal Produk (HPP)</FormLabel>
                                             <FormControl>
@@ -602,7 +558,7 @@ export default function AnalystPage() {
                                 <Controller
                                     name="adCost"
                                     control={form.control}
-                                    render={({ field, fieldState }) => (
+                                    render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Biaya Iklan (CAC)</FormLabel>
                                             <FormControl>
@@ -626,7 +582,7 @@ export default function AnalystPage() {
                                   <Controller
                                       name="fixedCostsPerMonth"
                                       control={form.control}
-                                      render={({ field, fieldState }) => (
+                                      render={({ field }) => (
                                           <FormItem>
                                               <FormLabel>Biaya Tetap / Bulan</FormLabel>
                                               <FormControl>
@@ -685,9 +641,9 @@ export default function AnalystPage() {
                         <Controller
                             name="totalMarketingBudget"
                             control={form.control}
-                            render={({ field, fieldState }) => (
+                            render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Total Bujet Pemasaran</FormLabel>
+                                    <FormLabel>Total Bujet Pemasaran Bulanan</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -701,65 +657,8 @@ export default function AnalystPage() {
                                 </FormItem>
                             )}
                         />
-                        <div className="h-64 w-full my-6">
-                           <ResponsiveContainer width="100%" height="100%">
-                                <ChartContainer config={budgetChartConfig}>
-                                  <PieChart>
-                                    <RechartsTooltip
-                                        formatter={(value) => formatCurrency(value as number)}
-                                    />
-                                    <Pie
-                                      data={budgetAllocation}
-                                      dataKey="value"
-                                      nameKey="name"
-                                      cx="50%"
-                                      cy="50%"
-                                      innerRadius="60%"
-                                      outerRadius="100%"
-                                      paddingAngle={2}
-                                      labelLine={false}
-                                      label={false}
-                                    >
-                                      {budgetAllocation.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.fill} stroke={entry.fill} />
-                                      ))}
-                                    </Pie>
-                                  </PieChart>
-                                </ChartContainer>
-                            </ResponsiveContainer>
-                        </div>
-                        <div className="space-y-4">
-                          {channelConfig.channels.map(channel => (
-                            <div key={channel.id} className="flex items-center justify-between border-b pb-4">
-                              <div className="flex items-center gap-3">
-                                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: channel.color }}></span>
-                                <span className="text-sm font-medium">{channel.name}</span>
-                              </div>
-                              <div className="flex items-center gap-4">
-                                <span className="text-sm font-semibold">{channel.active ? formatCurrency(channelConfig.budgetPerChannel) : 'Rp 0'}</span>
-                                <FormField
-                                  control={form.control}
-                                  name={channel.id as any}
-                                  render={({ field }) => (
-                                    <FormItem className="m-0">
-                                      <FormControl>
-                                        <Switch
-                                          checked={field.value}
-                                          onCheckedChange={field.onChange}
-                                          className={cn(channel.switchClass)}
-                                        />
-                                      </FormControl>
-                                    </FormItem>
-                                  )}
-                                />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
                         <p className="text-center text-muted-foreground text-caption mt-6">
-                          {channelConfig.activeChannelsCount === 4 && "Strategi diversifikasi penuh, ideal untuk brand mapan."}
-                          {channelConfig.activeChannelsCount > 0 && channelConfig.activeChannelsCount < 4 && "Strategi terfokus, bagus untuk memaksimalkan kanal pilihan."}
-                          {channelConfig.activeChannelsCount === 0 && "Pilih setidaknya satu kanal untuk memulai."}
+                          Masukkan total dana yang akan Anda gunakan untuk semua aktivitas pemasaran dalam sebulan.
                         </p>
                     </CardContent>
                     <div className="border-t -mx-8 my-8"></div>

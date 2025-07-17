@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'SiapJual.ai - Cek Strategi Bisnismu',
+  title: 'Petakan.ai - Cek Strategi Bisnismu',
   description: 'Simulasikan strategi bisnismu dengan AI. Lihat untung-rugi sebelum promo dimulai.',
 };
 

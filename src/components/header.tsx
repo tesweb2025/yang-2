@@ -22,7 +22,7 @@ export function Header() {
         <div className="flex-1 flex items-center">
           <Link className="mr-6 flex items-center space-x-2" href="/">
             <BrainCircuit className="h-6 w-6 text-primary" />
-            <span className="font-bold text-lg">SiapJual.ai</span>
+            <span className="font-bold text-lg">Petakan.ai</span>
           </Link>
         </div>
         

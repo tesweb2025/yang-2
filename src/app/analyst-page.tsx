@@ -136,11 +136,11 @@ const businessModelContent: any = {
 };
 
 const marketShareData = [
-    { name: 'Tokopedia & TikTok Shop', value: 39, fill: 'var(--color-chart-tiktok)' },
-    { name: 'Shopee', value: 37, fill: 'var(--color-chart-shopee)' },
-    { name: 'Lazada', value: 10, fill: 'var(--color-chart-lazada)' },
-    { name: 'Bukalapak', value: 6, fill: 'var(--color-chart-bukalapak)' },
-    { name: 'Blibli', value: 5, fill: 'var(--color-chart-blibli)' },
+    { name: 'Tokopedia & TikTok Shop', value: 39 },
+    { name: 'Shopee', value: 37 },
+    { name: 'Lazada', value: 10 },
+    { name: 'Bukalapak', value: 6 },
+    { name: 'Blibli', value: 5 },
 ];
 
 const marketShareChartConfig = {

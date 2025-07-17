@@ -41,7 +41,7 @@ export async function analyzeMarketEntry(input: AnalyzeMarketEntryInput): Promis
 
 const prompt = ai.definePrompt({
   name: 'analyzeMarketEntryPrompt',
-  model: 'gemini-1.5-flash',
+  model: 'gemini-pro',
   input: {schema: AnalyzeMarketEntryInputSchema},
   output: {schema: AnalyzeMarketEntryOutputSchema},
   prompt: `Kamu adalah seorang Business Analyst AI yang ahli di pasar e-commerce Indonesia. Gaya bicaramu santai, to the point, dan mudah dimengerti UMKM.

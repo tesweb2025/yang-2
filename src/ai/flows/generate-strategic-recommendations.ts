@@ -9,7 +9,7 @@
  * - StrategicRecommendationsOutput - The return type for the generateStrategicRecommendations function.
  */
 
-import { z } from 'genkit';
+import { z } from 'zod';
 import { generativeModel } from '@/ai/genkit';
 
 const StrategicRecommendationsInputSchema = z.object({

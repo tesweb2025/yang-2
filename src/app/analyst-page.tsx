@@ -848,7 +848,7 @@ export default function AnalystPage() {
               <div className="flex flex-col items-center justify-center text-center p-8">
                 <Loader2 className="w-12 h-12 animate-spin text-primary" />
                 <p className="mt-4 text-lg font-semibold">AI sedang menganalisis...</p>
-                <p className="text-muted-foreground text-caption">Meracik strategi terbaik berdasarkan data Anda.</p>
+                <p className="text-muted-foreground text-caption">Tunggu dulu, AI sedang memproses datamu.</p>
               </div>
             )}
 

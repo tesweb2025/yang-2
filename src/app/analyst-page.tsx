@@ -247,13 +247,7 @@ export default function AnalystPage() {
     const bepUnit = netProfitPerUnit > 0 ? fcm / netProfitPerUnit : Infinity;
     
     return { netProfitPerUnit, bepUnit };
-  }, [
-    sellPrice,
-    costOfGoods,
-    adCost,
-    otherCostsPercentage,
-    fixedCostsPerMonth
-  ]);
+  }, [sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth]);
 
   const budgetAllocations = useMemo(() => {
     const budget = totalMarketingBudget || 0;
@@ -284,13 +278,7 @@ export default function AnalystPage() {
     }
     
     return allocations;
-  }, [
-    totalMarketingBudget,
-    useVideoContent,
-    useKOL,
-    usePromo,
-    useOtherChannels,
-  ]);
+  }, [totalMarketingBudget, useVideoContent, useKOL, usePromo, useOtherChannels]);
 
   const budgetChartData = useMemo(() => {
     return marketingStrategies
@@ -306,13 +294,7 @@ export default function AnalystPage() {
         value: budgetAllocations[s.id],
         fill: s.color,
       }));
-  }, [
-    budgetAllocations, 
-    useVideoContent, 
-    useKOL, 
-    usePromo, 
-    useOtherChannels
-  ]);
+  }, [budgetAllocations, useVideoContent, useKOL, usePromo, useOtherChannels]);
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);

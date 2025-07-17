@@ -28,13 +28,17 @@ const formSchema = z.object({
   targetSegment: z.string().min(1, "Segmentasi target harus diisi"),
   marginModel: z.enum(['tipis', 'tebal']),
   brandStrength: z.enum(['baru', 'kuat']),
-  sellPrice: z.coerce.number().min(0, "Harga harus positif").optional().default(0),
-  costOfGoods: z.coerce.number().min(0, "HPP harus positif").optional().default(0),
+  sellPrice: z.coerce.number().min(1, "Harga jual harus diisi").optional().default(0),
+  costOfGoods: z.coerce.number().min(1, "HPP harus diisi").optional().default(0),
   adCost: z.coerce.number().min(0, "Biaya iklan harus positif").optional().default(0),
   otherCostsPercentage: z.coerce.number().min(0).max(100).optional().default(0),
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
-  avgSalesPerMonth: z.coerce.number().min(0, "Penjualan harus positif").optional().default(0),
+  avgSalesPerMonth: z.coerce.number().min(1, "Target jual harus diisi").optional().default(0),
   totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
+  useVideoContent: z.boolean().optional().default(false),
+  useKOL: z.boolean().optional().default(false),
+  usePromo: z.boolean().optional().default(false),
+  useOtherChannels: z.boolean().optional().default(false),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -47,6 +51,30 @@ type AnalysisResult = {
   marketAnalysis: any;
   strategicPlan: any;
 };
+
+const marketingStrategies = [
+    {
+        id: 'useVideoContent',
+        title: "Video Content & Ads",
+        description: "Buat konten video pendek & pasang iklan di platform sosial.",
+    },
+    {
+        id: 'useKOL',
+        title: "KOL & Afiliasi",
+        description: "Gunakan influencer atau program afiliasi untuk promosi.",
+    },
+    {
+        id: 'usePromo',
+        title: "Promosi & Diskon",
+        description: "Tawarkan diskon, voucher, atau promo bundling ke pelanggan.",
+    },
+    {
+        id: 'useOtherChannels',
+        title: "Kanal Lainnya",
+        description: "Manfaatkan kanal lain seperti SEO, event, atau marketplace ads.",
+    }
+];
+
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat('id-ID', {
@@ -151,7 +179,7 @@ const platformStrategies = [
         icon: Video,
         title: "TikTok & Tokopedia",
         subtitle: "Kombinasi Konten + Checkout Seketika",
-        description: "⚡ Kanal untuk Shoppertainment & Pembelian Impulsif",
+        description: "Kanal untuk Shoppertainment & Pembelian Impulsif",
         strategyPoints: [
             "Kuasai konten pendek yang nempel di FYP",
             "Manfaatkan Live Selling + kolaborasi influencer",
@@ -163,7 +191,7 @@ const platformStrategies = [
         icon: Users,
         title: "Shopee",
         subtitle: "Platform Perang Harga & Volume Besar",
-        description: "🔥 Raksasa Pasar Massal & Promo Agresif",
+        description: "Raksasa Pasar Massal & Promo Agresif",
         strategyPoints: [
             "Manfaatkan flash sale & campaign harian",
             "Main di harga kompetitif + voucher",
@@ -175,7 +203,7 @@ const platformStrategies = [
         icon: Receipt,
         title: "Lazada & Blibli",
         subtitle: "Panggung Brand Premium & Customer Trust",
-        description: "🧱 Benteng untuk Brand & Audiens Berkualitas",
+        description: "Benteng untuk Brand & Audiens Berkualitas",
         strategyPoints: [
             "Fokus ke pengalaman belanja: packaging, garansi, testimoni",
             "Bangun citra premium lewat visual dan deskripsi produk",
@@ -187,7 +215,7 @@ const platformStrategies = [
         icon: Share2,
         title: "Meta & Google Ads",
         subtitle: "Targeting Presisi & Scale Demand",
-        description: "🎯 Kanal untuk Konversi Terukur & Lead Generation",
+        description: "Kanal untuk Konversi Terukur & Lead Generation",
         strategyPoints: [
             "Gunakan pixel & event tracking buat retargeting",
             "Scale campaign dari awareness → consideration → conversion",
@@ -216,6 +244,10 @@ export default function AnalystPage() {
       fixedCostsPerMonth: undefined,
       avgSalesPerMonth: undefined,
       totalMarketingBudget: undefined,
+      useVideoContent: false,
+      useKOL: false,
+      usePromo: false,
+      useOtherChannels: false,
     },
   });
 
@@ -438,13 +470,13 @@ export default function AnalystPage() {
                         </CardHeader>
                         <CardContent className="flex-grow flex flex-col justify-between">
                             <div>
-                                <h4 className="font-semibold text-body mb-2">📌 Strategi Utama:</h4>
+                                <h4 className="font-semibold text-body mb-2">Strategi Utama:</h4>
                                 <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
                                     {platform.strategyPoints.map((point, i) => <li key={i}>{point}</li>)}
                                 </ul>
                             </div>
                             <div className="mt-4">
-                                <h4 className="font-semibold text-body mb-2">📌 Cocok untuk:</h4>
+                                <h4 className="font-semibold text-body mb-2">Cocok untuk:</h4>
                                 <p className="text-sm text-muted-foreground">{platform.audience}</p>
                             </div>
                         </CardContent>
@@ -478,6 +510,42 @@ export default function AnalystPage() {
                                 </FormItem>
                             )} />
                         </div>
+                    </CardContent>
+                </Card>
+            </section>
+            
+            <section id="pilih-strategi">
+                <Card className="p-6 md:p-8">
+                    <CardHeader className="p-0">
+                        <CardTitle className="text-h3 font-medium">Pilih Strategi Pemasaran</CardTitle>
+                        <CardDescription>Pilih satu atau lebih strategi yang ingin Anda simulasikan.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0 mt-6 grid md:grid-cols-2 gap-4">
+                       {marketingStrategies.map((strategy) => (
+                          <FormField
+                            key={strategy.id}
+                            control={form.control}
+                            name={strategy.id as keyof FormData}
+                            render={({ field }) => (
+                                <FormItem className="bg-background border rounded-lg p-4 flex flex-row items-center justify-between has-[[data-state=checked]]:bg-primary/10 has-[[data-state=checked]]:border-primary/50 transition-colors">
+                                    <div className="space-y-0.5" onClick={() => field.onChange(!field.value)}>
+                                        <FormLabel className="text-base font-semibold cursor-pointer">
+                                            {strategy.title}
+                                        </FormLabel>
+                                        <p className="text-sm text-muted-foreground cursor-pointer">
+                                            {strategy.description}
+                                        </p>
+                                    </div>
+                                    <FormControl>
+                                        <Switch
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                          />
+                        ))}
                     </CardContent>
                 </Card>
             </section>

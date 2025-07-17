@@ -17,6 +17,10 @@ const formSchema = z.object({
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
   avgSalesPerMonth: z.coerce.number().min(0, "Penjualan harus positif").optional().default(0),
   totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
+  useVideoContent: z.boolean().optional().default(false),
+  useKOL: z.boolean().optional().default(false),
+  usePromo: z.boolean().optional().default(false),
+  useOtherChannels: z.boolean().optional().default(false),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -36,8 +40,8 @@ export async function runAnalysis(data: FormData) {
   const monthlyCostOfGoods = costOfGoods * avgSalesPerMonth;
   const grossProfit = monthlyRevenue - monthlyCostOfGoods;
   const otherVariableCosts = (adCost * avgSalesPerMonth) + (monthlyRevenue * otherCostsPercentage / 100);
-  const operationalCosts = otherVariableCosts + totalMarketingBudget + fixedCostsPerMonth;
-  const monthlyProfit = grossProfit - operationalCosts;
+  const operationalCosts = otherVariableCosts + fixedCostsPerMonth; // Marketing budget is separate now
+  const monthlyProfit = grossProfit - operationalCosts - totalMarketingBudget;
   const annualProfit = monthlyProfit * 12;
   const roas = totalMarketingBudget > 0 ? monthlyRevenue / totalMarketingBudget : 0;
   
@@ -46,7 +50,8 @@ export async function runAnalysis(data: FormData) {
     { item: 'Omzet Bulanan', value: monthlyRevenue, isNegative: false },
     { item: 'Modal Produk (HPP)', value: monthlyCostOfGoods, isNegative: true },
     { item: 'Untung Kotor', value: grossProfit, isNegative: grossProfit < 0 },
-    { item: 'Biaya Operasional', value: operationalCosts, isNegative: true },
+    { item: 'Biaya Operasional (Non-Marketing)', value: operationalCosts, isNegative: true },
+    { item: 'Biaya Pemasaran', value: totalMarketingBudget, isNegative: true },
     { item: 'Untung Bersih Bulanan', value: monthlyProfit, isNegative: monthlyProfit < 0 },
   ];
 
@@ -54,14 +59,15 @@ export async function runAnalysis(data: FormData) {
   const cashIn = monthlyRevenue;
   const cashOutHpp = monthlyCostOfGoods;
   const cashOutAdCost = adCost * avgSalesPerMonth;
-  const cashOutOtherFixed = (monthlyRevenue * otherCostsPercentage / 100) + fixedCostsPerMonth + totalMarketingBudget;
-  const netCashFlow = cashIn - cashOutHpp - cashOutAdCost - cashOutOtherFixed;
+  const cashOutOtherFixed = (monthlyRevenue * otherCostsPercentage / 100) + fixedCostsPerMonth;
+  const netCashFlow = cashIn - cashOutHpp - cashOutAdCost - cashOutOtherFixed - totalMarketingBudget;
 
   const cashflowTable = [
     { item: 'Duit Masuk dari Penjualan', value: cashIn, isNegative: false },
     { item: 'Duit Keluar buat Modal (HPP)', value: cashOutHpp, isNegative: true },
     { item: 'Duit Keluar buat Iklan', value: cashOutAdCost, isNegative: true },
     { item: 'Duit Keluar buat Biaya Lain', value: cashOutOtherFixed, isNegative: true },
+    { item: 'Duit Keluar buat Pemasaran', value: totalMarketingBudget, isNegative: true },
     { item: 'Arus Kas Bersih', value: netCashFlow, isNegative: netCashFlow < 0 },
   ];
   
@@ -69,6 +75,12 @@ export async function runAnalysis(data: FormData) {
 
   const marketConditionSummary = "Pasar e-commerce Indonesia sangat kompetitif, didominasi oleh Shopee dan TikTok Shop. Konsumen sensitif harga dan suka promo. Pertumbuhan didorong oleh adopsi digital di kota-kota lapis kedua dan ketiga.";
   
+  const selectedStrategies = [];
+  if (data.useVideoContent) selectedStrategies.push("Video Content & Ads");
+  if (data.useKOL) selectedStrategies.push("KOL & Afiliasi");
+  if (data.usePromo) selectedStrategies.push("Promosi & Diskon");
+  if (data.useOtherChannels) selectedStrategies.push("Kanal Lainnya");
+
   const [marketAnalysis, strategicPlan] = await Promise.all([
     analyzeMarketEntry({
         productName: data.productName,
@@ -81,6 +93,7 @@ export async function runAnalysis(data: FormData) {
         productName: data.productName,
         targetSegmentation: data.targetSegment,
         initialMarketingBudget: totalMarketingBudget,
+        selectedMarketingStrategies: selectedStrategies,
         annualRevenueProjection: annualRevenue,
         annualProfitProjection: annualProfit,
         roas,

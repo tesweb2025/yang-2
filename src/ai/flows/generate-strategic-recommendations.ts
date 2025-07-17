@@ -21,6 +21,7 @@ const StrategicRecommendationsInputSchema = z.object({
   productName: z.string().describe('The name of the product or business.'),
   targetSegmentation: z.string().describe('The primary target segmentation.'),
   initialMarketingBudget: z.number().describe('The initial marketing budget.'),
+  selectedMarketingStrategies: z.array(z.string()).describe('List of marketing strategies selected by the user.'),
 });
 export type StrategicRecommendationsInput = z.infer<typeof StrategicRecommendationsInputSchema>;
 
@@ -49,6 +50,7 @@ Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi b
 - Nama Produk: {{{productName}}}
 - Target Pasar: {{{targetSegmentation}}}
 - Bujet Promosi Bulanan: Rp {{{initialMarketingBudget}}}
+- Strategi Pemasaran Pilihan: {{#each selectedMarketingStrategies}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
 
 **Hasil Simulasi Keuangan:**
 - Proyeksi Omzet Tahunan: Rp {{{annualRevenueProjection}}}
@@ -60,7 +62,7 @@ Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi b
 **Instruksi:**
 1.  Analisis semua data di atas. Cari di mana letak "kebocoran" atau "potensi" terbesarnya.
 2.  Berikan 3-5 rekomendasi dalam bentuk list.
-3.  Setiap rekomendasi harus berupa langkah taktis yang bisa langsung dikerjakan. Contoh: "Naikkan harga jual sebesar 10% jadi Rp XX.XXX", "Cari supplier baru untuk turunkan HPP sebesar Rp X.XXX", atau "Fokuskan bujet iklan ke KOL micro-niche di kategori parenting".
+3.  Setiap rekomendasi harus berupa langkah taktis yang bisa langsung dikerjakan, dan harus relevan dengan strategi pemasaran yang dipilih. Contoh: "Karena memilih KOL, fokuskan bujet iklan ke KOL micro-niche di kategori parenting", "Naikkan harga jual sebesar 10% jadi Rp XX.XXX", "Cari supplier baru untuk turunkan HPP sebesar Rp X.XXX".
 4.  Gunakan bahasa Indonesia yang santai dan jelas. Mulai setiap poin dengan kata kerja.
 5.  Jika hasilnya rugi, berikan saran yang fokus untuk membalikkan keadaan. Jika sudah untung, berikan saran untuk scale-up.
 

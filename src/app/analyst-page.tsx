@@ -565,7 +565,6 @@ export default function AnalystPage() {
                                                     "flex flex-row items-start space-x-3 space-y-0 rounded-lg border p-4 transition-all cursor-pointer",
                                                     field.value ? "bg-primary text-primary-foreground" : "bg-card hover:bg-muted/50"
                                                 )}
-                                                onClick={() => field.onChange(!field.value)}
                                             >
                                                 <FormControl>
                                                     <div className="hidden">
@@ -576,7 +575,7 @@ export default function AnalystPage() {
                                                         />
                                                     </div>
                                                 </FormControl>
-                                                <div className="flex-1 space-y-1">
+                                                <label htmlFor={strategy.id} className="flex-1 space-y-1 cursor-pointer w-full">
                                                     <div className="flex items-center justify-between">
                                                         <div className="flex items-center gap-3">
                                                             <strategy.icon className={cn("w-6 h-6", field.value ? "text-primary-foreground" : "text-primary")} />
@@ -584,14 +583,23 @@ export default function AnalystPage() {
                                                                 {strategy.title}
                                                             </FormLabel>
                                                         </div>
-                                                        <div className={cn("w-11 h-6 rounded-full flex items-center transition-colors", field.value ? 'bg-white/20' : 'bg-muted')}>
-                                                            <span className={cn("h-5 w-5 block rounded-full bg-white shadow-lg transform transition-transform", field.value ? 'translate-x-5' : 'translate-x-0')}></span>
-                                                        </div>
+                                                         <Switch
+                                                            id={strategy.id}
+                                                            checked={field.value}
+                                                            onCheckedChange={field.onChange}
+                                                            className={cn("!mt-0",
+                                                                field.value ? 'data-[state=checked]:bg-white/20' : 'data-[state=unchecked]:bg-muted'
+                                                            )}
+                                                            thumbClassName={cn(
+                                                                "h-5 w-5 block rounded-full bg-white shadow-lg transform transition-transform",
+                                                                field.value ? 'translate-x-5' : 'translate-x-0'
+                                                            )}
+                                                        />
                                                     </div>
                                                     <FormDescription className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>
                                                         {strategy.description}
                                                     </FormDescription>
-                                                </div>
+                                                </label>
                                             </FormItem>
                                         )}
                                     />
@@ -788,33 +796,35 @@ export default function AnalystPage() {
                         </div>
                         
                         <div className="grid md:grid-cols-2 gap-8 items-center">
-                            {budgetChartData.length > 0 && (
-                                <div className="w-full h-48">
-                                    <ChartContainer config={budgetChartConfig} className="h-full w-full">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <PieChart>
-                                                <RechartsTooltip content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />} />
-                                                <Pie
-                                                data={budgetChartData}
-                                                dataKey="value"
-                                                nameKey="name"
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius="60%"
-                                                outerRadius="80%"
-                                                paddingAngle={2}
-                                                stroke="hsl(var(--background))"
-                                                strokeWidth={2}
-                                                >
-                                                {budgetChartData.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                                                ))}
-                                                </Pie>
-                                            </PieChart>
-                                        </ResponsiveContainer>
-                                    </ChartContainer>
-                                </div>
-                            )}
+                            <div>
+                                {budgetChartData.length > 0 && (
+                                    <div className="w-full h-48">
+                                        <ChartContainer config={budgetChartConfig} className="h-full w-full">
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <PieChart>
+                                                    <RechartsTooltip content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />} />
+                                                    <Pie
+                                                    data={budgetChartData}
+                                                    dataKey="value"
+                                                    nameKey="name"
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    innerRadius="60%"
+                                                    outerRadius="80%"
+                                                    paddingAngle={2}
+                                                    stroke="hsl(var(--background))"
+                                                    strokeWidth={2}
+                                                    >
+                                                    {budgetChartData.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                                                    ))}
+                                                    </Pie>
+                                                </PieChart>
+                                            </ResponsiveContainer>
+                                        </ChartContainer>
+                                    </div>
+                                )}
+                            </div>
 
                             <div className="space-y-4">
                                 {marketingStrategies.map(strategy => (
@@ -825,9 +835,8 @@ export default function AnalystPage() {
                                         render={({ field }) => (
                                             <FormItem 
                                                 className="flex items-center justify-between"
-                                                onClick={() => field.onChange(!field.value)}
                                             >
-                                                <div className="flex items-center gap-3 cursor-pointer">
+                                                <div className="flex items-center gap-3 cursor-pointer" onClick={() => field.onChange(!field.value)}>
                                                     <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
                                                     <FormLabel className="font-normal cursor-pointer">{strategy.title}</FormLabel>
                                                 </div>

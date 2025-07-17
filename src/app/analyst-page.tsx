@@ -824,7 +824,7 @@ export default function AnalystPage() {
                     
                     <Card className="mt-8 p-6">
                         <CardHeader className="p-0">
-                            <CardTitle>Kata Petakan.ai Soal Strategimu</CardTitle>
+                            <CardTitle>Status Strategi Bisnismu</CardTitle>
                         </CardHeader>
                         <CardContent className="p-0 mt-4">
                             {analysisResult.marketAnalysis.evaluation.includes("berisiko") || analysisResult.annualProfit < 0 ?

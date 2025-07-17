@@ -12,9 +12,7 @@ export default function AboutPage() {
           <div className="text-center space-y-2">
             <h1 className="text-h1 font-bold">Tentang Petakan.ai</h1>
             <p className="text-subtitle text-muted-foreground">
-              Platform simulasi bisnis yang lahir dari satu pertanyaan sederhana:
-              <br />
-              <span className="font-semibold text-foreground">"Gimana caranya kita tahu strategi ini layak, tanpa harus buang uang duluan?"</span>
+              "Gimana caranya tahu strategi kita bakal cuan, sebelum uang beneran keluar?"
             </p>
           </div>
 

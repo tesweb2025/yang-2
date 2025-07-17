@@ -140,7 +140,7 @@ const marketShareData = [
     { name: 'Shopee', value: 37, fill: 'var(--color-chart-shopee)' },
     { name: 'Lazada', value: 10, fill: 'var(--color-chart-lazada)' },
     { name: 'Bukalapak', value: 6, fill: 'var(--color-chart-bukalapak)' },
-    { name: 'Blibli', value: 5, fill: 'var(--color-chart-blibli))' },
+    { name: 'Blibli', value: 5, fill: 'var(--color-chart-blibli)' },
 ];
 
 const marketShareChartConfig = {
@@ -550,30 +550,30 @@ export default function AnalystPage() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
             <section id="cek-strategi" className="scroll-mt-24">
-                <Card className="p-6 md:p-8">
-                    <CardHeader className="p-0">
-                        <CardTitle className="text-h3 font-medium flex items-center gap-2"><BrainCircuit className="text-primary"/> Data & Strategi Bisnis</CardTitle>
-                        <CardDescription>Isi data ini agar AI bisa menganalisis strategimu.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-0 mt-6 space-y-6">
-                        <div className="grid md:grid-cols-2 gap-4">
-                            <FormField control={form.control} name="productName" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nama Produk / Bisnis</FormLabel>
-                                    <FormControl><Input placeholder="Contoh: Sambal Roa Nona Manis" {...field} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                            <FormField control={form.control} name="targetSegment" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Target Pasar Utama</FormLabel>
-                                    <FormControl><Input placeholder="Contoh: Karyawan kantoran, suka pedas" {...field} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                        </div>
-                    </CardContent>
-                </Card>
+              <Card className="p-6 md:p-8">
+                <CardHeader className="p-0">
+                  <CardTitle className="text-h3 font-medium flex items-center gap-2"><BrainCircuit className="text-primary"/> Data & Strategi Bisnis</CardTitle>
+                  <CardDescription>Isi data ini agar AI bisa menganalisis strategimu.</CardDescription>
+                </CardHeader>
+                <CardContent className="p-0 mt-6 space-y-6">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <FormField control={form.control} name="productName" render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Nama Produk / Bisnis</FormLabel>
+                          <FormControl><Input placeholder="Contoh: Sambal Roa Nona Manis" {...field} /></FormControl>
+                          <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={form.control} name="targetSegment" render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Target Pasar Utama</FormLabel>
+                          <FormControl><Input placeholder="Contoh: Karyawan kantoran, suka pedas" {...field} /></FormControl>
+                          <FormMessage />
+                      </FormItem>
+                    )} />
+                  </div>
+                </CardContent>
+              </Card>
             </section>
             
             <section id="model-bisnis">
@@ -974,5 +974,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

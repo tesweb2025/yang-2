@@ -36,7 +36,7 @@
     --chart-tiktok: 142 71% 45%; /* Bright Green */
     --chart-shopee: 22 95% 65%;
     --chart-lazada: 262 82% 62%; /* Purple */
-    --chart-bukalapak: 350 78% 60%;
+    --chart-bukalapak: 0 84% 60%;
     --chart-blibli: 205 90% 60%;
   }
 
@@ -73,5 +73,3 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
-
-    

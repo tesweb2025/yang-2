@@ -763,7 +763,7 @@ export default function AnalystPage() {
                                             <FormItem className="flex items-center justify-between rounded-lg border p-3">
                                                 <div className="flex items-center gap-3">
                                                     <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                    <FormLabel className="font-normal flex-1 cursor-pointer" onClick={() => field.onChange(!field.value)}>{strategy.title}</FormLabel>
+                                                    <FormLabel className="font-normal flex-1 cursor-pointer">{strategy.title}</FormLabel>
                                                 </div>
                                                 <div className="flex items-center gap-4">
                                                   <span className="font-medium text-sm w-24 text-right">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>

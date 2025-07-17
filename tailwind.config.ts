@@ -78,12 +78,12 @@ export default {
         },
       },
       borderRadius: {
-        lg: 'calc(var(--radius) - 4px)', // 8px
-        md: 'calc(var(--radius) - 4px)', // 8px
-        sm: 'calc(var(--radius) - 6px)', // 6px
-        xl: 'var(--radius)', // 12px
-        '2xl': 'calc(var(--radius) + 4px)', // 16px
-        '3xl': 'calc(var(--radius) + 12px)', // 24px
+        lg: '12px', // was calc(var(--radius) - 4px)
+        md: '8px', // was calc(var(--radius) - 4px)
+        sm: '6px', // was calc(var(--radius) - 6px)
+        xl: '16px', // was var(--radius)
+        '2xl': '20px', // was calc(var(--radius) + 4px)
+        '3xl': '24px', // was calc(var(--radius) + 12px)
       },
       boxShadow: {
         'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',

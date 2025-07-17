@@ -57,7 +57,7 @@ const marketingStrategies = [
         id: 'useVideoContent' as const,
         title: "Video Content & Ads",
         description: "Buat konten video pendek & pasang iklan di platform sosial.",
-        channel: "Iklan Medsos & Video",
+        channel: "Video & Ads",
         color: "hsl(var(--chart-1))",
         icon: Video,
         percentage: 0.479
@@ -66,7 +66,7 @@ const marketingStrategies = [
         id: 'useKOL' as const,
         title: "KOL & Afiliasi",
         description: "Gunakan influencer atau program afiliasi untuk promosi.",
-        channel: "Endorse & KOL",
+        channel: "KOL",
         color: "hsl(var(--chart-2))",
         icon: Users,
         percentage: 0.394
@@ -75,7 +75,7 @@ const marketingStrategies = [
         id: 'usePromo' as const,
         title: "Promosi & Diskon",
         description: "Tawarkan diskon, voucher, atau promo bundling ke pelanggan.",
-        channel: "Promosi & Diskon",
+        channel: "Promo",
         color: "hsl(var(--chart-3))",
         icon: Receipt,
         percentage: 0.0635
@@ -84,7 +84,7 @@ const marketingStrategies = [
         id: 'useOtherChannels' as const,
         title: "Kanal Lainnya",
         description: "Manfaatkan kanal lain seperti SEO, event, atau marketplace ads.",
-        channel: "Kanal Lainnya",
+        channel: "Lainnya",
         color: "hsl(var(--chart-4))",
         icon: Share2,
         percentage: 0.0635
@@ -172,20 +172,20 @@ const budgetChartConfig = {
   value: {
     label: "Value",
   },
-  "Video Content & Ads": {
-    label: "Video Content & Ads",
+  "Video & Ads": {
+    label: "Video & Ads",
     color: "hsl(var(--chart-1))",
   },
-  "KOL & Afiliasi": {
-    label: "KOL & Afiliasi",
+  "KOL": {
+    label: "KOL",
     color: "hsl(var(--chart-2))",
   },
-  "Promosi & Diskon": {
-    label: "Promosi & Diskon",
+  "Promo": {
+    label: "Promo",
     color: "hsl(var(--chart-3))",
   },
-  "Kanal Lainnya": {
-    label: "Kanal Lainnya",
+  "Lainnya": {
+    label: "Lainnya",
     color: "hsl(var(--chart-4))",
   },
 } satisfies ChartConfig;
@@ -283,6 +283,10 @@ export default function AnalystPage() {
 
   const budgetAllocations = useMemo(() => {
     const totalBudget = watchedValues.totalMarketingBudget || 0;
+    const activeStrategies = marketingStrategies.filter(s => watchedValues[s.id as keyof FormData]);
+    
+    const totalPercentage = activeStrategies.reduce((sum, s) => sum + s.percentage, 0);
+
     const allocations = {
       useVideoContent: 0,
       useKOL: 0,
@@ -290,18 +294,9 @@ export default function AnalystPage() {
       useOtherChannels: 0,
     };
 
-    if (totalBudget > 0) {
-      if (watchedValues.useVideoContent) {
-        allocations.useVideoContent = totalBudget * 0.479;
-      }
-      if (watchedValues.useKOL) {
-        allocations.useKOL = totalBudget * 0.394;
-      }
-      if (watchedValues.usePromo) {
-        allocations.usePromo = totalBudget * 0.0635;
-      }
-      if (watchedValues.useOtherChannels) {
-        allocations.useOtherChannels = totalBudget * 0.0635;
+    if (totalBudget > 0 && totalPercentage > 0) {
+      for (const strategy of activeStrategies) {
+        allocations[strategy.id] = (totalBudget * strategy.percentage) / totalPercentage;
       }
     }
     
@@ -577,54 +572,6 @@ export default function AnalystPage() {
                                 </FormItem>
                             )} />
                         </div>
-                        <div className="space-y-4">
-                            <FormLabel>Pilih Strategi Pemasaran</FormLabel>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {marketingStrategies.map((strategy) => (
-                                    <FormField
-                                        key={strategy.id}
-                                        control={form.control}
-                                        name={strategy.id}
-                                        render={({ field }) => (
-                                            <FormItem
-                                                className={cn(
-                                                    "flex flex-row items-start space-x-3 space-y-0 rounded-lg border p-4 transition-all",
-                                                    field.value ? "bg-primary text-primary-foreground" : "bg-card hover:bg-muted/50"
-                                                )}
-                                            >
-                                                <label htmlFor={strategy.id} className="flex-1 space-y-1 cursor-pointer w-full" >
-                                                    <div className="flex items-center justify-between">
-                                                        <div className="flex items-center gap-3">
-                                                            <strategy.icon className={cn("w-6 h-6", field.value ? "text-primary-foreground" : "text-primary")} />
-                                                            <FormLabel className={cn("text-base font-bold cursor-pointer", field.value ? "text-primary-foreground" : "text-card-foreground")}>
-                                                                {strategy.title}
-                                                            </FormLabel>
-                                                        </div>
-                                                        <FormControl>
-                                                            <Switch
-                                                                id={strategy.id}
-                                                                checked={field.value}
-                                                                onCheckedChange={field.onChange}
-                                                                className={cn("!mt-0",
-                                                                    field.value ? 'data-[state=checked]:bg-white/20' : 'data-[state=unchecked]:bg-muted'
-                                                                )}
-                                                                thumbClassName={cn(
-                                                                    "h-5 w-5 block rounded-full bg-white shadow-lg transform transition-transform",
-                                                                    field.value ? 'translate-x-5' : 'translate-x-0'
-                                                                )}
-                                                            />
-                                                        </FormControl>
-                                                    </div>
-                                                    <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground", 'pr-8')}>
-                                                        {strategy.description}
-                                                    </p>
-                                                </label>
-                                            </FormItem>
-                                        )}
-                                    />
-                                ))}
-                            </div>
-                        </div>
                     </CardContent>
                 </Card>
             </section>
@@ -792,7 +739,7 @@ export default function AnalystPage() {
                         <CardTitle className="text-h3 font-medium">Alokator Bujet Pemasaran</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
-                       <div className="w-full max-w-lg mx-auto mb-8">
+                       <div className="mx-auto mb-8">
                          <Controller
                               name="totalMarketingBudget"
                               control={form.control}
@@ -816,12 +763,12 @@ export default function AnalystPage() {
                         
                         <div className="grid md:grid-cols-2 gap-8 items-center">
                             <div>
-                                {budgetChartData.length > 0 && (
+                                {budgetChartData.length > 0 ? (
                                     <div className="w-full h-64">
                                         <ChartContainer config={budgetChartConfig} className="h-full w-full">
                                             <RechartsBarChart
                                                 data={budgetChartData}
-                                                margin={{ top: 20, right: 10, left: -10, bottom: 5 }}
+                                                margin={{ top: 20, right: 30, left: -10, bottom: 5 }}
                                             >
                                                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                                 <XAxis
@@ -847,13 +794,17 @@ export default function AnalystPage() {
                                                         fontSize={12}
                                                         formatter={(value: number) => {
                                                             if (value === 0) return '';
-                                                            const num = value / 1_000_000;
-                                                            return `${num.toFixed(0)} Jt`;
+                                                            if (value < 1000000) return `${(value / 1000).toFixed(0)}rb`;
+                                                            return `${(value / 1_000_000).toFixed(1)}jt`;
                                                         }}
                                                     />
                                                 </Bar>
                                             </RechartsBarChart>
                                         </ChartContainer>
+                                    </div>
+                                ) : (
+                                    <div className="w-full h-64 flex items-center justify-center bg-muted/50 rounded-lg">
+                                      <p className="text-muted-foreground">Pilih strategi untuk melihat alokasi</p>
                                     </div>
                                 )}
                             </div>
@@ -866,16 +817,17 @@ export default function AnalystPage() {
                                         name={strategy.id}
                                         render={({ field }) => (
                                             <FormItem 
-                                                className="flex items-center justify-between"
+                                                className="flex items-center justify-between rounded-lg border p-3"
                                             >
-                                                <div className="flex items-center gap-3 cursor-pointer" onClick={() => field.onChange(!field.value)}>
+                                                <label htmlFor={strategy.id} className="flex items-center gap-3 cursor-pointer">
                                                     <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
                                                     <FormLabel className="font-normal cursor-pointer">{strategy.title}</FormLabel>
-                                                </div>
+                                                </label>
                                                 <div className="flex items-center gap-4">
                                                     <span className="font-medium text-sm">{formatCurrency(budgetAllocations[strategy.id as keyof typeof budgetAllocations])}</span>
                                                     <FormControl>
                                                         <Switch
+                                                            id={strategy.id}
                                                             checked={field.value}
                                                             onCheckedChange={field.onChange}
                                                         />
@@ -1022,3 +974,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

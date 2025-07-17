@@ -1,3 +1,4 @@
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
@@ -35,7 +36,6 @@ const nextConfig = {
     ],
   },
   experimental: {
-    instrumentationHook: true,
   }
 };
 

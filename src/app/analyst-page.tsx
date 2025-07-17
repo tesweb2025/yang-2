@@ -528,7 +528,7 @@ export default function AnalystPage() {
                             name={strategy.id as keyof FormData}
                             render={({ field }) => (
                                 <FormItem className="bg-background border rounded-lg p-4 flex flex-row items-center justify-between has-[[data-state=checked]]:bg-primary/10 has-[[data-state=checked]]:border-primary/50 transition-colors">
-                                    <div className="space-y-0.5" onClick={() => field.onChange(!field.value)}>
+                                    <div className="space-y-0.5 cursor-pointer" onClick={() => field.onChange(!field.value)}>
                                         <FormLabel className="text-base font-semibold cursor-pointer">
                                             {strategy.title}
                                         </FormLabel>
@@ -866,3 +866,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

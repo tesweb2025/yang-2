@@ -817,13 +817,12 @@ export default function AnalystPage() {
                                             <FormItem className="flex items-center justify-between rounded-lg border p-3">
                                                 <div className="flex items-center gap-3">
                                                     <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                    <FormLabel htmlFor={strategy.id} className="font-normal cursor-pointer flex-1">{strategy.title}</FormLabel>
+                                                    <FormLabel className="font-normal flex-1">{strategy.title}</FormLabel>
                                                 </div>
                                                 <div className="flex items-center gap-4">
                                                   <span className="font-medium text-sm w-24 text-right">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
                                                   <FormControl>
                                                     <Switch
-                                                      id={strategy.id}
                                                       checked={field.value}
                                                       onCheckedChange={field.onChange}
                                                     />

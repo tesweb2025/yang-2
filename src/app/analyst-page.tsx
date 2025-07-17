@@ -148,7 +148,7 @@ const budgetChartConfig = {
 
 const platformStrategies = [
     {
-        emoji: "🧨",
+        icon: Video,
         title: "TikTok & Tokopedia",
         subtitle: "Kombinasi Konten + Checkout Seketika",
         description: "⚡ Kanal untuk Shoppertainment & Pembelian Impulsif",
@@ -160,7 +160,7 @@ const platformStrategies = [
         audience: "Produk lifestyle, murah-meriah, atau tren cepat. Target anak muda (18–34), impulsif, FOMO-driven."
     },
     {
-        emoji: "🛒",
+        icon: Users,
         title: "Shopee",
         subtitle: "Platform Perang Harga & Volume Besar",
         description: "🔥 Raksasa Pasar Massal & Promo Agresif",
@@ -172,7 +172,7 @@ const platformStrategies = [
         audience: "Produk mass market, margin tipis, brand baru yang butuh traffic."
     },
     {
-        emoji: "🏛️",
+        icon: Receipt,
         title: "Lazada & Blibli",
         subtitle: "Panggung Brand Premium & Customer Trust",
         description: "🧱 Benteng untuk Brand & Audiens Berkualitas",
@@ -184,7 +184,7 @@ const platformStrategies = [
         audience: "Produk bernilai tinggi, lifestyle premium, brand lokal yang udah punya equity."
     },
     {
-        emoji: "🎯",
+        icon: Share2,
         title: "Meta & Google Ads",
         subtitle: "Targeting Presisi & Scale Demand",
         description: "🎯 Kanal untuk Konversi Terukur & Lead Generation",
@@ -383,10 +383,17 @@ export default function AnalystPage() {
                                     dataKey="name" 
                                     tickLine={false} 
                                     axisLine={false}
-                                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12, lineHeight: '1.2' }}
+                                    tickFormatter={(value) => {
+                                      if (value.includes(' & ')) {
+                                          return value.split(' & ').map((line: string, index: number) => (
+                                              <tspan key={index} x={0} dy={index > 0 ? "1.2em" : "0"}>{line}</tspan>
+                                          ));
+                                      }
+                                      return value;
+                                    }}
                                     interval={0}
-                                    tickFormatter={(value) => value.includes(' & ') ? value.split(' & ').join('\n') : value}
-                                    height={30}
+                                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12, textAnchor: 'middle' }}
+                                    dy={10}
                                 />
                                 <YAxis hide />
                                 <RechartsTooltip 
@@ -423,7 +430,7 @@ export default function AnalystPage() {
                     <Card key={index} className="flex flex-col">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-h3">
-                                <span className="text-2xl">{platform.emoji}</span>
+                                <platform.icon className="w-6 h-6 text-primary" />
                                 {platform.title}
                             </CardTitle>
                             <CardDescription className="font-semibold !mt-2">{platform.subtitle}</CardDescription>

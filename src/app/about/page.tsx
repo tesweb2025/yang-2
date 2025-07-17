@@ -53,7 +53,7 @@ export default function AboutPage() {
           </Card>
            <Card>
             <CardContent className="text-center p-6">
-               <p className="font-medium text-lg text-foreground">
+               <p className="text-lg text-foreground">
                 Di balik setiap ide bisnis, selalu ada harapan yang dibawa, waktu yang dikorbankan, dan tabungan yang dipertaruhkan. Petakan.ai hadir buat bantu lo lihat gambaran besar sejak awal — biar semua usaha itu gak berakhir sia-sia cuma karena strategi yang keliru.
               </p>
             </CardContent>

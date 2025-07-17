@@ -361,12 +361,12 @@ export default function AnalystPage() {
           <h1 className="text-h1 font-bold tracking-tight mb-4">Lihat Untung-Ruginya, Sebelum Kamu Jalanin Strateginya.</h1>
            <div className="my-8 flex justify-center">
             <Image 
-              src="https://placehold.co/400x300.png" 
-              alt="Ilustrasi Truk Pengiriman dan Pin Lokasi"
+              src="https://storage.googleapis.com/aai-web-samples/d24830372.png" 
+              alt="Ilustrasi 3D truk pengiriman merah dengan boks dan pin lokasi"
               width={400} 
               height={300}
               className="max-w-xs md:max-w-sm"
-              data-ai-hint="delivery truck"
+              priority
             />
           </div>
           <p className="text-subtitle text-muted-foreground max-w-2xl mx-auto">Simulasikan ide bisnis kamu dalam hitungan detik. Gratis, cepat, dan bantu ambil keputusan lebih tenang.</p>

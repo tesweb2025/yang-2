@@ -138,11 +138,11 @@ const marketShareData = [
 
 const marketShareChartConfig = {
   value: { label: 'Value' },
-  'Tokopedia & TikTok Shop': { label: 'Tokopedia & TikTok Shop', color: 'hsl(var(--chart-tiktok))' },
-  'Shopee': { label: 'Shopee', color: 'hsl(var(--chart-shopee))' },
-  'Lazada': { label: 'Lazada', color: 'hsl(var(--chart-lazada))' },
-  'Bukalapak': { label: 'Bukalapak', color: 'hsl(var(--chart-bukalapak))' },
-  'Blibli': { label: 'Blibli', color: 'hsl(var(--chart-blibli))' },
+  'Tokopedia & TikTok Shop': { label: 'Tokopedia & TikTok Shop', color: 'hsl(var(--primary))' },
+  'Shopee': { label: 'Shopee', color: 'hsl(var(--primary))' },
+  'Lazada': { label: 'Lazada', color: 'hsl(var(--primary))' },
+  'Bukalapak': { label: 'Bukalapak', color: 'hsl(var(--primary))' },
+  'Blibli': { label: 'Blibli', color: 'hsl(var(--primary))' },
 } satisfies ChartConfig;
 
 
@@ -478,10 +478,7 @@ export default function AnalystPage() {
                                     cursor={{ fill: 'hsl(var(--muted))' }} 
                                     content={<ChartTooltipContent formatter={(value) => `${value}%`} />}
                                 />
-                                <Bar dataKey="value" radius={[8, 8, 0, 0]}>
-                                    {marketShareData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                                    ))}
+                                <Bar dataKey="value" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]}>
                                     <LabelList 
                                         dataKey="value" 
                                         position="top" 

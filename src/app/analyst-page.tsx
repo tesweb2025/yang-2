@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -225,6 +225,51 @@ const platformStrategyDescriptions = [
     }
 ];
 
+const NumericInput = ({ name, control, label }: { name: keyof FormData; control: any; label: string }) => {
+    return (
+        <Controller
+            name={name}
+            control={control}
+            render={({ field, fieldState }) => {
+                // We manage a separate display value
+                const [displayValue, setDisplayValue] = useState(formatNumberInput(field.value));
+
+                useEffect(() => {
+                    // Update display value if the form value changes externally
+                    setDisplayValue(formatNumberInput(field.value));
+                }, [field.value]);
+
+                const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+                    const rawValue = e.target.value.replace(/[^\d]/g, '');
+                    const numericValue = rawValue === '' ? 0 : parseInt(rawValue, 10);
+                    
+                    // Update the form state with the raw numeric value
+                    field.onChange(numericValue);
+                    
+                    // Update the display value with the formatted string
+                    setDisplayValue(formatNumberInput(rawValue));
+                };
+
+                return (
+                    <FormItem>
+                        <FormLabel>{label}</FormLabel>
+                        <FormControl>
+                            <Input
+                                type="text"
+                                placeholder={label.includes('%') ? "0" : "Rp 0"}
+                                value={displayValue}
+                                onChange={handleChange}
+                                onBlur={field.onBlur}
+                            />
+                        </FormControl>
+                        <FormMessage>{fieldState.error?.message}</FormMessage>
+                    </FormItem>
+                );
+            }}
+        />
+    );
+};
+
 export default function AnalystPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
@@ -365,32 +410,6 @@ export default function AnalystPage() {
       </span>
     );
   };
-
-  const NumericInput = ({ name, control, label }: { name: keyof FormData; control: any; label: string }) => (
-    <Controller
-      name={name}
-      control={control}
-      render={({ field, fieldState }) => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
-            <Input
-              type="text"
-              placeholder={label.includes('%') ? "0" : "Rp 0"}
-              value={formatNumberInput(field.value)}
-              onChange={(e) => {
-                const unformattedValue = unformatNumberInput(e.target.value);
-                field.onChange(unformattedValue);
-              }}
-              onBlur={field.onBlur}
-            />
-          </FormControl>
-          <FormMessage>{fieldState.error?.message}</FormMessage>
-        </FormItem>
-      )}
-    />
-  );
-
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -729,28 +748,7 @@ export default function AnalystPage() {
                     </CardHeader>
                     <CardContent className="p-0">
                        <div className="mb-8 max-w-sm mx-auto">
-                           <Controller
-                              name="totalMarketingBudget"
-                              control={form.control}
-                              render={({ field, fieldState }) => (
-                                <FormItem>
-                                  <FormLabel className="text-center block mb-2">Total Bujet Pemasaran</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="text"
-                                      placeholder="Rp 0"
-                                      className="text-2xl font-bold h-auto py-3 text-center"
-                                      value={formatNumberInput(field.value)}
-                                      onChange={(e) => {
-                                          const unformattedValue = unformatNumberInput(e.target.value);
-                                          field.onChange(unformattedValue);
-                                      }}
-                                    />
-                                  </FormControl>
-                                  <FormMessage className="text-center">{fieldState.error?.message}</FormMessage>
-                                </FormItem>
-                              )}
-                            />
+                           <NumericInput name="totalMarketingBudget" control={form.control} label="Total Bujet Pemasaran"/>
                         </div>
                         
                         <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -965,3 +963,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

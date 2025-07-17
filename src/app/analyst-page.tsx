@@ -346,6 +346,9 @@ export default function AnalystPage() {
     );
   };
 
+  const selectedStrategiesCount = marketingStrategies.filter(s => watchedValues[s.id as keyof FormData]).length;
+  const budgetPerStrategy = selectedStrategiesCount > 0 ? (watchedValues.totalMarketingBudget || 0) / selectedStrategiesCount : 0;
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <main className="space-y-12 md:space-y-20">
@@ -548,46 +551,6 @@ export default function AnalystPage() {
                                 </FormItem>
                             )} />
                         </div>
-                         <div className="space-y-4 pt-4">
-                            <h3 className="text-sm font-medium">Pilih Strategi Pemasaran</h3>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                {marketingStrategies.map((strategy) => (
-                                    <FormField
-                                        key={strategy.id}
-                                        control={form.control}
-                                        name={strategy.id}
-                                        render={({ field }) => (
-                                            <FormItem
-                                                className={cn(
-                                                    "relative flex flex-col justify-between rounded-lg border p-4 transition-all cursor-pointer",
-                                                    field.value
-                                                        ? "bg-primary text-primary-foreground border-primary"
-                                                        : "bg-card hover:bg-muted/50"
-                                                )}
-                                            >
-                                                <div className="flex items-start justify-between">
-                                                    <label htmlFor={strategy.id} className="flex flex-col gap-y-2 cursor-pointer w-full">
-                                                        <strategy.icon className={cn("w-7 h-7 mb-2", field.value ? "text-primary-foreground" : "text-primary")} />
-                                                        <FormLabel className="text-base font-semibold">{strategy.title}</FormLabel>
-                                                        <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>
-                                                            {strategy.description}
-                                                        </p>
-                                                    </label>
-                                                    <FormControl>
-                                                        <Switch
-                                                            id={strategy.id}
-                                                            checked={field.value}
-                                                            onCheckedChange={field.onChange}
-                                                            className="!mt-0"
-                                                        />
-                                                    </FormControl>
-                                                </div>
-                                            </FormItem>
-                                        )}
-                                    />
-                                ))}
-                            </div>
-                        </div>
                     </CardContent>
                 </Card>
             </section>
@@ -761,7 +724,7 @@ export default function AnalystPage() {
                               control={form.control}
                               render={({ field }) => (
                                   <FormItem>
-                                      <FormLabel className="sr-only">Total Bujet Pemasaran Bulanan</FormLabel>
+                                      <FormLabel className="text-center block mb-2">Total Bujet Pemasaran</FormLabel>
                                       <FormControl>
                                           <Input
                                               type="text"
@@ -771,7 +734,6 @@ export default function AnalystPage() {
                                               onChange={(e) => field.onChange(parseNumberWithCommas(e.target.value))}
                                           />
                                       </FormControl>
-                                      <FormDescription className="text-center mt-2">Masukkan total dana yang akan Anda gunakan untuk semua aktivitas pemasaran dalam sebulan.</FormDescription>
                                       <FormMessage className="text-center"/>
                                   </FormItem>
                               )}
@@ -779,7 +741,7 @@ export default function AnalystPage() {
                         </div>
                         
                         {budgetChartData.length > 0 && (
-                          <div className="w-full h-48 my-4">
+                          <div className="w-full h-48 my-8">
                              <ChartContainer config={budgetChartConfig} className="h-full w-full">
                                 <ResponsiveContainer width="100%" height="100%">
                                   <PieChart>
@@ -805,8 +767,37 @@ export default function AnalystPage() {
                             </ChartContainer>
                           </div>
                         )}
-                        <p className="text-center text-muted-foreground text-caption pt-2">
-                           Diagram akan muncul setelah Anda memilih strategi dan mengisi bujet.
+                        
+                        <div className="w-full max-w-md space-y-4 mt-8">
+                            {marketingStrategies.map(strategy => (
+                                <FormField
+                                    key={strategy.id}
+                                    control={form.control}
+                                    name={strategy.id}
+                                    render={({ field }) => (
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
+                                                <FormLabel htmlFor={strategy.id} className="font-normal cursor-pointer">{strategy.title}</FormLabel>
+                                            </div>
+                                            <div className="flex items-center gap-4">
+                                                <span className="font-medium text-sm">{formatCurrency(field.value ? budgetPerStrategy : 0)}</span>
+                                                <FormControl>
+                                                    <Switch
+                                                        id={strategy.id}
+                                                        checked={field.value}
+                                                        onCheckedChange={field.onChange}
+                                                    />
+                                                </FormControl>
+                                            </div>
+                                        </div>
+                                    )}
+                                />
+                            ))}
+                        </div>
+                        
+                        <p className="text-center text-muted-foreground text-caption pt-4">
+                           Strategi terfokus, bagus untuk memaksimalkan kanal pilihan.
                         </p>
                     </CardContent>
                     <div className="border-t -mx-8 my-8"></div>
@@ -939,5 +930,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

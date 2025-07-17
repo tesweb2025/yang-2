@@ -451,7 +451,7 @@ export default function AnalystPage() {
                                             <g transform={`translate(${x},${y})`}>
                                               <text x={0} y={0} dy={16} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
                                                 <tspan x="0" dy="0">{parts[0]}</tspan>
-                                                <tspan x="0" dy="1.2em">& {parts[1]}</tspan>
+                                                <tspan x="0" dy="1.2em">&amp; {parts[1]}</tspan>
                                               </text>
                                             </g>
                                           );
@@ -501,8 +501,13 @@ export default function AnalystPage() {
             <section id="cek-strategi" className="scroll-mt-24">
               <Card className="p-6 md:p-8">
                 <CardHeader className="p-0">
-                  <CardTitle className="text-h3 font-medium flex items-center gap-2"><BrainCircuit className="text-primary"/> Data & Strategi Bisnis</CardTitle>
-                  <CardDescription>Isi data ini agar AI bisa menganalisis strategimu.</CardDescription>
+                  <div className="flex items-center gap-3">
+                    <BrainCircuit className="w-8 h-8 text-primary" />
+                    <div>
+                      <CardTitle className="text-h3 font-medium">Data Bisnismu</CardTitle>
+                      <CardDescription>Isi data ini agar AI bisa menganalisis strategimu.</CardDescription>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent className="p-0 mt-6 space-y-6">
                   <div className="grid md:grid-cols-2 gap-4">
@@ -521,10 +526,9 @@ export default function AnalystPage() {
                       </FormItem>
                     )} />
                   </div>
-                  <div className="border-t -mx-8 my-8"></div>
-                  <div>
-                    <h3 className="font-semibold text-lg mb-1">Pilih Strategi Pemasaran</h3>
-                    <p className="text-sm text-muted-foreground mb-4">Pilih satu atau lebih strategi yang ingin kamu simulasikan.</p>
+                  
+                  <div className="space-y-2 pt-2">
+                    <h3 className="font-medium text-sm">Pilih Strategi Pemasaran</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {marketingStrategies.map((strategy) => (
                           <FormField
@@ -532,25 +536,33 @@ export default function AnalystPage() {
                               control={form.control}
                               name={strategy.id}
                               render={({ field }) => (
-                                  <FormItem className={cn(
-                                      "p-4 rounded-lg border transition-all flex flex-row items-start justify-between space-x-3 space-y-0",
-                                      field.value ? "bg-primary/5 border-primary/30" : "bg-muted/30"
-                                  )}>
-                                      <label htmlFor={strategy.id} className="flex flex-col gap-1 cursor-pointer">
-                                        <div className="flex items-center gap-2">
-                                          <strategy.icon className={cn("w-5 h-5", field.value ? "text-primary" : "text-muted-foreground")} />
-                                          <FormLabel className="font-semibold cursor-pointer">{strategy.title}</FormLabel>
-                                        </div>
-                                        <p className="text-sm text-muted-foreground">{strategy.description}</p>
-                                      </label>
-                                      <FormControl>
+                                <FormItem>
+                                  <FormControl>
+                                    <div
+                                      className={cn(
+                                        "p-4 rounded-lg border transition-all relative cursor-pointer",
+                                        field.value
+                                          ? "bg-primary text-primary-foreground border-primary/30"
+                                          : "bg-muted/30 hover:bg-muted/60"
+                                      )}
+                                      onClick={() => field.onChange(!field.value)}
+                                    >
+                                      <div className="absolute top-4 right-4">
                                         <Switch
-                                          id={strategy.id}
                                           checked={field.value}
                                           onCheckedChange={field.onChange}
+                                          className="cursor-pointer"
+                                          onClick={(e) => e.stopPropagation()}
                                         />
-                                      </FormControl>
-                                  </FormItem>
+                                      </div>
+                                      <div className="flex flex-col gap-1">
+                                        <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-muted-foreground")} />
+                                        <label className="font-semibold cursor-pointer">{strategy.title}</label>
+                                        <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
+                                      </div>
+                                    </div>
+                                  </FormControl>
+                                </FormItem>
                               )}
                           />
                       ))}
@@ -939,3 +951,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

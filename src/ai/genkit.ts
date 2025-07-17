@@ -1,11 +1,16 @@
-import {genkit} from 'genkit';
+import {genkit, configureGenkit} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
+import {next} from '@genkit-ai/next';
 
-export const ai = genkit({
+configureGenkit({
   plugins: [
+    next(),
     googleAI({
-      apiKey: "AIzaSyBGPmo-WzowPYjnl3-CQYHsb-98k9eGbYU", // PERINGATAN: Tidak disarankan menaruh API key di sini.
+      apiKey: process.env.GOOGLE_API_KEY,
     }),
   ],
-  model: 'googleai/gemini-1.5-flash',
+  logLevel: 'debug',
+  enableTracingAndMetrics: true,
 });
+
+export const ai = genkit;

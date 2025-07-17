@@ -53,7 +53,7 @@ export default function AboutPage() {
           </Card>
            <Card>
             <CardContent className="text-center p-6">
-               <p className="font-semibold text-lg text-foreground">
+               <p className="font-medium text-lg text-foreground">
                 Karena di dunia bisnis, yang dipertaruhkan bukan cuma uang, tapi juga waktu, tenaga, dan harapan. Petakan.ai bantu lo ngambil langkah pertama — dengan data, bukan tebak-tebakan.
               </p>
             </CardContent>

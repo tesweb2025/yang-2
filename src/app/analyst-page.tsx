@@ -506,8 +506,8 @@ export default function AnalystPage() {
                                           const parts = value.split(' & ');
                                           return (
                                             <g transform={`translate(${x},${y})`}>
-                                              <text x={0} y={0} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
-                                                <tspan x="0" dy="-0.2em">{parts[0]}</tspan>
+                                              <text x={0} y={0} dy={-4} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
+                                                <tspan x="0" dy="0em">{parts[0]}</tspan>
                                                 <tspan x="0" dy="1.2em">&amp; {parts[1]}</tspan>
                                               </text>
                                             </g>
@@ -515,7 +515,7 @@ export default function AnalystPage() {
                                         }
                                         return (
                                           <g transform={`translate(${x},${y})`}>
-                                            <text x={0} y={0} dy={8} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
+                                            <text x={0} y={0} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
                                               {value}
                                             </text>
                                           </g>
@@ -609,7 +609,6 @@ export default function AnalystPage() {
                                       id={strategy.id}
                                       checked={field.value}
                                       onCheckedChange={field.onChange}
-                                      onClick={(e) => e.stopPropagation()}
                                       className="cursor-pointer"
                                     />
                                   </FormControl>
@@ -706,10 +705,12 @@ export default function AnalystPage() {
                                         <div>
                                             <p className="text-caption text-muted-foreground">BEP (unit)</p>
                                             <p className={cn(
-                                              "text-xl font-bold",
-                                              !isFinite(calculations.bepUnit) && "text-destructive"
+                                                "text-xl font-bold",
+                                                isFinite(calculations.bepUnit) && calculations.bepUnit > 0
+                                                    ? "text-green-600"
+                                                    : "text-destructive"
                                             )}>
-                                              {isFinite(calculations.bepUnit) ? Math.ceil(calculations.bepUnit) : 'N/A'}
+                                              {isFinite(calculations.bepUnit) ? new Intl.NumberFormat('id-ID').format(Math.ceil(calculations.bepUnit)) : 'N/A'}
                                             </p>
                                         </div>
                                         <p className="text-xs text-muted-foreground mt-1">Jumlah produk yang harus terjual untuk balik modal setiap bulan.</p>

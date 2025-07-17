@@ -1,11 +1,12 @@
 
 "use client";
 
-import { BrainCircuit, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import Link from 'next/link';
 import { useState } from 'react';
+import Image from 'next/image';
 
 const navLinks = [
     { href: '/#wawasan-pasar', label: 'Wawasan Pasar' },
@@ -22,7 +23,13 @@ export function Header() {
       <div className="container flex h-16 items-center max-w-7xl">
         <div className="flex-1 flex items-center">
           <Link className="mr-6 flex items-center space-x-2" href="/">
-            <BrainCircuit className="h-6 w-6 text-primary" />
+            <Image 
+              src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/ee3935807a4b4acf1e4ed22754edc5e764e916ab/petakanai%20icon.png"
+              alt="Petakan.ai logo"
+              width={24}
+              height={24}
+              className="h-6 w-6"
+            />
             <span className="font-bold text-lg">Petakan.ai</span>
           </Link>
         </div>

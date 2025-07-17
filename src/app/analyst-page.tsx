@@ -244,32 +244,45 @@ export default function AnalystPage() {
 
   const watchedValues = form.watch();
 
+  const { sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth, totalMarketingBudget, useVideoContent, useKOL, usePromo, useOtherChannels } = watchedValues;
+
   const calculations = useMemo(() => {
-    const { sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth } = watchedValues;
     const grossProfitPerUnit = (sellPrice || 0) - (costOfGoods || 0);
     const netProfitPerUnit = grossProfitPerUnit - (adCost || 0) - ((sellPrice || 0) * (otherCostsPercentage || 0) / 100);
     const bepUnit = netProfitPerUnit > 0 ? (fixedCostsPerMonth || 0) / netProfitPerUnit : Infinity;
     
     return { netProfitPerUnit, bepUnit };
   }, [
-    watchedValues.sellPrice,
-    watchedValues.costOfGoods,
-    watchedValues.adCost,
-    watchedValues.otherCostsPercentage,
-    watchedValues.fixedCostsPerMonth
+    sellPrice,
+    costOfGoods,
+    adCost,
+    otherCostsPercentage,
+    fixedCostsPerMonth
   ]);
 
   const budgetAllocations = useMemo(() => {
-    const totalBudget = watchedValues.totalMarketingBudget || 0;
-    const activeStrategies = marketingStrategies.filter(s => watchedValues[s.id as keyof FormData]);
+    const budget = totalMarketingBudget || 0;
+    const activeStrategies = marketingStrategies.filter(s => {
+        if (s.id === 'useVideoContent') return useVideoContent;
+        if (s.id === 'useKOL') return useKOL;
+        if (s.id === 'usePromo') return usePromo;
+        if (s.id === 'useOtherChannels') return useOtherChannels;
+        return false;
+    });
     
     const totalPercentage = activeStrategies.reduce((sum, s) => sum + s.percentage, 0);
 
     const allocations: { [key: string]: number } = {};
 
     for (const strategy of marketingStrategies) {
-        if (watchedValues[strategy.id as keyof FormData] && totalBudget > 0 && totalPercentage > 0) {
-            allocations[strategy.id] = (totalBudget * strategy.percentage) / totalPercentage;
+        let isActive = false;
+        if (strategy.id === 'useVideoContent') isActive = useVideoContent;
+        else if (strategy.id === 'useKOL') isActive = useKOL;
+        else if (strategy.id === 'usePromo') isActive = usePromo;
+        else if (strategy.id === 'useOtherChannels') isActive = useOtherChannels;
+        
+        if (isActive && budget > 0 && totalPercentage > 0) {
+            allocations[strategy.id] = (budget * strategy.percentage) / totalPercentage;
         } else {
             allocations[strategy.id] = 0;
         }
@@ -277,28 +290,33 @@ export default function AnalystPage() {
     
     return allocations;
   }, [
-    watchedValues.totalMarketingBudget,
-    watchedValues.useVideoContent,
-    watchedValues.useKOL,
-    watchedValues.usePromo,
-    watchedValues.useOtherChannels,
+    totalMarketingBudget,
+    useVideoContent,
+    useKOL,
+    usePromo,
+    useOtherChannels,
   ]);
 
   const budgetChartData = useMemo(() => {
-    const allocations = budgetAllocations;
     return marketingStrategies
-      .filter(s => watchedValues[s.id as keyof FormData])
+      .filter(s => {
+        if (s.id === 'useVideoContent') return useVideoContent;
+        if (s.id === 'useKOL') return useKOL;
+        if (s.id === 'usePromo') return usePromo;
+        if (s.id === 'useOtherChannels') return useOtherChannels;
+        return false;
+      })
       .map(s => ({
         name: s.channel,
-        value: allocations[s.id],
+        value: budgetAllocations[s.id],
         fill: s.color,
       }));
   }, [
     budgetAllocations, 
-    watchedValues.useVideoContent, 
-    watchedValues.useKOL, 
-    watchedValues.usePromo, 
-    watchedValues.useOtherChannels
+    useVideoContent, 
+    useKOL, 
+    usePromo, 
+    useOtherChannels
   ]);
 
   const onSubmit = async (data: FormData) => {

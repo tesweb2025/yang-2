@@ -9,8 +9,8 @@
  * - StrategicRecommendationsOutput - The return type for the generateStrategicRecommendations function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { z } from 'genkit';
+import { generativeModel } from '@/ai/genkit';
 
 const StrategicRecommendationsInputSchema = z.object({
   annualRevenueProjection: z.number().describe('The projected annual revenue.'),
@@ -35,30 +35,24 @@ export type StrategicRecommendationsOutput = z.infer<typeof StrategicRecommendat
 export async function generateStrategicRecommendations(
   input: StrategicRecommendationsInput
 ): Promise<StrategicRecommendationsOutput> {
-  return generateStrategicRecommendationsFlow(input);
-}
+  const validatedInput = StrategicRecommendationsInputSchema.parse(input);
 
-const prompt = ai.definePrompt({
-  name: 'strategicRecommendationsPrompt',
-  model: 'gemini-2.0-flash',
-  input: {schema: StrategicRecommendationsInputSchema},
-  output: {schema: StrategicRecommendationsOutputSchema},
-  prompt: `Kamu adalah seorang Business Strategist AI yang jago banget ngasih saran praktis buat UMKM di Indonesia. Gaya bicaramu santai, memotivasi, dan solutif.
+  const prompt = `Kamu adalah seorang Business Strategist AI yang jago banget ngasih saran praktis buat UMKM di Indonesia. Gaya bicaramu santai, memotivasi, dan solutif.
 
 Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi bisnis ini. Fokus pada saran yang paling besar dampaknya.
 
 **Data Bisnis:**
-- Nama Produk: {{{productName}}}
-- Target Pasar: {{{targetSegmentation}}}
-- Bujet Promosi Bulanan: Rp {{{initialMarketingBudget}}}
-- Strategi Pemasaran Pilihan: {{#each selectedMarketingStrategies}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
+- Nama Produk: ${validatedInput.productName}
+- Target Pasar: ${validatedInput.targetSegmentation}
+- Bujet Promosi Bulanan: Rp ${validatedInput.initialMarketingBudget}
+- Strategi Pemasaran Pilihan: ${validatedInput.selectedMarketingStrategies.join(', ')}
 
 **Hasil Simulasi Keuangan:**
-- Proyeksi Omzet Tahunan: Rp {{{annualRevenueProjection}}}
-- Proyeksi Untung Tahunan: Rp {{{annualProfitProjection}}}
-- ROAS (Return on Ad Spend): {{{roas}}}x
-- Laporan Untung Rugi Bulanan: {{{monthlyProfitAndLossStatement}}}
-- Arus Kas Bulanan: {{{monthlyCashFlowSimulation}}}
+- Proyeksi Omzet Tahunan: Rp ${validatedInput.annualRevenueProjection}
+- Proyeksi Untung Tahunan: Rp ${validatedInput.annualProfitProjection}
+- ROAS (Return on Ad Spend): ${validatedInput.roas}x
+- Laporan Untung Rugi Bulanan: ${validatedInput.monthlyProfitAndLossStatement}
+- Arus Kas Bulanan: ${validatedInput.monthlyCashFlowSimulation}
 
 **Instruksi:**
 1.  Analisis semua data di atas. Cari di mana letak "kebocoran" atau "potensi" terbesarnya.
@@ -69,18 +63,15 @@ Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi b
 
 Contoh output item: "Naikin harga pelan-pelan sambil tetap pantau kompetitor" atau "Tekan biaya operasional bulanan Rp 4 juta".
 
-Buat daftar Rencana Aksi Prioritas:
-`,
-});
+Pastikan outputmu adalah objek JSON yang valid dan hanya berisi list string, sesuai dengan skema berikut:
+{
+  "recommendations": ["rekomendasi 1", "rekomendasi 2", "dst..."]
+}
+`;
 
-const generateStrategicRecommendationsFlow = ai.defineFlow(
-  {
-    name: 'generateStrategicRecommendationsFlow',
-    inputSchema: StrategicRecommendationsInputSchema,
-    outputSchema: StrategicRecommendationsOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
-  }
-);
+  const result = await generativeModel.generateContent(prompt);
+  const responseText = result.response.text();
+  const responseObject = JSON.parse(responseText);
+
+  return StrategicRecommendationsOutputSchema.parse(responseObject);
+}

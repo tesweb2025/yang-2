@@ -9,8 +9,8 @@
  * - AnalyzeMarketEntryOutput - The return type for the analyzeMarketEntry function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { z } from 'zod';
+import { generativeModel } from '@/ai/genkit';
 
 const AnalyzeMarketEntryInputSchema = z.object({
   productName: z.string().describe('The name of the product or business.'),
@@ -36,23 +36,17 @@ const AnalyzeMarketEntryOutputSchema = z.object({
 export type AnalyzeMarketEntryOutput = z.infer<typeof AnalyzeMarketEntryOutputSchema>;
 
 export async function analyzeMarketEntry(input: AnalyzeMarketEntryInput): Promise<AnalyzeMarketEntryOutput> {
-  return analyzeMarketEntryFlow(input);
-}
+  const validatedInput = AnalyzeMarketEntryInputSchema.parse(input);
 
-const prompt = ai.definePrompt({
-  name: 'analyzeMarketEntryPrompt',
-  model: 'gemini-2.0-flash',
-  input: {schema: AnalyzeMarketEntryInputSchema},
-  output: {schema: AnalyzeMarketEntryOutputSchema},
-  prompt: `Kamu adalah seorang Business Analyst AI yang ahli di pasar e-commerce Indonesia. Gaya bicaramu santai, to the point, dan mudah dimengerti UMKM.
+  const prompt = `Kamu adalah seorang Business Analyst AI yang ahli di pasar e-commerce Indonesia. Gaya bicaramu santai, to the point, dan mudah dimengerti UMKM.
 
 Tugasmu adalah mengevaluasi kelayakan sebuah ide bisnis berdasarkan data berikut:
 
-Nama Produk: {{{productName}}}
-Target Pasar: {{{targetSegment}}}
-Modal Awal (Bujet Promosi): Rp {{{initialMarketingBudget}}}
-Ringkasan Finansial: {{{financialForecastSummary}}}
-Kondisi Pasar: {{{marketConditionSummary}}}
+Nama Produk: ${validatedInput.productName}
+Target Pasar: ${validatedInput.targetSegment}
+Modal Awal (Bujet Promosi): Rp ${validatedInput.initialMarketingBudget}
+Ringkasan Finansial: ${validatedInput.financialForecastSummary}
+Kondisi Pasar: ${validatedInput.marketConditionSummary}
 
 **PENTING**: Gunakan HANYA informasi dari "Kondisi Pasar" di atas untuk konteks pasarnya. Jangan membuat asumsi tentang pasar berdasarkan nama produk.
 
@@ -61,17 +55,17 @@ Berdasarkan data di atas, berikan evaluasi singkat.
 2.  **Key Considerations**: Lanjutkan dengan 1-2 kalimat penjelasan singkat dan padat mengenai 'kenapa'-nya. Fokus pada poin paling krusial dari data yang ada (misal: profit tipis, target pasar terlalu luas, dll).
 
 Buat seolah-olah kamu sedang memberi nasihat cepat ke teman bisnismu.
-`,
-});
 
-const analyzeMarketEntryFlow = ai.defineFlow(
-  {
-    name: 'analyzeMarketEntryFlow',
-    inputSchema: AnalyzeMarketEntryInputSchema,
-    outputSchema: AnalyzeMarketEntryOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
-  }
-);
+Pastikan outputmu adalah objek JSON yang valid, sesuai dengan skema berikut:
+{
+  "evaluation": "string",
+  "keyConsiderations": "string"
+}
+`;
+
+  const result = await generativeModel.generateContent(prompt);
+  const responseText = result.response.text();
+  const responseObject = JSON.parse(responseText);
+  
+  return AnalyzeMarketEntryOutputSchema.parse(responseObject);
+}

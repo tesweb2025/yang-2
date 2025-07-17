@@ -361,7 +361,7 @@ export default function AnalystPage() {
           <h1 className="text-h1 font-bold tracking-tight mb-4">Lihat Untung-Ruginya, Sebelum Kamu Jalanin Strateginya.</h1>
            <div className="my-8 flex justify-center">
             <Image 
-              src="https://storage.googleapis.com/aai-web-samples/d24830372.png" 
+              src="https://static.vecteezy.com/system/resources/previews/024/830/372/non_2x/delivery-truck-with-parcel-box-transport-vehicle-3d-rendering-free-png.png" 
               alt="Ilustrasi 3D truk pengiriman merah dengan boks dan pin lokasi"
               width={400} 
               height={300}

@@ -25,7 +25,6 @@
     --border: 240 5.9% 90%; /* #e5e5e7 */
     --input: 240 5.2% 93.9%; /* #eeeff2 */
     --ring: 220 84.8% 60.2%;
-    --radius: 0.75rem; /* 12px */
 
     /* Chart colors */
     --chart-1: 220 84.8% 60.2%;
@@ -40,8 +39,6 @@
     --color-chart-lazada: 262 82% 62%; /* Purple */
     --color-chart-bukalapak: 0 84% 60%;
     --color-chart-blibli: 205 90% 60%;
-    --color-tokopedia: 142 71% 45%;
-    --color-shopee: 22 95% 65%;
   }
 
   .dark {

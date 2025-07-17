@@ -129,11 +129,11 @@ const businessModelContent: any = {
 };
 
 const marketShareData = [
-    { name: 'Tokopedia & TikTok Shop', value: 39, fill: 'var(--color-chart-tiktok)' },
-    { name: 'Shopee', value: 37, fill: 'var(--color-chart-shopee)' },
-    { name: 'Lazada', value: 10, fill: 'var(--color-chart-lazada)' },
-    { name: 'Bukalapak', value: 6, fill: 'var(--color-chart-bukalapak)' },
-    { name: 'Blibli', value: 5, fill: 'var(--color-chart-blibli)' },
+    { name: 'Tokopedia & TikTok Shop', value: 39 },
+    { name: 'Shopee', value: 37 },
+    { name: 'Lazada', value: 10 },
+    { name: 'Bukalapak', value: 6 },
+    { name: 'Blibli', value: 5 },
 ];
 
 const marketShareChartConfig = {
@@ -162,9 +162,9 @@ const gmvComboData = [
 ];
 
 const gmvComboChartConfig = {
-    shopee: { label: 'Shopee', color: "hsl(var(--color-shopee))" },
-    tokopedia: { label: 'Tokopedia', color: "hsl(var(--color-tokopedia))" },
-    average: { label: 'Rata-rata', color: 'hsl(var(--primary))' },
+    shopee: { label: 'Shopee', color: "hsl(var(--primary))" },
+    tokopedia: { label: 'Tokopedia', color: "hsl(var(--primary))" },
+    average: { label: 'Rata-rata', color: 'hsl(var(--success))' },
 } satisfies ChartConfig;
 
 const budgetChartConfig = {
@@ -386,9 +386,9 @@ export default function AnalystPage() {
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                 <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
                                 <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
-                                <Bar dataKey="tokopedia" barSize={25} fill="var(--color-tokopedia)" radius={[4, 4, 0, 0]} />
-                                <Bar dataKey="shopee" barSize={25} fill="var(--color-shopee)" radius={[4, 4, 0, 0]} />
-                                <Line type="monotone" dataKey="average" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
+                                <Bar dataKey="tokopedia" barSize={25} fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="shopee" barSize={25} fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                                <Line type="monotone" dataKey="average" stroke="hsl(var(--success))" strokeWidth={2} dot={false} />
                             </ComposedChart>
                         </ChartContainer>
                     </div>

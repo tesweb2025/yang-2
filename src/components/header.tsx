@@ -3,7 +3,7 @@
 
 import { BrainCircuit, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -36,6 +36,9 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px]">
+                <SheetHeader>
+                  <SheetTitle className="sr-only">Menu Navigasi</SheetTitle>
+                </SheetHeader>
                 <nav className="flex flex-col gap-4 mt-8">
                     {navLinks.map(link => (
                         <SheetClose asChild key={link.href}>

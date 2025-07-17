@@ -367,7 +367,7 @@ export default function AnalystPage() {
                 <p className="text-subtitle text-muted-foreground mt-2">Data terbaru untuk membantumu mengambil keputusan.</p>
             </div>
             <Card className="p-6">
-                <div className="grid md:grid-cols-2 gap-8 items-start">
+                <div className="grid md:grid-cols-[1fr_auto_1fr] gap-8 items-start">
                     <div>
                         <CardHeader className="p-0 mb-4">
                             <CardTitle className="text-h3 font-medium">Proyeksi Gross Merchandise Value (GMV)</CardTitle>
@@ -390,7 +390,7 @@ export default function AnalystPage() {
                             <p className="text-caption text-muted-foreground text-center">Visualisasi tren GMV antar platform besar.</p>
                         </CardContent>
                     </div>
-                    <div className="border-l border-border -my-6 hidden md:block"></div>
+                    <div className="border-l border-border h-auto hidden md:block"></div>
                     <div>
                         <CardHeader className="p-0">
                             <CardTitle className="text-h3 font-medium">Wawasan Penting Pembeli Digital</CardTitle>

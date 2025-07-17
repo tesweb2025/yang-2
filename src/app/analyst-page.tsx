@@ -556,8 +556,9 @@ export default function AnalystPage() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel
+                                htmlFor={strategy.id}
                                 className={cn(
-                                  "p-4 rounded-lg border transition-all relative cursor-pointer",
+                                  "p-4 rounded-lg border transition-all relative cursor-pointer flex flex-col gap-1",
                                   field.value
                                     ? "bg-primary text-primary-foreground"
                                     : "bg-muted/30 hover:bg-muted/60"
@@ -566,18 +567,16 @@ export default function AnalystPage() {
                                 <div className="absolute top-4 right-4">
                                   <FormControl>
                                     <Switch
+                                      id={strategy.id}
                                       checked={field.value}
                                       onCheckedChange={field.onChange}
                                       className="cursor-pointer"
-                                      onClick={(e) => e.stopPropagation()}
                                     />
                                   </FormControl>
                                 </div>
-                                <div className="flex flex-col gap-1">
-                                  <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-muted-foreground")} />
-                                  <span className="font-semibold">{strategy.title}</span>
-                                  <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
-                                </div>
+                                <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-muted-foreground")} />
+                                <span className="font-semibold">{strategy.title}</span>
+                                <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
                               </FormLabel>
                             </FormItem>
                           )}

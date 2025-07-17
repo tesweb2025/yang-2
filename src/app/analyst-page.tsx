@@ -163,8 +163,8 @@ const gmvComboData = [
 ];
 
 const gmvComboChartConfig = {
-    shopee: { label: 'Shopee', color: "hsl(var(--chart-shopee))" },
-    tokopedia: { label: 'Tokopedia', color: "hsl(var(--chart-tiktok))" },
+    shopee: { label: 'Shopee', color: "hsl(var(--color-shopee))" },
+    tokopedia: { label: 'Tokopedia', color: "hsl(var(--color-tokopedia))" },
     average: { label: 'Rata-rata', color: 'hsl(var(--primary))' },
 } satisfies ChartConfig;
 
@@ -694,7 +694,7 @@ export default function AnalystPage() {
                         <CardTitle className="text-h3 font-medium">Alokator Bujet Pemasaran</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
-                       <div className="max-w-md mx-auto mb-8">
+                       <div className="mb-8">
                          <Controller
                               name="totalMarketingBudget"
                               control={form.control}
@@ -724,33 +724,35 @@ export default function AnalystPage() {
                                             <RechartsBarChart
                                                 data={budgetChartData}
                                                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                                                layout="vertical"
                                             >
-                                                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                                                <XAxis
+                                                <CartesianGrid horizontal={false} strokeDasharray="3 3" />
+                                                <YAxis
                                                     dataKey="name"
+                                                    type="category"
                                                     tickLine={false}
                                                     axisLine={false}
                                                     tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
+                                                    width={80}
                                                 />
-                                                <YAxis hide />
+                                                <XAxis type="number" hide />
                                                 <RechartsTooltip
                                                     cursor={{ fill: 'hsl(var(--muted))' }}
                                                     content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />}
                                                 />
-                                                <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                                                <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                                                     {budgetChartData.map((entry, index) => (
                                                         <Cell key={`cell-${index}`} fill={entry.fill} />
                                                     ))}
                                                      <LabelList
                                                         dataKey="value"
-                                                        position="top"
+                                                        position="right"
                                                         offset={8}
                                                         className="fill-foreground font-medium"
                                                         fontSize={12}
                                                         formatter={(value: number) => {
                                                             if (value === 0) return '';
-                                                            if (value < 1000000) return `${(value / 1000).toFixed(0)}rb`;
-                                                            return `${(value / 1_000_000).toFixed(1)}jt`;
+                                                            return formatCurrency(value);
                                                         }}
                                                     />
                                                 </Bar>

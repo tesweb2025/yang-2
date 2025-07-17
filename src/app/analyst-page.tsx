@@ -453,13 +453,14 @@ export default function AnalystPage() {
                 <CardContent className="p-0 mt-8 space-y-8">
                     <div className="w-full h-[300px]">
                         <ChartContainer config={marketShareChartConfig} className="h-full w-full">
-                            <RechartsBarChart data={marketShareData} barCategoryGap="20%">
+                            <RechartsBarChart data={marketShareData} barCategoryGap="20%" margin={{ bottom: 20 }}>
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                 <XAxis 
                                     dataKey="name" 
                                     tickLine={false} 
                                     axisLine={false}
                                     interval={0}
+                                    dy={10}
                                     tick={(props) => {
                                         const { x, y, payload } = props;
                                         const value = payload.value;
@@ -467,8 +468,8 @@ export default function AnalystPage() {
                                           const parts = value.split(' & ');
                                           return (
                                             <g transform={`translate(${x},${y})`}>
-                                              <text x={0} y={0} dy={16} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
-                                                <tspan x="0" dy="0">{parts[0]}</tspan>
+                                              <text x={0} y={0} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
+                                                <tspan x="0" dy="-0.2em">{parts[0]}</tspan>
                                                 <tspan x="0" dy="1.2em">&amp; {parts[1]}</tspan>
                                               </text>
                                             </g>
@@ -476,7 +477,7 @@ export default function AnalystPage() {
                                         }
                                         return (
                                           <g transform={`translate(${x},${y})`}>
-                                            <text x={0} y={0} dy={16} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
+                                            <text x={0} y={0} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
                                               {value}
                                             </text>
                                           </g>

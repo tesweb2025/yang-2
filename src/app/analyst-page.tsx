@@ -517,7 +517,7 @@ export default function AnalystPage() {
                                     tickLine={false} 
                                     axisLine={false}
                                     interval={0}
-                                    dy={10}
+                                    dy={15}
                                     tick={(props) => {
                                         const { x, y, payload } = props;
                                         const value = payload.value;
@@ -963,5 +963,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

@@ -396,7 +396,7 @@ export default function AnalystPage() {
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <main className="space-y-12 md:space-y-20">
         <section className="text-center pt-12 md:pt-20">
-          <h1 className="text-h1 font-bold tracking-tight mb-2">Lihat Untung-Ruginya, Sebelum Kamu Jalanin Strateginya.</h1>
+          <h1 className="text-h1 font-bold tracking-tight mb-2">Lihat Untung-Ruginya,<br />Sebelum Kamu Jalanin Strateginya.</h1>
            <div className="my-4 flex justify-center">
             <Image 
               src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/3edf05a86f1e1ccf79e7463bb00ba3e48561fb1e/mobil%20paket%20kurir.png" 
@@ -805,20 +805,23 @@ export default function AnalystPage() {
                                         control={form.control}
                                         name={strategy.id}
                                         render={({ field }) => (
-                                            <FormItem className="flex items-center justify-between rounded-lg border p-3">
-                                                <div className="flex items-center gap-3">
-                                                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                    <FormLabel className="font-normal flex-1 cursor-pointer">{strategy.title}</FormLabel>
-                                                </div>
-                                                <div className="flex items-center gap-4">
-                                                  <span className="font-medium text-sm w-24 text-right">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
-                                                  <FormControl>
-                                                    <Switch
-                                                      checked={field.value}
-                                                      onCheckedChange={field.onChange}
-                                                    />
-                                                  </FormControl>
-                                                </div>
+                                            <FormItem>
+                                              <FormLabel htmlFor={strategy.id} className="flex items-center justify-between rounded-lg border p-3 cursor-pointer">
+                                                  <div className="flex items-center gap-3">
+                                                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
+                                                      <span className="font-normal flex-1">{strategy.title}</span>
+                                                  </div>
+                                                  <div className="flex items-center gap-4">
+                                                    <span className="font-medium text-sm w-24 text-right">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
+                                                    <FormControl>
+                                                      <Switch
+                                                        id={strategy.id}
+                                                        checked={field.value}
+                                                        onCheckedChange={field.onChange}
+                                                      />
+                                                    </FormControl>
+                                                  </div>
+                                              </FormLabel>
                                             </FormItem>
                                         )}
                                     />

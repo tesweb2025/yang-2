@@ -40,7 +40,7 @@ export async function generateStrategicRecommendations(
 
 const prompt = ai.definePrompt({
   name: 'strategicRecommendationsPrompt',
-  model: 'gemini-pro',
+  model: 'gemini-2.0-flash',
   input: {schema: StrategicRecommendationsInputSchema},
   output: {schema: StrategicRecommendationsOutputSchema},
   prompt: `Kamu adalah seorang Business Strategist AI yang jago banget ngasih saran praktis buat UMKM di Indonesia. Gaya bicaramu santai, memotivasi, dan solutif.

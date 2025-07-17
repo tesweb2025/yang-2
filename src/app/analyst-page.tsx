@@ -396,14 +396,14 @@ export default function AnalystPage() {
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <main className="space-y-12 md:space-y-20">
         <section className="text-center pt-12 md:pt-20">
-          <h1 className="text-h1 font-bold tracking-tight mb-4">Lihat Untung-Ruginya, Sebelum Kamu Jalanin Strateginya.</h1>
-           <div className="my-8 flex justify-center">
+          <h1 className="text-h1 font-bold tracking-tight mb-2">Lihat Untung-Ruginya, Sebelum Kamu Jalanin Strateginya.</h1>
+           <div className="my-4 flex justify-center">
             <Image 
               src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/3edf05a86f1e1ccf79e7463bb00ba3e48561fb1e/mobil%20paket%20kurir.png" 
               alt="Ilustrasi 3D truk pengiriman merah dengan boks dan pin lokasi"
-              width={400} 
-              height={300}
-              className="max-w-xs md:max-w-sm"
+              width={500} 
+              height={375}
+              className="max-w-sm md:max-w-md"
               priority
             />
           </div>
@@ -515,7 +515,7 @@ export default function AnalystPage() {
                                         }
                                         return (
                                           <g transform={`translate(${x},${y})`}>
-                                            <text x={0} y={0} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
+                                            <text x={0} y={0} dy={value.includes('&') ? 0 : 8} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
                                               {value}
                                             </text>
                                           </g>

@@ -153,6 +153,12 @@ const gmvComboData = [
     { month: 'Apr', shopee: 2200, tokopedia: 2000, average: 2100 },
     { month: 'May', shopee: 2500, tokopedia: 2200, average: 2350 },
     { month: 'Jun', shopee: 2300, tokopedia: 2100, average: 2200 },
+    { month: 'Jul', shopee: 2600, tokopedia: 2400, average: 2500 },
+    { month: 'Aug', shopee: 2500, tokopedia: 2300, average: 2400 },
+    { month: 'Sep', shopee: 2800, tokopedia: 2600, average: 2700 },
+    { month: 'Oct', shopee: 3000, tokopedia: 2800, average: 2900 },
+    { month: 'Nov', shopee: 3200, tokopedia: 3000, average: 3100 },
+    { month: 'Dec', shopee: 3500, tokopedia: 3300, average: 3400 },
 ];
 
 const gmvComboChartConfig = {
@@ -376,12 +382,12 @@ export default function AnalystPage() {
                     <p className="text-5xl font-bold text-primary">US$56,5 M</p>
                     <div className="h-60 w-full">
                         <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
-                            <ComposedChart data={gmvComboData} margin={{ top: 20, right: 0, left: -20, bottom: 5 }}>
+                            <ComposedChart data={gmvComboData} barCategoryGap="25%" margin={{ top: 20, right: 0, left: -20, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                 <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
                                 <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
-                                <Bar dataKey="tokopedia" barSize={20} fill="var(--color-tokopedia)" radius={[4, 4, 0, 0]} />
-                                <Bar dataKey="shopee" barSize={20} fill="var(--color-shopee)" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="tokopedia" barSize={15} fill="var(--color-tokopedia)" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="shopee" barSize={15} fill="var(--color-shopee)" radius={[4, 4, 0, 0]} />
                                 <Line type="monotone" dataKey="average" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
                             </ComposedChart>
                         </ChartContainer>

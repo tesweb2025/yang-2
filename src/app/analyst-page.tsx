@@ -396,14 +396,14 @@ export default function AnalystPage() {
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <main className="space-y-12 md:space-y-20">
         <section className="text-center pt-12 md:pt-20">
-          <h1 className="text-h1 font-bold tracking-tight mb-2">Lihat Untung-Ruginya,<br />Sebelum Kamu Jalanin Strateginya.</h1>
+          <h1 className="text-h1 font-bold tracking-tight mb-4">Lihat Untung-Ruginya,<br />Sebelum Kamu Jalanin Strateginya.</h1>
            <div className="my-4 flex justify-center">
             <Image 
               src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/3edf05a86f1e1ccf79e7463bb00ba3e48561fb1e/mobil%20paket%20kurir.png" 
               alt="Ilustrasi 3D truk pengiriman merah dengan boks dan pin lokasi"
               width={500} 
               height={375}
-              className="max-w-sm md:max-w-md"
+              className="max-w-sm md:max-w-md my-2"
               priority
             />
           </div>
@@ -515,7 +515,7 @@ export default function AnalystPage() {
                                         }
                                         return (
                                           <g transform={`translate(${x},${y})`}>
-                                            <text x={0} y={0} dy={value.includes('&') ? 0 : 8} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
+                                            <text x={0} y={0} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
                                               {value}
                                             </text>
                                           </g>
@@ -571,7 +571,7 @@ export default function AnalystPage() {
                     <FormField control={form.control} name="productName" render={({ field }) => (
                       <FormItem>
                           <FormLabel>Nama Produk / Bisnis</FormLabel>
-                          <FormControl><Input placeholder="Contoh: Sambal Roa Nona Manis" {...field} /></FormControl>
+                          <FormControl><Input placeholder="Contoh: Kopi Susu Kekinian" {...field} /></FormControl>
                           <FormMessage />
                       </FormItem>
                     )} />
@@ -597,9 +597,9 @@ export default function AnalystPage() {
                               <FormLabel
                                 htmlFor={strategy.id}
                                 className={cn(
-                                  "p-4 rounded-lg border transition-all relative cursor-pointer flex flex-col gap-1",
+                                  "p-4 rounded-xl border transition-all relative cursor-pointer flex flex-col gap-1",
                                   field.value
-                                    ? "bg-primary text-primary-foreground"
+                                    ? "bg-primary text-primary-foreground border-primary"
                                     : "bg-muted/30 hover:bg-muted/60"
                                 )}
                               >
@@ -609,11 +609,12 @@ export default function AnalystPage() {
                                       id={strategy.id}
                                       checked={field.value}
                                       onCheckedChange={field.onChange}
+                                      onClick={(e) => e.stopPropagation()}
                                       className="cursor-pointer"
                                     />
                                   </FormControl>
                                 </div>
-                                <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-muted-foreground")} />
+                                <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-primary")} />
                                 <span className="font-semibold">{strategy.title}</span>
                                 <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
                               </FormLabel>
@@ -663,7 +664,7 @@ export default function AnalystPage() {
                                     </FormItem>
                                 )} />
                             </div>
-                            <div className="bg-background border p-4 rounded-lg h-full">
+                            <div className="bg-background border p-4 rounded-xl h-full">
                               <h4 className="font-semibold text-lg text-primary">{selectedBusinessModel.persona}</h4>
                               <p className="mt-1 text-caption">{selectedBusinessModel.analysis}</p>
                               <p className="mt-2 text-caption font-semibold">{selectedBusinessModel.platforms}</p>
@@ -690,7 +691,7 @@ export default function AnalystPage() {
                             <div>
                                 <h3 className="font-semibold text-lg mb-2">Estimasi Profitabilitas</h3>
                                  <div className="grid grid-cols-2 gap-4">
-                                    <Card className="p-4 bg-muted/50 flex flex-col justify-between">
+                                    <Card className="p-4 bg-muted/50 flex flex-col justify-between rounded-xl">
                                         <div>
                                             <p className="text-caption text-muted-foreground">Laba/unit</p>
                                             <p className={cn(
@@ -701,7 +702,7 @@ export default function AnalystPage() {
                                         </div>
                                         <p className="text-xs text-muted-foreground mt-1">Keuntungan bersih setelah semua biaya dari satu produk terjual.</p>
                                     </Card>
-                                    <Card className="p-4 bg-muted/50 flex flex-col justify-between">
+                                    <Card className="p-4 bg-muted/50 flex flex-col justify-between rounded-xl">
                                         <div>
                                             <p className="text-caption text-muted-foreground">BEP (unit)</p>
                                             <p className={cn(
@@ -792,7 +793,7 @@ export default function AnalystPage() {
                                         </ChartContainer>
                                     </div>
                                 ) : (
-                                    <div className="w-full h-64 flex items-center justify-center bg-muted/50 rounded-lg">
+                                    <div className="w-full h-64 flex items-center justify-center bg-muted/50 rounded-xl">
                                       <p className="text-muted-foreground">Pilih strategi untuk melihat alokasi</p>
                                     </div>
                                 )}
@@ -806,10 +807,10 @@ export default function AnalystPage() {
                                         name={strategy.id}
                                         render={({ field }) => (
                                             <FormItem>
-                                              <FormLabel htmlFor={strategy.id} className="flex items-center justify-between rounded-lg border p-3 cursor-pointer">
+                                              <FormLabel htmlFor={strategy.id} className="flex items-center justify-between rounded-xl border p-3 cursor-pointer">
                                                   <div className="flex items-center gap-3">
                                                       <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                      <span className="font-normal flex-1">{strategy.title}</span>
+                                                      <span className="flex-1">{strategy.title}</span>
                                                   </div>
                                                   <div className="flex items-center gap-4">
                                                     <span className="font-medium text-sm w-24 text-right">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>

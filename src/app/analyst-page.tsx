@@ -548,56 +548,50 @@ export default function AnalystPage() {
                                 </FormItem>
                             )} />
                         </div>
+                         <div className="space-y-4 pt-4">
+                            <h3 className="text-sm font-medium">Pilih Strategi Pemasaran</h3>
+                            <div className="grid md:grid-cols-2 gap-4">
+                                {marketingStrategies.map((strategy) => (
+                                    <FormField
+                                        key={strategy.id}
+                                        control={form.control}
+                                        name={strategy.id}
+                                        render={({ field }) => (
+                                            <FormItem
+                                                className={cn(
+                                                    "relative flex flex-col justify-between rounded-lg border p-4 transition-all cursor-pointer",
+                                                    field.value
+                                                        ? "bg-primary text-primary-foreground border-primary"
+                                                        : "bg-card hover:bg-muted/50"
+                                                )}
+                                            >
+                                                <div className="flex items-start justify-between">
+                                                    <label htmlFor={strategy.id} className="flex flex-col gap-y-2 cursor-pointer w-full">
+                                                        <strategy.icon className={cn("w-7 h-7 mb-2", field.value ? "text-primary-foreground" : "text-primary")} />
+                                                        <FormLabel className="text-base font-semibold">{strategy.title}</FormLabel>
+                                                        <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>
+                                                            {strategy.description}
+                                                        </p>
+                                                    </label>
+                                                    <FormControl>
+                                                        <Switch
+                                                            id={strategy.id}
+                                                            checked={field.value}
+                                                            onCheckedChange={field.onChange}
+                                                            className="!mt-0"
+                                                        />
+                                                    </FormControl>
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+                                ))}
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
             </section>
             
-            <section id="pilih-strategi">
-              <Card className="p-6 md:p-8">
-                <CardHeader className="p-0">
-                  <CardTitle className="text-h3 font-medium">Pilih Strategi Pemasaran</CardTitle>
-                  <CardDescription>Pilih satu atau lebih strategi yang ingin Anda simulasikan.</CardDescription>
-                </CardHeader>
-                <CardContent className="p-0 mt-6 grid md:grid-cols-2 gap-4">
-                  {marketingStrategies.map((strategy) => (
-                    <FormField
-                      key={strategy.id}
-                      control={form.control}
-                      name={strategy.id}
-                      render={({ field }) => (
-                        <FormItem
-                          className={cn(
-                            "relative flex flex-col justify-between rounded-lg border p-4 transition-all cursor-pointer",
-                            field.value
-                              ? "bg-primary text-primary-foreground border-primary"
-                              : "bg-card hover:bg-muted/50"
-                          )}
-                        >
-                          <div className="flex items-start justify-between">
-                            <label htmlFor={strategy.id} className="flex flex-col gap-y-2 cursor-pointer">
-                                <strategy.icon className={cn("w-7 h-7 mb-2", field.value ? "text-primary-foreground" : "text-primary")} />
-                                <FormLabel className="text-base font-semibold">{strategy.title}</FormLabel>
-                                <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>
-                                    {strategy.description}
-                                </p>
-                            </label>
-                            <FormControl>
-                              <Switch
-                                id={strategy.id}
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                className="!mt-0"
-                              />
-                            </FormControl>
-                          </div>
-                        </FormItem>
-                      )}
-                    />
-                  ))}
-                </CardContent>
-              </Card>
-            </section>
-
             <section id="model-bisnis">
                 <Card className="p-6 md:p-8">
                     <CardHeader className="p-0">
@@ -945,3 +939,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

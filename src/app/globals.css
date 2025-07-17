@@ -10,7 +10,7 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 212 100% 50%; /* #007AFF - iOS Blue */
+    --primary: 158 64.4% 52.4%; /* Green */
     --primary-foreground: 0 0% 100%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -22,7 +22,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 240 5.9% 90%; /* #e5e5e7 */
     --input: 240 5.2% 93.9%; /* #eeeff2 */
-    --ring: 212 100% 50%;
+    --ring: 158 64.4% 52.4%;
     --radius: 0.75rem; /* 12px */
 
     /* Chart colors */
@@ -47,7 +47,7 @@
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 0%;
     --popover-foreground: 0 0% 98%;
-    --primary: 212 100% 50%;
+    --primary: 158 64.4% 52.4%;
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 98%;
@@ -59,7 +59,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 15%;
     --input: 0 0% 20%;
-    --ring: 212 100% 50%;
+    --ring: 158 64.4% 52.4%;
   }
 }
 
@@ -73,3 +73,5 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
+
+    

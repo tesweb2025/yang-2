@@ -1,5 +1,5 @@
 
-import {register as registerGenkit} from '@genkit-ai/next/plugin';
+import {register as registerGenkit} from '@genkit-ai/next';
 
 export function register() {
   registerGenkit({

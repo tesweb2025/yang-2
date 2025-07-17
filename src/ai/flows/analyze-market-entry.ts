@@ -53,6 +53,8 @@ Modal Awal (Bujet Promosi): Rp {{{initialMarketingBudget}}}
 Ringkasan Finansial: {{{financialForecastSummary}}}
 Kondisi Pasar: {{{marketConditionSummary}}}
 
+**PENTING**: Gunakan HANYA informasi dari "Kondisi Pasar" di atas untuk konteks pasarnya. Jangan membuat asumsi tentang pasar berdasarkan nama produk.
+
 Berdasarkan data di atas, berikan evaluasi singkat.
 1.  **Evaluation**: Mulai dengan kalimat pembuka yang tegas. Contoh: "Potensial banget, bro!", "Wah, ini ide bagus!", atau "Waduh, ini strategi yang berisiko.".
 2.  **Key Considerations**: Lanjutkan dengan 1-2 kalimat penjelasan singkat dan padat mengenai 'kenapa'-nya. Fokus pada poin paling krusial dari data yang ada (misal: profit tipis, target pasar terlalu luas, dll).

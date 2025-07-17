@@ -12,12 +12,12 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { BarChart, BrainCircuit, LineChart, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle, CheckCircle, ArrowRight, Video, Users, Receipt, Share2, Clock, Percent, Zap, Sparkles } from 'lucide-react';
+import { BrainCircuit, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle, CheckCircle, ArrowRight, Video, Users, Receipt, Share2, Clock, Percent, Zap, Sparkles } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Image from 'next/image';
 import { runAnalysis } from './actions';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from '@/components/ui/chart';
-import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell, ComposedChart, PieChart, Pie, TooltipProps, Legend, Line } from 'recharts';
+import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell, ComposedChart, Line } from 'recharts';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -28,12 +28,12 @@ const formSchema = z.object({
   targetSegment: z.string().min(1, "Segmentasi target harus diisi"),
   marginModel: z.enum(['tipis', 'tebal']),
   brandStrength: z.enum(['baru', 'kuat']),
-  sellPrice: z.coerce.number().min(1, "Harga jual harus diisi").optional().default(0),
-  costOfGoods: z.coerce.number().min(1, "HPP harus diisi").optional().default(0),
+  sellPrice: z.coerce.number().min(0, "Harga harus positif").optional().default(0),
+  costOfGoods: z.coerce.number().min(0, "HPP harus positif").optional().default(0),
   adCost: z.coerce.number().min(0, "Biaya iklan harus positif").optional().default(0),
   otherCostsPercentage: z.coerce.number().min(0).max(100).optional().default(0),
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
-  avgSalesPerMonth: z.coerce.number().min(1, "Target jual harus diisi").optional().default(0),
+  avgSalesPerMonth: z.coerce.number().min(0, "Penjualan harus positif").optional().default(0),
   totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
   useVideoContent: z.boolean().optional().default(false),
   useKOL: z.boolean().optional().default(false),
@@ -424,8 +424,28 @@ export default function AnalystPage() {
                                       return value;
                                     }}
                                     interval={0}
-                                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12, textAnchor: 'middle' }}
-                                    dy={10}
+                                    tick={(props) => {
+                                        const { x, y, payload } = props;
+                                        const value = payload.value;
+                                        if (value.includes(' & ')) {
+                                          const parts = value.split(' & ');
+                                          return (
+                                            <g transform={`translate(${x},${y})`}>
+                                              <text x={0} y={0} dy={16} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
+                                                <tspan x="0" dy="0">{parts[0]}</tspan>
+                                                <tspan x="0" dy="1.2em">& {parts[1]}</tspan>
+                                              </text>
+                                            </g>
+                                          );
+                                        }
+                                        return (
+                                          <g transform={`translate(${x},${y})`}>
+                                            <text x={0} y={0} dy={16} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
+                                              {value}
+                                            </text>
+                                          </g>
+                                        );
+                                    }}
                                 />
                                 <YAxis hide />
                                 <RechartsTooltip 
@@ -461,7 +481,7 @@ export default function AnalystPage() {
                 {platformStrategies.map((platform, index) => (
                     <Card key={index} className="flex flex-col">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-h3">
+                            <CardTitle className="flex items-center gap-3 text-h3">
                                 <platform.icon className="w-6 h-6 text-primary" />
                                 {platform.title}
                             </CardTitle>

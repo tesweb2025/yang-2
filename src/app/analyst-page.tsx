@@ -189,7 +189,6 @@ const budgetChartConfig = {
 
 const platformStrategies = [
     {
-        icon: Video,
         title: "TikTok & Tokopedia",
         subtitle: "Kombinasi Konten + Checkout Seketika",
         description: "Kanal untuk Shoppertainment & Pembelian Impulsif",
@@ -201,7 +200,6 @@ const platformStrategies = [
         audience: "Produk lifestyle, murah-meriah, atau tren cepat. Target anak muda (18–34), impulsif, FOMO-driven."
     },
     {
-        icon: Users,
         title: "Shopee",
         subtitle: "Platform Perang Harga & Volume Besar",
         description: "Raksasa Pasar Massal & Promo Agresif",
@@ -213,7 +211,6 @@ const platformStrategies = [
         audience: "Produk mass market, margin tipis, brand baru yang butuh traffic."
     },
     {
-        icon: Receipt,
         title: "Lazada & Blibli",
         subtitle: "Panggung Brand Premium & Customer Trust",
         description: "Benteng untuk Brand & Audiens Berkualitas",
@@ -225,7 +222,6 @@ const platformStrategies = [
         audience: "Produk bernilai tinggi, lifestyle premium, brand lokal yang udah punya equity."
     },
     {
-        icon: Share2,
         title: "Meta & Google Ads",
         subtitle: "Targeting Presisi & Scale Demand",
         description: "Kanal untuk Konversi Terukur & Lead Generation",
@@ -446,14 +442,6 @@ export default function AnalystPage() {
                                     dataKey="name" 
                                     tickLine={false} 
                                     axisLine={false}
-                                    tickFormatter={(value) => {
-                                      if (value.includes(' & ')) {
-                                          return value.split(' & ').map((line: string, index: number) => (
-                                              <tspan key={index} x={0} dy={index > 0 ? "1.2em" : "0"}>{line}</tspan>
-                                          ));
-                                      }
-                                      return value;
-                                    }}
                                     interval={0}
                                     tick={(props) => {
                                         const { x, y, payload } = props;
@@ -511,24 +499,23 @@ export default function AnalystPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {platformStrategies.map((platform, index) => (
                     <Card key={index} className="flex flex-col">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-3 text-h3">
-                                <platform.icon className="w-6 h-6 text-primary" />
-                                {platform.title}
-                            </CardTitle>
-                            <CardDescription className="font-semibold !mt-2">{platform.subtitle}</CardDescription>
-                            <p className="text-sm text-muted-foreground">{platform.description}</p>
+                        <CardHeader className="p-6 pb-4">
+                             <h3 className="text-h3 font-semibold mb-1">{platform.title}</h3>
+                             <p className="font-semibold text-primary mb-1">{platform.subtitle}</p>
+                             <p className="text-sm text-muted-foreground">{platform.description}</p>
                         </CardHeader>
-                        <CardContent className="flex-grow flex flex-col justify-between">
-                            <div>
-                                <h4 className="font-semibold text-body mb-2">Strategi Utama:</h4>
-                                <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
-                                    {platform.strategyPoints.map((point, i) => <li key={i}>{point}</li>)}
-                                </ul>
-                            </div>
-                            <div className="mt-4">
-                                <h4 className="font-semibold text-body mb-2">Cocok untuk:</h4>
-                                <p className="text-sm text-muted-foreground">{platform.audience}</p>
+                        <CardContent className="p-6 pt-0 flex-grow flex flex-col justify-between">
+                            <div className="space-y-4">
+                               <div>
+                                  <h4 className="font-semibold text-body mb-2">Strategi Utama:</h4>
+                                  <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                                      {platform.strategyPoints.map((point, i) => <li key={i}>{point}</li>)}
+                                  </ul>
+                               </div>
+                               <div>
+                                  <h4 className="font-semibold text-body mb-2">Cocok untuk:</h4>
+                                  <p className="text-sm text-muted-foreground">{platform.audience}</p>
+                               </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -571,7 +558,7 @@ export default function AnalystPage() {
                         <CardTitle className="text-h3 font-medium">Pilih Strategi Pemasaran</CardTitle>
                         <CardDescription>Pilih satu atau lebih strategi yang ingin Anda simulasikan.</CardDescription>
                     </CardHeader>
-                    <CardContent className="p-0 mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <CardContent className="p-0 mt-6 grid md:grid-cols-2 gap-4">
                         {marketingStrategies.map((strategy) => (
                              <FormField
                                 key={strategy.id}
@@ -761,7 +748,6 @@ export default function AnalystPage() {
                  <Card className="p-6 md:p-8">
                     <CardHeader className="p-0 text-center">
                         <CardTitle className="text-h3 font-medium">Alokator Bujet Pemasaran</CardTitle>
-                        <CardDescription>Masukkan total dana yang akan Anda gunakan untuk semua aktivitas pemasaran dalam sebulan.</CardDescription>
                     </CardHeader>
                     <CardContent className="p-0 mt-6 flex flex-col items-center">
                        <div className="w-full max-w-sm mx-auto">
@@ -780,6 +766,7 @@ export default function AnalystPage() {
                                               onChange={(e) => field.onChange(parseNumberWithCommas(e.target.value))}
                                           />
                                       </FormControl>
+                                      <FormDescription className="text-center mt-2">Masukkan total dana yang akan Anda gunakan untuk semua aktivitas pemasaran dalam sebulan.</FormDescription>
                                       <FormMessage className="text-center"/>
                                   </FormItem>
                               )}
@@ -947,12 +934,5 @@ export default function AnalystPage() {
     </div>
   );
 }
-    
 
     
-
-    
-
-    
-
-

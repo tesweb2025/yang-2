@@ -407,7 +407,7 @@ export default function AnalystPage() {
               priority
             />
           </div>
-          <p className="text-subtitle text-muted-foreground max-w-2xl mx-auto">Simulasikan ide bisnis kamu dalam hitungan detik. Gratis, cepat, dan bantu ambil keputusan lebih tenang.</p>
+          <p className="text-subtitle text-muted-foreground max-w-2xl mx-auto">Simulasikan ide bisnis kamu dalam hitungan detik. Gratis, cepat, Petakan.ai bantu ambil keputusan lebih tenang.</p>
            <Button asChild size="lg" className="mt-8 rounded-full h-12 px-8">
              <Link href="#cek-strategi">
                 Mulai Simulasi Gratis

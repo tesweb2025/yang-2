@@ -571,7 +571,7 @@ export default function AnalystPage() {
                         <CardTitle className="text-h3 font-medium">Pilih Strategi Pemasaran</CardTitle>
                         <CardDescription>Pilih satu atau lebih strategi yang ingin Anda simulasikan.</CardDescription>
                     </CardHeader>
-                    <CardContent className="p-0 mt-6 space-y-4">
+                    <CardContent className="p-0 mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                         {marketingStrategies.map((strategy) => (
                              <FormField
                                 key={strategy.id}
@@ -788,7 +788,7 @@ export default function AnalystPage() {
                         
                         {budgetChartData.length > 0 && (
                           <div className="w-full h-48 my-4">
-                            <ChartContainer config={budgetChartConfig} className="h-full w-full">
+                             <ChartContainer config={budgetChartConfig} className="h-full w-full">
                                 <ResponsiveContainer width="100%" height="100%">
                                   <PieChart>
                                     <RechartsTooltip content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />} />
@@ -954,4 +954,5 @@ export default function AnalystPage() {
     
 
     
+
 

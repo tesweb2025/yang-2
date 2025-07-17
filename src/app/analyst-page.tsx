@@ -382,7 +382,7 @@ export default function AnalystPage() {
                     <p className="text-5xl font-bold text-primary">US$56,5 M</p>
                     <div className="h-60 w-full">
                         <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
-                            <ComposedChart data={gmvComboData} barCategoryGap="25%" margin={{ top: 20, right: 0, left: -20, bottom: 5 }}>
+                            <ComposedChart data={gmvComboData} barCategoryGap="20%" margin={{ top: 20, right: 0, left: -20, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                 <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
                                 <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />

@@ -557,7 +557,7 @@ export default function AnalystPage() {
                             <FormItem>
                               <FormLabel
                                 className={cn(
-                                  "p-4 rounded-lg border transition-all relative cursor-pointer font-normal",
+                                  "p-4 rounded-lg border transition-all relative cursor-pointer",
                                   field.value
                                     ? "bg-primary text-primary-foreground"
                                     : "bg-muted/30 hover:bg-muted/60"

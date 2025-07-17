@@ -749,27 +749,29 @@ export default function AnalystPage() {
                         
                         {budgetChartData.length > 0 && (
                           <div className="w-full h-48 my-4">
-                            <ResponsiveContainer width="100%" height="100%">
-                              <PieChart>
-                                <Pie
-                                  data={budgetChartData}
-                                  dataKey="value"
-                                  nameKey="name"
-                                  cx="50%"
-                                  cy="50%"
-                                  innerRadius="60%"
-                                  outerRadius="80%"
-                                  paddingAngle={2}
-                                  stroke="hsl(var(--background))"
-                                  strokeWidth={2}
-                                >
-                                  {budgetChartData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                                  ))}
-                                </Pie>
-                                <RechartsTooltip content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />} />
-                              </PieChart>
-                            </ResponsiveContainer>
+                            <ChartContainer config={budgetChartConfig} className="h-full w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <PieChart>
+                                    <Pie
+                                      data={budgetChartData}
+                                      dataKey="value"
+                                      nameKey="name"
+                                      cx="50%"
+                                      cy="50%"
+                                      innerRadius="60%"
+                                      outerRadius="80%"
+                                      paddingAngle={2}
+                                      stroke="hsl(var(--background))"
+                                      strokeWidth={2}
+                                    >
+                                      {budgetChartData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                                      ))}
+                                    </Pie>
+                                    <RechartsTooltip content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />} />
+                                  </PieChart>
+                                </ResponsiveContainer>
+                            </ChartContainer>
                           </div>
                         )}
                         
@@ -916,7 +918,7 @@ export default function AnalystPage() {
 
                 </section>
                 
-                <section id="rencana-aksi" className="mt-8">
+                <section id="rencana-aksi" className="mt-8 space-y-8">
                   <Card className="p-6 md:p-8">
                     <CardHeader className="p-0">
                       <CardTitle className="text-h3 font-medium">Rute Strategi dari Petakan.ai</CardTitle>

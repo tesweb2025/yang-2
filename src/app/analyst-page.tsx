@@ -413,7 +413,7 @@ export default function AnalystPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <main className="space-y-12 md:space-y-20">
-        <section className="text-center pt-8 md:pt-12">
+        <section className="text-center">
           <h1 className="text-h1 font-bold tracking-tight mb-4">Lihat Untung-Ruginya,<br />Sebelum Kamu Jalanin Strateginya.</h1>
            <div className="my-4 flex justify-center">
             <Image 

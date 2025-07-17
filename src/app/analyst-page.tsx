@@ -379,7 +379,7 @@ export default function AnalystPage() {
            </Button>
         </section>
 
-        <section id="wawasan-pasar" className="space-y-8">
+        <section id="wawasan-pasar" className="space-y-8 scroll-mt-24">
             <div className="text-center">
                 <h2 className="text-h2 font-semibold">Wawasan Pasar E-Commerce 2024</h2>
                 <p className="text-subtitle text-muted-foreground mt-2">Data terbaru untuk membantumu mengambil keputusan.</p>
@@ -449,7 +449,7 @@ export default function AnalystPage() {
             </Card>
         </section>
         
-        <section id="pangsa-pasar">
+        <section id="pangsa-pasar" className="scroll-mt-24">
             <Card className="p-6 md:p-8">
                 <CardHeader className="p-0">
                     <CardTitle className="text-h3 font-medium">Siapa Raja di Pasar? (Estimasi Pangsa Pasar GMV 2024)</CardTitle>

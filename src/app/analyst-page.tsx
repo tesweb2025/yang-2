@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo } from 'react';
@@ -139,7 +140,7 @@ const marketShareData = [
     { name: 'Shopee', value: 37, fill: 'var(--color-chart-shopee)' },
     { name: 'Lazada', value: 10, fill: 'var(--color-chart-lazada)' },
     { name: 'Bukalapak', value: 6, fill: 'var(--color-chart-bukalapak)' },
-    { name: 'Blibli', value: 5, fill: 'var(--color-chart-blibli))' },
+    { name: 'Blibli', value: 5, fill: 'var(--color-chart-blibli)' },
 ];
 
 const marketShareChartConfig = {
@@ -469,10 +470,7 @@ export default function AnalystPage() {
                                     cursor={{ fill: 'hsl(var(--muted))' }} 
                                     content={<ChartTooltipContent formatter={(value) => `${value}%`} />}
                                 />
-                                <Bar dataKey="value" radius={[8, 8, 0, 0]}>
-                                    {marketShareData.map((entry) => (
-                                        <Cell key={`cell-${entry.name}`} fill={entry.fill} />
-                                    ))}
+                                <Bar dataKey="value" radius={[8, 8, 0, 0]} fill="var(--color-chart-1)">
                                     <LabelList 
                                         dataKey="value" 
                                         position="top" 

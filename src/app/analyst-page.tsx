@@ -105,6 +105,19 @@ const formatCurrency = (value: number) => {
   }).format(value);
 };
 
+const formatNumberInput = (value: string | number): string => {
+    if (value === '' || value === null || value === undefined) return '';
+    const num = String(value).replace(/[^\d]/g, '');
+    if (num === '') return '';
+    return new Intl.NumberFormat('id-ID').format(parseInt(num, 10));
+};
+
+const unformatNumberInput = (value: string): number => {
+    if (value === '' || value === null || value === undefined) return 0;
+    return parseInt(String(value).replace(/[^\d]/g, ''), 10) || 0;
+};
+
+
 const businessModelContent: any = {
   'tipis-baru': {
     persona: "Pejuang Volume",
@@ -352,6 +365,31 @@ export default function AnalystPage() {
       </span>
     );
   };
+
+  const NumericInput = ({ name, control, label }: { name: keyof FormData; control: any; label: string }) => (
+    <Controller
+      name={name}
+      control={control}
+      render={({ field, fieldState }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <Input
+              type="text"
+              placeholder={label.includes('%') ? "0" : "Rp 0"}
+              value={formatNumberInput(field.value)}
+              onChange={(e) => {
+                const unformattedValue = unformatNumberInput(e.target.value);
+                field.onChange(unformattedValue);
+              }}
+              onBlur={field.onBlur}
+            />
+          </FormControl>
+          <FormMessage>{fieldState.error?.message}</FormMessage>
+        </FormItem>
+      )}
+    />
+  );
 
 
   return (
@@ -635,18 +673,18 @@ export default function AnalystPage() {
                         <div>
                             <h3 className="font-semibold text-lg mb-4">Kalkulator Harga & Biaya per Produk</h3>
                             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <FormField control={form.control} name="sellPrice" render={({ field }) => (<FormItem><FormLabel>Harga Jual</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                                <FormField control={form.control} name="costOfGoods" render={({ field }) => (<FormItem><FormLabel>Modal Produk (HPP)</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                                <FormField control={form.control} name="adCost" render={({ field }) => (<FormItem><FormLabel>Biaya Iklan (CAC)</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                                <FormField control={form.control} name="otherCostsPercentage" render={({ field }) => (<FormItem><FormLabel>Biaya Lain (%)</FormLabel><FormControl><Input type="number" placeholder="0%" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                <NumericInput name="sellPrice" control={form.control} label="Harga Jual" />
+                                <NumericInput name="costOfGoods" control={form.control} label="Modal Produk (HPP)" />
+                                <NumericInput name="adCost" control={form.control} label="Biaya Iklan (CAC)" />
+                                <NumericInput name="otherCostsPercentage" control={form.control} label="Biaya Lain (%)" />
                             </div>
                         </div>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div>
                                 <h3 className="font-semibold text-lg mb-2">Biaya Tetap & Target Penjualan</h3>
                                 <div className="grid grid-cols-2 gap-4">
-                                  <FormField control={form.control} name="fixedCostsPerMonth" render={({ field }) => (<FormItem><FormLabel>Biaya Tetap / Bulan</FormLabel><FormControl><Input type="number" placeholder="Rp 0" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                                  <FormField control={form.control} name="avgSalesPerMonth" render={({ field }) => (<FormItem><FormLabel>Target Jual / Bulan</FormLabel><FormControl><Input type="number" placeholder="0" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                    <NumericInput name="fixedCostsPerMonth" control={form.control} label="Biaya Tetap / Bulan" />
+                                    <NumericInput name="avgSalesPerMonth" control={form.control} label="Target Jual / Bulan" />
                                 </div>
                             </div>
                             <div>
@@ -689,20 +727,28 @@ export default function AnalystPage() {
                     </CardHeader>
                     <CardContent className="p-0">
                        <div className="mb-8 max-w-sm mx-auto">
-                         <FormField control={form.control} name="totalMarketingBudget" render={({ field }) => (
-                           <FormItem>
-                             <FormLabel className="text-center block mb-2">Total Bujet Pemasaran</FormLabel>
-                             <FormControl>
-                               <Input
-                                 type="number"
-                                 placeholder="Rp 0"
-                                 className="text-2xl font-bold h-auto py-3 text-center"
-                                 {...field}
-                               />
-                             </FormControl>
-                             <FormMessage className="text-center"/>
-                           </FormItem>
-                         )} />
+                           <Controller
+                              name="totalMarketingBudget"
+                              control={form.control}
+                              render={({ field, fieldState }) => (
+                                <FormItem>
+                                  <FormLabel className="text-center block mb-2">Total Bujet Pemasaran</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="text"
+                                      placeholder="Rp 0"
+                                      className="text-2xl font-bold h-auto py-3 text-center"
+                                      value={formatNumberInput(field.value)}
+                                      onChange={(e) => {
+                                          const unformattedValue = unformatNumberInput(e.target.value);
+                                          field.onChange(unformattedValue);
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormMessage className="text-center">{fieldState.error?.message}</FormMessage>
+                                </FormItem>
+                              )}
+                            />
                         </div>
                         
                         <div className="grid md:grid-cols-2 gap-8 items-center">

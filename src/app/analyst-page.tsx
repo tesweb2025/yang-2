@@ -136,7 +136,7 @@ const marketShareData = [
     { name: 'Shopee', value: 37, fill: 'var(--color-chart-shopee)' },
     { name: 'Lazada', value: 10, fill: 'var(--color-chart-lazada)' },
     { name: 'Bukalapak', value: 6, fill: 'var(--color-chart-bukalapak)' },
-    { name: 'Blibli', value: 5, fill: 'var(--color-chart-blibli)' },
+    { name: 'Blibli', value: 5, fill: 'var(--color-chart-blibli))' },
 ];
 
 const marketShareChartConfig = {
@@ -565,21 +565,27 @@ export default function AnalystPage() {
                                 control={form.control}
                                 name={strategy.id}
                                 render={({ field }) => (
-                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                                    <div className="flex items-center space-x-4">
-                                        <strategy.icon className="w-6 h-6 text-primary"/>
-                                        <div className="space-y-0.5">
-                                            <FormLabel className="text-base">{strategy.title}</FormLabel>
-                                            <FormDescription>{strategy.description}</FormDescription>
+                                    <FormItem className={cn(
+                                        "relative flex flex-col justify-between rounded-lg border p-4 transition-all cursor-pointer",
+                                        field.value ? "bg-primary text-primary-foreground border-primary" : "bg-card hover:bg-muted/50"
+                                    )} onClick={() => field.onChange(!field.value)}>
+                                        <div className="flex items-start justify-between">
+                                            <strategy.icon className={cn("w-7 h-7 mb-4", field.value ? "text-primary-foreground" : "text-primary")} />
+                                            <FormControl>
+                                                <Switch
+                                                    checked={field.value}
+                                                    onCheckedChange={field.onChange}
+                                                    className="!mt-0"
+                                                />
+                                            </FormControl>
                                         </div>
-                                    </div>
-                                    <FormControl>
-                                    <Switch
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                    </FormControl>
-                                </FormItem>
+                                        <div className="space-y-0.5 mt-auto">
+                                            <FormLabel className="text-base font-semibold">{strategy.title}</FormLabel>
+                                            <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>
+                                                {strategy.description}
+                                            </p>
+                                        </div>
+                                    </FormItem>
                                 )}
                             />
                         ))}
@@ -934,5 +940,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

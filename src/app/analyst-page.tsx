@@ -515,7 +515,7 @@ export default function AnalystPage() {
                                         }
                                         return (
                                           <g transform={`translate(${x},${y})`}>
-                                            <text x={0} y={0} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
+                                            <text x={0} y={0} dy={8} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
                                               {value}
                                             </text>
                                           </g>
@@ -571,7 +571,7 @@ export default function AnalystPage() {
                     <FormField control={form.control} name="productName" render={({ field }) => (
                       <FormItem>
                           <FormLabel>Nama Produk / Bisnis</FormLabel>
-                          <FormControl><Input placeholder="Contoh: Kopi Susu Kekinian" {...field} /></FormControl>
+                          <FormControl><Input placeholder="Contoh: Keripik Pedas" {...field} /></FormControl>
                           <FormMessage />
                       </FormItem>
                     )} />

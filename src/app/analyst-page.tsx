@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BrainCircuit, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle, CheckCircle, ArrowRight, Video, Users, Receipt, Share2, Clock, Percent, Zap, Sparkles } from 'lucide-react';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Image from 'next/image';
 import { runAnalysis } from './actions';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from '@/components/ui/chart';
@@ -562,20 +562,11 @@ export default function AnalystPage() {
                                         render={({ field }) => (
                                             <FormItem
                                                 className={cn(
-                                                    "flex flex-row items-start space-x-3 space-y-0 rounded-lg border p-4 transition-all cursor-pointer",
+                                                    "flex flex-row items-start space-x-3 space-y-0 rounded-lg border p-4 transition-all",
                                                     field.value ? "bg-primary text-primary-foreground" : "bg-card hover:bg-muted/50"
                                                 )}
                                             >
-                                                <FormControl>
-                                                    <div className="hidden">
-                                                        <Switch
-                                                            checked={field.value}
-                                                            onCheckedChange={field.onChange}
-                                                            aria-hidden="true"
-                                                        />
-                                                    </div>
-                                                </FormControl>
-                                                <label htmlFor={strategy.id} className="flex-1 space-y-1 cursor-pointer w-full">
+                                                <label htmlFor={strategy.id} className="flex-1 space-y-1 cursor-pointer w-full" >
                                                     <div className="flex items-center justify-between">
                                                         <div className="flex items-center gap-3">
                                                             <strategy.icon className={cn("w-6 h-6", field.value ? "text-primary-foreground" : "text-primary")} />
@@ -583,22 +574,24 @@ export default function AnalystPage() {
                                                                 {strategy.title}
                                                             </FormLabel>
                                                         </div>
-                                                         <Switch
-                                                            id={strategy.id}
-                                                            checked={field.value}
-                                                            onCheckedChange={field.onChange}
-                                                            className={cn("!mt-0",
-                                                                field.value ? 'data-[state=checked]:bg-white/20' : 'data-[state=unchecked]:bg-muted'
-                                                            )}
-                                                            thumbClassName={cn(
-                                                                "h-5 w-5 block rounded-full bg-white shadow-lg transform transition-transform",
-                                                                field.value ? 'translate-x-5' : 'translate-x-0'
-                                                            )}
-                                                        />
+                                                        <FormControl>
+                                                            <Switch
+                                                                id={strategy.id}
+                                                                checked={field.value}
+                                                                onCheckedChange={field.onChange}
+                                                                className={cn("!mt-0",
+                                                                    field.value ? 'data-[state=checked]:bg-white/20' : 'data-[state=unchecked]:bg-muted'
+                                                                )}
+                                                                thumbClassName={cn(
+                                                                    "h-5 w-5 block rounded-full bg-white shadow-lg transform transition-transform",
+                                                                    field.value ? 'translate-x-5' : 'translate-x-0'
+                                                                )}
+                                                            />
+                                                        </FormControl>
                                                     </div>
-                                                    <FormDescription className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>
+                                                    <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground", 'pr-8')}>
                                                         {strategy.description}
-                                                    </FormDescription>
+                                                    </p>
                                                 </label>
                                             </FormItem>
                                         )}
@@ -798,29 +791,41 @@ export default function AnalystPage() {
                         <div className="grid md:grid-cols-2 gap-8 items-center">
                             <div>
                                 {budgetChartData.length > 0 && (
-                                    <div className="w-full h-48">
+                                    <div className="w-full h-64">
                                         <ChartContainer config={budgetChartConfig} className="h-full w-full">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <PieChart>
-                                                    <RechartsTooltip content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />} />
-                                                    <Pie
-                                                    data={budgetChartData}
-                                                    dataKey="value"
-                                                    nameKey="name"
-                                                    cx="50%"
-                                                    cy="50%"
-                                                    innerRadius="60%"
-                                                    outerRadius="80%"
-                                                    paddingAngle={2}
-                                                    stroke="hsl(var(--background))"
-                                                    strokeWidth={2}
-                                                    >
+                                            <RechartsBarChart
+                                                data={budgetChartData}
+                                                layout="vertical"
+                                                margin={{ left: 10, right: 30 }}
+                                            >
+                                                <CartesianGrid horizontal={false} strokeDasharray="3 3" />
+                                                <XAxis type="number" hide />
+                                                <YAxis
+                                                    dataKey="name"
+                                                    type="category"
+                                                    tickLine={false}
+                                                    axisLine={false}
+                                                    tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
+                                                    width={120}
+                                                />
+                                                <RechartsTooltip
+                                                    cursor={{ fill: 'hsl(var(--muted))' }}
+                                                    content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />}
+                                                />
+                                                <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                                                     {budgetChartData.map((entry, index) => (
                                                         <Cell key={`cell-${index}`} fill={entry.fill} />
                                                     ))}
-                                                    </Pie>
-                                                </PieChart>
-                                            </ResponsiveContainer>
+                                                     <LabelList
+                                                        dataKey="value"
+                                                        position="right"
+                                                        offset={8}
+                                                        className="fill-foreground font-medium"
+                                                        fontSize={12}
+                                                        formatter={(value: number) => formatCurrency(value)}
+                                                    />
+                                                </Bar>
+                                            </RechartsBarChart>
                                         </ChartContainer>
                                     </div>
                                 )}

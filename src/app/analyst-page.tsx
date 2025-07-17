@@ -285,14 +285,21 @@ export default function AnalystPage() {
   ]);
 
   const budgetChartData = useMemo(() => {
+    const allocations = budgetAllocations;
     return marketingStrategies
       .filter(s => watchedValues[s.id as keyof FormData])
       .map(s => ({
         name: s.channel,
-        value: budgetAllocations[s.id],
+        value: allocations[s.id],
         fill: s.color,
       }));
-  }, [budgetAllocations, watchedValues.useVideoContent, watchedValues.useKOL, watchedValues.usePromo, watchedValues.useOtherChannels]);
+  }, [
+    budgetAllocations, 
+    watchedValues.useVideoContent, 
+    watchedValues.useKOL, 
+    watchedValues.usePromo, 
+    watchedValues.useOtherChannels
+  ]);
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);

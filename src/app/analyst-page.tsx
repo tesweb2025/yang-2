@@ -863,21 +863,21 @@ export default function AnalystPage() {
                         <Card className="p-6 text-center flex flex-col justify-between">
                             <div>
                                <p className="text-body font-semibold">Proyeksi Pendapatan Tahunan</p>
-                               <p className="text-2xl md:text-3xl mt-2 font-bold text-primary break-words">{formatCurrency(analysisResult.annualRevenue)}</p>
+                               <p className="text-2xl md:text-3xl mt-2 font-bold text-primary break-all">{formatCurrency(analysisResult.annualRevenue)}</p>
                             </div>
                             <p className="text-caption text-muted-foreground mt-2">Total omzet kotor sebelum dikurangi biaya.</p>
                         </Card>
                         <Card className="p-6 text-center flex flex-col justify-between">
                              <div>
                                 <p className="text-body font-semibold">Proyeksi Profit Tahunan</p>
-                                <p className={`text-2xl md:text-3xl mt-2 font-bold break-words ${analysisResult.annualProfit < 0 ? 'text-destructive' : 'text-green-600'}`}>{formatCurrency(analysisResult.annualProfit)}</p>
+                                <p className={`text-2xl md:text-3xl mt-2 font-bold break-all ${analysisResult.annualProfit < 0 ? 'text-destructive' : 'text-green-600'}`}>{formatCurrency(analysisResult.annualProfit)}</p>
                             </div>
                             <p className="text-caption text-muted-foreground mt-2">Sisa uang setelah semua biaya terbayar.</p>
                         </Card>
                         <Card className="p-6 text-center flex flex-col justify-between">
                             <div>
                                <p className="text-body font-semibold">Return on Ad Spend (ROAS)</p>
-                               <p className="text-2xl md:text-3xl mt-2 font-bold text-primary break-words">{`${analysisResult.roas.toFixed(2)}x`}</p>
+                               <p className="text-2xl md:text-3xl mt-2 font-bold text-primary break-all">{`${analysisResult.roas.toFixed(2)}x`}</p>
                             </div>
                             <p className="text-caption text-muted-foreground mt-2">Pengembalian dari setiap Rupiah untuk iklan.</p>
                         </Card>
@@ -891,7 +891,7 @@ export default function AnalystPage() {
                                     {analysisResult.pnlTable.map(item => (
                                         <TableRow key={item.item}>
                                         <TableCell className={cn("py-3 px-4", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>{item.item}</TableCell>
-                                        <TableCell className={cn("text-right font-medium py-3 px-4 text-sm", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>
+                                        <TableCell className={cn("text-right font-medium py-3 px-4 text-sm break-all", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>
                                             {renderFittableTableCellSimple(item.value, item.isNegative)}
                                         </TableCell>
                                         </TableRow>
@@ -908,7 +908,7 @@ export default function AnalystPage() {
                                     {analysisResult.cashflowTable.map((row, index) => (
                                         <TableRow key={index}>
                                             <TableCell className={cn("py-3 px-4", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>{row.item}</TableCell>
-                                            <TableCell className={cn("text-right font-medium py-3 px-4 text-sm", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>
+                                            <TableCell className={cn("text-right font-medium py-3 px-4 text-sm break-all", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>
                                             {renderFittableTableCell(row.value, row.isNegative, true)}
                                             </TableCell>
                                         </TableRow>

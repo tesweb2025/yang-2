@@ -756,7 +756,7 @@ export default function AnalystPage() {
                                         <ChartContainer config={budgetChartConfig} className="h-full w-full">
                                             <RechartsBarChart
                                                 data={budgetChartData}
-                                                margin={{ top: 20, right: 10, left: -20, bottom: 5 }}
+                                                margin={{ top: 20, right: 10, left: 10, bottom: 5 }}
                                             >
                                                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                                 <XAxis

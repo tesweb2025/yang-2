@@ -502,7 +502,7 @@ export default function AnalystPage() {
         <section id="pangsa-pasar" className="scroll-mt-24">
             <Card className="p-6 md:p-8">
                 <CardHeader className="p-0">
-                    <CardTitle className="text-h3 font-medium">Siapa Raja di Pasar? (Estimasi Pangsa Pasar GMV 2024)</CardTitle>
+                    <CardTitle className="text-h3 font-medium">Peta Kekuasaan E-Commerce (Estimasi Pangsa Pasar GMV 2025)</CardTitle>
                     <CardDescription>Integrasi Tokopedia & TikTok Shop menciptakan duopoli baru yang menantang dominasi Shopee.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-0 mt-8 space-y-8">

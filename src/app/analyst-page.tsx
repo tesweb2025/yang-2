@@ -437,7 +437,7 @@ export default function AnalystPage() {
         <section id="wawasan-pasar" className="space-y-8 scroll-mt-24">
             <div className="text-center">
                 <h2 className="text-h2 font-semibold">Peta Market E-Commerce 2025</h2>
-                <p className="text-subtitle text-muted-foreground mt-2">Posisikan brand kamu dengan strategi dan tepat akurat, berdasarkan dinamika pasar terkini.</p>
+                <p className="text-subtitle text-muted-foreground mt-2">Posisikan brand kamu dengan strategi yang tepat dan akurat, berdasarkan dinamika pasar terkini.</p>
             </div>
             <Card className="p-6 md:p-8">
                 <CardHeader className="p-0">

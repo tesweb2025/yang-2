@@ -16,7 +16,7 @@ export default function AboutPage() {
           <Card>
             <CardContent className="space-y-4 text-body text-muted-foreground pt-6">
               <p>
-                Awalnya, kami pikir semuanya udah siap. Produk udah ada, stok numpuk, feed Instagram rapi. Tinggal tunggu order masuk. Tapi pas launching? Sunyi. Gak ada suara. Gak ada transaksi.
+                Awalnya, kami pikir semuanya udah siap. Produk udah ada, stok numpuk, feed Instagram rapi. Tinggal tunggu orderan masuk. Tapi pas launching? Sunyi. Gak ada suara. Gak ada transaksi.
               </p>
               <p>
                 Padahal bukan karena produknya jelek. Tapi karena <strong className="text-foreground">strateginya ngaco.</strong>

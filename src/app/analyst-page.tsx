@@ -49,6 +49,7 @@ const formSchema = z.object({
     if (!marketingStrategiesSelected) {
         return true; 
     }
+    // If a strategy is selected, one of the cost modes must have a value > 0
     if (data.costMode === 'budget') {
         return data.totalMarketingBudget > 0;
     }
@@ -804,7 +805,7 @@ export default function AnalystPage() {
                 <Card className="p-6 md:p-8">
                     <CardHeader className="p-0">
                         <CardTitle className="text-h3 font-medium">Pendekatan Biaya Pemasaran</CardTitle>
-                        <CardDescription>Pilih salah satu: tentukan budget di awal (top-down), atau hitung dari target biaya per akuisisi (bottom-up).</CardDescription>
+                        <CardDescription>Pilih metode perhitungan biaya pemasaran. Anda dapat menentukan total anggaran bulanan di awal (pendekatan **top-down**), atau menetapkan target biaya per akuisisi pelanggan (CAC) untuk menghitung total anggaran yang dibutuhkan (pendekatan **bottom-up**).</CardDescription>
                     </CardHeader>
                     <CardContent className="p-0 mt-6">
                         <FormField

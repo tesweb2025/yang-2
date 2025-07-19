@@ -23,7 +23,12 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from '@/components/ui/separator';
 import { BarChart as RechartsBarChart, LabelList, Cell, ResponsiveContainer } from 'recharts';
-import { HeroAnimation } from '@/components/hero-animation';
+import dynamic from 'next/dynamic';
+
+const HeroAnimation = dynamic(() => import('@/components/hero-animation').then(mod => mod.HeroAnimation), {
+    ssr: false,
+    loading: () => <div className="w-full h-full bg-muted rounded-lg" />
+});
 
 
 const formSchema = z.object({
@@ -478,9 +483,7 @@ export default function AnalystPage() {
               <br />Sebelum Kamu Jalanin Strateginya.
             </h1>
            <div className="my-4 flex justify-center h-[300px] md:h-[400px]">
-             <Suspense fallback={<div className="w-full h-full bg-muted rounded-lg" />}>
-                <HeroAnimation />
-             </Suspense>
+             <HeroAnimation />
           </div>
           <p className="text-body text-muted-foreground max-w-2xl mx-auto">Simulasikan strategi bisnis kamu dalam hitungan detik. Gratis, instan, dan akurat—petakan.ai bantu kamu ambil keputusan sebelum buang waktu & modal.</p>
            <Button asChild size="lg" className="mt-8 rounded-full h-12 px-8">

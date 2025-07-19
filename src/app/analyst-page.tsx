@@ -752,7 +752,7 @@ export default function AnalystPage() {
             <section id="alokasi-bujet">
                  <Card className="p-6 md:p-8">
                     <CardHeader className="p-0 text-center mb-6">
-                        <CardTitle className="text-h3 font-medium">Alokator Bujet Pemasaran</CardTitle>
+                        <CardTitle className="text-h3 font-medium">Strategic Marketing Allocation</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
                        <div className="mb-8 max-w-sm mx-auto">

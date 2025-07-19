@@ -16,7 +16,7 @@ export default function AboutPage() {
           <Card>
             <CardContent className="space-y-4 text-body text-muted-foreground pt-6">
               <p>
-                Awalnya, kami pikir semuanya udah siap. Produk udah ada, stok numpuk, feed Instagram rapi. Tinggal tunggu orderan masuk. Tapi pas launching? Sunyi. Gak ada suara. Gak ada transaksi.
+                Awalnya, kami pikir semuanya udah siap. Produk udah ada, stok numpuk, feed Instagram rapi. Tinggal tunggu orderan masuk.
               </p>
               <p>
                 Padahal bukan karena produknya jelek. Tapi karena <strong className="text-foreground">strateginya ngaco.</strong>
@@ -33,17 +33,6 @@ export default function AboutPage() {
             </p>
           </div>
           
-          <Card>
-            <CardContent className="space-y-4 text-body text-muted-foreground pt-6">
-               <p>
-                Bukan alat yang lahir dari ruang rapat ber-AC, tapi dari <strong className="text-foreground">pengalaman gagal di lapangan.</strong> Petakan.ai dibangun supaya lo bisa ambil keputusan lebih tenang, karena ada data dan simulasi yang bantu buka mata — bahkan sebelum iklan pertama tayang.
-              </p>
-              <p className="text-lg text-center font-medium text-foreground py-2">
-                Sebelum lo keluar duit buat stok. Sebelum lo spending di iklan. Simulasikan dulu.
-              </p>
-            </CardContent>
-          </Card>
-
           <Card>
             <CardHeader>
               <CardTitle className="text-h3">Di Petakan.ai, lo bisa:</CardTitle>

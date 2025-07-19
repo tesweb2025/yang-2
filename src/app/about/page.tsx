@@ -75,6 +75,10 @@ export default function AboutPage() {
           </div>
         </div>
       </main>
+      <footer className="text-center text-sm text-muted-foreground mt-12 mb-8 container max-w-3xl px-4">
+        <p>Laporan ini disusun berdasarkan analisis dan proyeksi dari data publik. Gunakan petakan.ai sebagai alat bantu strategis.</p>
+        <p className="mt-2">© 2025 Dibuat oleh RizkyFadil.</p>
+      </footer>
     </>
   );
 }

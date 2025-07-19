@@ -22,7 +22,7 @@ export default function AboutPage() {
                 Padahal bukan karena produknya jelek. Tapi karena <strong className="text-foreground">strateginya ngaco.</strong>
               </p>
               <p>
-                Iklan kami jalan, tapi asal tembak. Gak tahu siapa yang harus dituju. Harga ditetapkan tanpa hitung-hitungan. Akhirnya? Budget iklan ludes, stok gak muter, dan waktu kebuang percuma.
+                Iklan udah jalan, tapi asal tembak. Gak tahu siapa yang harus dituju. Harga ditetapkan tanpa hitung-hitungan. Akhirnya? Budget iklan ludes, stok gak muter, dan waktu kebuang percuma.
               </p>
             </CardContent>
           </Card>

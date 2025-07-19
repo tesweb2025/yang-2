@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from '@/components/ui/separator';
 import { BarChart as RechartsBarChart, LabelList, Cell, ResponsiveContainer } from 'recharts';
+import { HeroAnimation } from '@/components/hero-animation';
 
 
 const formSchema = z.object({
@@ -476,15 +477,10 @@ export default function AnalystPage() {
               Lihat Untung-Ruginya,
               <br />Sebelum Kamu Jalanin Strateginya.
             </h1>
-           <div className="my-4 flex justify-center">
-            <Image 
-              src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/cf73fec79612238e02a3ddc3b7bae788c81dfd3a/HEADER%20BARU%20(1).png" 
-              alt="Ilustrasi dasbor analitik dan grafik bisnis"
-              width={500} 
-              height={375}
-              className="max-w-md md:max-w-lg my-2"
-              priority
-            />
+           <div className="my-4 flex justify-center h-[300px] md:h-[400px]">
+             <Suspense fallback={<div className="w-full h-full bg-muted rounded-lg" />}>
+                <HeroAnimation />
+             </Suspense>
           </div>
           <p className="text-body text-muted-foreground max-w-2xl mx-auto">Simulasikan strategi bisnis kamu dalam hitungan detik. Gratis, instan, dan akurat—petakan.ai bantu kamu ambil keputusan sebelum buang waktu & modal.</p>
            <Button asChild size="lg" className="mt-8 rounded-full h-12 px-8">
@@ -1069,5 +1065,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

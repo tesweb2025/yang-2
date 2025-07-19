@@ -482,11 +482,11 @@ export default function AnalystPage() {
               alt="Ilustrasi dasbor analitik dan grafik bisnis"
               width={500} 
               height={375}
-              className="max-w-sm md:max-w-md my-2"
+              className="max-w-md md:max-w-lg my-2"
               priority
             />
           </div>
-          <p className="text-subtitle text-muted-foreground max-w-2xl mx-auto">Simulasikan strategi bisnis kamu dalam hitungan detik. Gratis, instan, dan akurat—petakan.ai bantu kamu ambil keputusan sebelum buang waktu & modal.</p>
+          <p className="text-body text-muted-foreground max-w-2xl mx-auto">Simulasikan strategi bisnis kamu dalam hitungan detik. Gratis, instan, dan akurat—petakan.ai bantu kamu ambil keputusan sebelum buang waktu & modal.</p>
            <Button asChild size="lg" className="mt-8 rounded-full h-12 px-8">
              <Link href="#cek-strategi">
                 Mulai Simulasi Gratis
@@ -1069,3 +1069,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

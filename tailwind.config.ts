@@ -23,7 +23,7 @@ export default {
         'h1': ['42px', { fontWeight: '700', lineHeight: '1.2' }],
         'h2': ['28px', { fontWeight: '600', lineHeight: '1.3' }],
         'h3': ['22px', { fontWeight: '500', lineHeight: '1.4' }],
-        'subtitle': ['18px', { fontWeight: '400', lineHeight: '1.5' }],
+        'subtitle': ['16px', { fontWeight: '400', lineHeight: '1.5' }],
         'body': ['16px', { fontWeight: '400', lineHeight: '1.6' }],
         'caption': ['13px', { fontWeight: '400', lineHeight: '1.4' }],
       },
@@ -115,3 +115,5 @@ export default {
   },
   plugins: [require('tailwindcss-animate')],
 } satisfies Config;
+
+    

@@ -756,7 +756,7 @@ export default function AnalystPage() {
                     </CardHeader>
                     <CardContent className="p-0">
                        <div className="mb-8 max-w-sm mx-auto">
-                           <NumericInput name="totalMarketingBudget" control={form.control} label="Total Bujet Pemasaran"/>
+                           <NumericInput name="totalMarketingBudget" control={form.control} label="Total Budget Pemasaran"/>
                         </div>
                         
                         <div className="grid md:grid-cols-2 gap-8 items-center">

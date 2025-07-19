@@ -50,14 +50,18 @@ export async function runAnalysis(data: FormData) {
 
   // Marketing Strategy Logic
   let effectivenessFactor = 1;
-  if (useVideoContent) effectivenessFactor += 0.8;
-  if (useKOL) effectivenessFactor += 0.6;
-  if (usePromo) effectivenessFactor += 0.4;
-  if (useOtherChannels) effectivenessFactor += 0.3;
+  const hasMarketingSpend = (adCost > 0 || totalMarketingBudget > 0);
+  
+  if (hasMarketingSpend) {
+    if (useVideoContent) effectivenessFactor += 0.8;
+    if (useKOL) effectivenessFactor += 0.6;
+    if (usePromo) effectivenessFactor += 0.4;
+    if (useOtherChannels) effectivenessFactor += 0.3;
+  }
 
   const soldUnits = Math.floor(targetUnits * 0.6 + (targetUnits * 0.4 * effectivenessFactor / 2.1));
   
-  // --- CORRECTED FINANCIAL CALCULATIONS ---
+  // --- FINANCIAL CALCULATIONS ---
   const monthlyRevenue = sellPrice * soldUnits;
   const annualRevenue = monthlyRevenue * 12;
 
@@ -79,19 +83,19 @@ export async function runAnalysis(data: FormData) {
   const profitPerUnit = sellPrice - costOfGoods - adCost - (sellPrice * (otherCostsPercentage / 100));
   const bepUnit = profitPerUnit > 0 ? Math.ceil((fixedCostsPerMonth + totalMarketingBudget) / profitPerUnit) : Infinity;
 
-  // --- CORRECTED WARNINGS ---
+  // --- WARNINGS ---
   const warnings = [];
-  if ((useVideoContent || useKOL) && adCost === 0 && totalMarketingBudget === 0) {
-    warnings.push("Strategi iklan/KOL diaktifkan tapi biaya CAC dan bujet pemasaran nol. Ini tidak realistis.");
+  if ((useVideoContent || useKOL || usePromo || useOtherChannels) && totalAdSpend === 0) {
+    warnings.push("Strategi pemasaran diaktifkan tapi biaya CAC dan bujet pemasaran nol. Ini tidak realistis dan tidak akan mempengaruhi hasil penjualan.");
   }
-  if (roas > 0 && roas < 1) {
+  if (totalAdSpend > 0 && roas < 1) {
     warnings.push("Iklan kamu belum balik modal (ROAS < 1). Perlu evaluasi konten atau targeting iklan.");
   }
-  if (isFinite(bepUnit) && bepUnit > targetUnits) {
-    warnings.push("Target penjualanmu belum bisa menutupi biaya tetap (BEP > Target). Atur ulang harga atau target volume.");
+  if (isFinite(bepUnit) && bepUnit > soldUnits) {
+    warnings.push("Target penjualanmu belum bisa menutupi biaya tetap (BEP > Penjualan Aktual). Atur ulang harga atau target volume.");
   }
 
-  // --- P&L and Cashflow Tables (Adjusted for clarity) ---
+  // --- P&L and Cashflow Tables ---
   const grossProfit = monthlyRevenue - monthlyCostOfGoods;
   const operationalCosts = monthlyAdCost + monthlyOtherVariableCosts + fixedCostsPerMonth;
   
@@ -155,5 +159,3 @@ export async function runAnalysis(data: FormData) {
     targetUnits
   };
 }
-
-    

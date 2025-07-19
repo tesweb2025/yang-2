@@ -20,12 +20,6 @@ export default function AboutPage() {
               </p>
             </CardContent>
           </Card>
-
-          <div className="text-center space-y-2 py-4">
-            <p className="text-subtitle text-foreground max-w-2xl mx-auto">
-              Dari situ muncul satu pertanyaan penting: <strong className="text-primary">“Gimana caranya tahu strategi ini layak, sebelum uang dan waktu benar-benar habis?”</strong>
-            </p>
-          </div>
           
           <Card>
             <CardHeader className="p-6 pb-2">

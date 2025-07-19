@@ -843,7 +843,7 @@ export default function AnalystPage() {
                     </CardContent>
                     <div className="border-t -mx-8 my-8"></div>
                     <Button type="submit" className="w-full h-14 text-lg rounded-full" disabled={isLoading}>
-                       {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : '🚀 Petakan Sekarang'}
+                       {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : '🎯 Petakan Sekarang'}
                     </Button>
                 </Card>
             </section>

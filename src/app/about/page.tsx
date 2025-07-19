@@ -62,7 +62,10 @@ export default function AboutPage() {
            <Card>
              <CardContent className="text-center p-6 space-y-4">
                 <p className="text-body text-muted-foreground">
-                    Platform ini dibuat oleh RizkyFadil, karena gue inget banget waktu pertama kali jualan di internet... ujung-ujungnya rungkad. Bukan karena produknya jelek, atau gak punya nilai. Tapi karena gak ngerti siapa targetnya. Dan yang paling parah: gak paham strategi apa yang sebenarnya dibutuhin. Waktu, tenaga, dan uang kebuang percuma. Cuma gara-gara gak tahu arah. Dari situ gue sadar: setiap ide bisnis selalu datang bawa harapan. Dan harapan itu gak cukup dikawal semangat doang. Lo butuh strategi. Yang jelas. Yang tepat. Dari awal.
+                    Platform ini dibuat oleh RizkyFadil, karena gue inget banget waktu pertama kali jualan di internet... ujung-ujungnya rungkad. Bukan karena produknya jelek, atau gak punya nilai. Tapi karena gak ngerti siapa targetnya. Dan yang paling parah: gak paham strategi apa yang sebenarnya dibutuhin.
+                </p>
+                 <p className="text-body text-muted-foreground">
+                    Waktu, tenaga, dan uang kebuang percuma. Cuma gara-gara gak tahu arah. Dari situ gue sadar: setiap ide bisnis selalu datang bawa harapan. Dan harapan itu gak cukup dikawal semangat doang. Lo butuh strategi. Yang jelas. Yang tepat. Dari awal.
                 </p>
             </CardContent>
           </Card>

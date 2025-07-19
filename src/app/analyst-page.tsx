@@ -46,11 +46,14 @@ const formSchema = z.object({
   useOtherChannels: z.boolean().optional().default(false),
 }).refine(data => {
     if (data.costMode === 'budget') {
-        return data.totalMarketingBudget >= 0;
+        return data.totalMarketingBudget > 0;
     }
-    return data.targetCAC >= 0;
+    if (data.costMode === 'cac') {
+        return data.targetCAC > 0;
+    }
+    return true;
 }, {
-    message: "Biaya pemasaran harus diisi",
+    message: "Biaya pemasaran harus diisi (tidak boleh nol)",
     path: ["totalMarketingBudget"],
 });
 
@@ -827,87 +830,91 @@ export default function AnalystPage() {
                             <NumericInput name="targetCAC" control={form.control} label="Target CAC per Unit" disabled={costMode === 'budget'} />
                         </div>
                         
-                        <div className="grid md:grid-cols-2 gap-8 items-center">
-                            <div className="overflow-x-auto flex justify-center">
-                                {budgetChartData.length > 0 ? (
-                                    <div className="w-full h-64">
-                                        <ChartContainer config={budgetChartConfig} className="h-full w-full">
-                                            <RechartsBarChart
-                                                data={budgetChartData}
-                                                margin={{ top: 20, right: 10, left: 10, bottom: 5 }}
-                                            >
-                                                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                                                <XAxis
-                                                    dataKey="name"
-                                                    tickLine={false}
-                                                    axisLine={false}
-                                                    tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
-                                                />
-                                                <YAxis type="number" hide />
-                                                <RechartsTooltip
-                                                    cursor={{ fill: 'hsl(var(--muted))' }}
-                                                    content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />}
-                                                />
-                                                <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                                                    {budgetChartData.map((entry, index) => (
-                                                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                                                    ))}
-                                                     <LabelList
-                                                        dataKey="value"
-                                                        position="top"
-                                                        offset={8}
-                                                        className="fill-foreground font-medium"
-                                                        fontSize={12}
-                                                        formatter={(value: number) => {
-                                                            if (value === 0) return '';
-                                                            return formatCurrency(value);
-                                                        }}
+                        {costMode === 'budget' && (
+                          <>
+                            <div className="grid md:grid-cols-2 gap-8 items-center">
+                                <div className="overflow-x-auto flex justify-center">
+                                    {budgetChartData.length > 0 ? (
+                                        <div className="w-full h-64">
+                                            <ChartContainer config={budgetChartConfig} className="h-full w-full">
+                                                <RechartsBarChart
+                                                    data={budgetChartData}
+                                                    margin={{ top: 20, right: 10, left: 10, bottom: 5 }}
+                                                >
+                                                    <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                                                    <XAxis
+                                                        dataKey="name"
+                                                        tickLine={false}
+                                                        axisLine={false}
+                                                        tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
                                                     />
-                                                </Bar>
-                                            </RechartsBarChart>
-                                        </ChartContainer>
-                                    </div>
-                                ) : (
-                                    <div className="w-full h-64 flex items-center justify-center bg-muted/50 rounded-xl">
-                                      <p className="text-muted-foreground">Pilih strategi untuk melihat alokasi</p>
-                                    </div>
-                                )}
+                                                    <YAxis type="number" hide />
+                                                    <RechartsTooltip
+                                                        cursor={{ fill: 'hsl(var(--muted))' }}
+                                                        content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />}
+                                                    />
+                                                    <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                                                        {budgetChartData.map((entry, index) => (
+                                                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                                                        ))}
+                                                         <LabelList
+                                                            dataKey="value"
+                                                            position="top"
+                                                            offset={8}
+                                                            className="fill-foreground font-medium"
+                                                            fontSize={12}
+                                                            formatter={(value: number) => {
+                                                                if (value === 0) return '';
+                                                                return formatCurrency(value);
+                                                            }}
+                                                        />
+                                                    </Bar>
+                                                </RechartsBarChart>
+                                            </ChartContainer>
+                                        </div>
+                                    ) : (
+                                        <div className="w-full h-64 flex items-center justify-center bg-muted/50 rounded-xl">
+                                          <p className="text-muted-foreground">Pilih strategi untuk melihat alokasi</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="space-y-4">
+                                    {marketingStrategies.map(strategy => (
+                                        <FormField
+                                            key={strategy.id}
+                                            control={form.control}
+                                            name={strategy.id}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                  <FormLabel htmlFor={strategy.id} className="flex items-center justify-between rounded-xl border p-3 cursor-pointer">
+                                                      <div className="flex items-center gap-3">
+                                                          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
+                                                          <span className="flex-1 font-medium">{strategy.title}</span>
+                                                      </div>
+                                                      <div className="flex items-center gap-4">
+                                                        <span className="font-medium text-sm w-28 text-right break-all">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
+                                                        <FormControl>
+                                                          <Switch
+                                                            id={strategy.id}
+                                                            checked={field.value}
+                                                            onCheckedChange={field.onChange}
+                                                          />
+                                                        </FormControl>
+                                                      </div>
+                                                  </FormLabel>
+                                                </FormItem>
+                                            )}
+                                        />
+                                    ))}
+                                </div>
                             </div>
 
-                            <div className="space-y-4">
-                                {marketingStrategies.map(strategy => (
-                                    <FormField
-                                        key={strategy.id}
-                                        control={form.control}
-                                        name={strategy.id}
-                                        render={({ field }) => (
-                                            <FormItem>
-                                              <FormLabel htmlFor={strategy.id} className="flex items-center justify-between rounded-xl border p-3 cursor-pointer">
-                                                  <div className="flex items-center gap-3">
-                                                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                      <span className="flex-1 font-medium">{strategy.title}</span>
-                                                  </div>
-                                                  <div className="flex items-center gap-4">
-                                                    <span className="font-medium text-sm w-28 text-right break-all">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
-                                                    <FormControl>
-                                                      <Switch
-                                                        id={strategy.id}
-                                                        checked={field.value}
-                                                        onCheckedChange={field.onChange}
-                                                      />
-                                                    </FormControl>
-                                                  </div>
-                                              </FormLabel>
-                                            </FormItem>
-                                        )}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-
-                        <p className="text-center text-muted-foreground text-caption pt-4">
-                           Bujet dibagi secara proporsional berdasarkan strategi yang aktif.
-                        </p>
+                            <p className="text-center text-muted-foreground text-caption pt-4">
+                               Bujet dibagi secara proporsional berdasarkan strategi yang aktif.
+                            </p>
+                          </>
+                        )}
                     </CardContent>
                     <div className="border-t -mx-8 my-8"></div>
                     <div className="flex justify-center">

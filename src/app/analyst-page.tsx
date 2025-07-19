@@ -304,10 +304,10 @@ export default function AnalystPage() {
     const fcm = fixedCostsPerMonth || 0;
     const tmb = totalMarketingBudget || 0;
 
-    const profitPerUnit = sp - cogs - (sp * ocp / 100);
-    const bepUnit = profitPerUnit > 0 ? (fcm + tmb) / profitPerUnit : Infinity;
+    const profitPerUnitExcludingMarketing = sp - cogs - (sp * ocp / 100);
+    const bepUnit = profitPerUnitExcludingMarketing > 0 ? (fcm + tmb) / profitPerUnitExcludingMarketing : Infinity;
     
-    return { profitPerUnit, bepUnit };
+    return { profitPerUnitExcludingMarketing, bepUnit };
   }, [sellPrice, costOfGoods, otherCostsPercentage, fixedCostsPerMonth, totalMarketingBudget]);
 
   const budgetAllocations = useMemo(() => {
@@ -718,9 +718,9 @@ export default function AnalystPage() {
                                             <p className="text-caption text-muted-foreground">Laba/unit (Non-iklan)</p>
                                             <p className={cn(
                                                 "text-xl font-bold break-all",
-                                                calculations.profitPerUnit > 0 ? "text-green-600" :
-                                                calculations.profitPerUnit < 0 ? "text-destructive" : "text-foreground"
-                                            )}>{formatCurrency(calculations.profitPerUnit)}</p>
+                                                calculations.profitPerUnitExcludingMarketing > 0 ? "text-green-600" :
+                                                calculations.profitPerUnitExcludingMarketing < 0 ? "text-destructive" : "text-foreground"
+                                            )}>{formatCurrency(calculations.profitPerUnitExcludingMarketing)}</p>
                                         </div>
                                         <p className="text-xs text-muted-foreground mt-1">Keuntungan bersih setelah semua biaya dari satu produk terjual.</p>
                                     </Card>

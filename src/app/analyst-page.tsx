@@ -32,7 +32,6 @@ const formSchema = z.object({
   brandStrength: z.enum(['baru', 'kuat']),
   sellPrice: z.coerce.number().min(100, "Harga jual minimal Rp 100"),
   costOfGoods: z.coerce.number().min(1, "HPP harus lebih dari 0"),
-  adCost: z.coerce.number().min(0, "Biaya iklan harus positif").optional().default(0),
   otherCostsPercentage: z.coerce.number().min(0).max(100).optional().default(0),
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
   avgSalesPerMonth: z.coerce.number().min(1, "Target penjualan minimal 1 unit"),
@@ -283,7 +282,6 @@ export default function AnalystPage() {
       brandStrength: 'baru',
       sellPrice: 0,
       costOfGoods: 0,
-      adCost: 0,
       otherCostsPercentage: 0,
       fixedCostsPerMonth: 0,
       avgSalesPerMonth: 0,
@@ -297,21 +295,20 @@ export default function AnalystPage() {
 
   const watchedValues = form.watch();
 
-  const { sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth, totalMarketingBudget, useVideoContent, useKOL, usePromo, useOtherChannels } = watchedValues;
+  const { sellPrice, costOfGoods, otherCostsPercentage, fixedCostsPerMonth, totalMarketingBudget, useVideoContent, useKOL, usePromo, useOtherChannels } = watchedValues;
 
   const calculations = useMemo(() => {
     const sp = sellPrice || 0;
     const cogs = costOfGoods || 0;
-    const ac = adCost || 0;
     const ocp = otherCostsPercentage || 0;
     const fcm = fixedCostsPerMonth || 0;
     const tmb = totalMarketingBudget || 0;
 
-    const profitPerUnit = sp - cogs - ac - (sp * ocp / 100);
+    const profitPerUnit = sp - cogs - (sp * ocp / 100);
     const bepUnit = profitPerUnit > 0 ? (fcm + tmb) / profitPerUnit : Infinity;
     
     return { profitPerUnit, bepUnit };
-  }, [sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth, totalMarketingBudget]);
+  }, [sellPrice, costOfGoods, otherCostsPercentage, fixedCostsPerMonth, totalMarketingBudget]);
 
   const budgetAllocations = useMemo(() => {
     const budget = totalMarketingBudget || 0;
@@ -699,10 +696,9 @@ export default function AnalystPage() {
                         <div className="border-t -mx-8 my-8"></div>
                         <div>
                             <h3 className="font-semibold text-lg mb-4">Kalkulator Harga & Biaya per Produk</h3>
-                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-4">
                                 <NumericInput name="sellPrice" control={form.control} label="Harga Jual" />
                                 <NumericInput name="costOfGoods" control={form.control} label="Modal Produk (HPP)" />
-                                <NumericInput name="adCost" control={form.control} label="Biaya Iklan (CAC)" />
                                 <NumericInput name="otherCostsPercentage" control={form.control} label="Biaya Lain (%)" />
                             </div>
                         </div>
@@ -719,7 +715,7 @@ export default function AnalystPage() {
                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <Card className="p-4 bg-muted/50 flex flex-col justify-between rounded-xl">
                                         <div>
-                                            <p className="text-caption text-muted-foreground">Laba/unit</p>
+                                            <p className="text-caption text-muted-foreground">Laba/unit (Non-iklan)</p>
                                             <p className={cn(
                                                 "text-xl font-bold break-all",
                                                 calculations.profitPerUnit > 0 ? "text-green-600" :

@@ -12,7 +12,6 @@ const formSchema = z.object({
   brandStrength: z.enum(['baru', 'kuat']),
   sellPrice: z.coerce.number().min(100, "Harga jual minimal Rp 100"),
   costOfGoods: z.coerce.number().min(1, "HPP harus lebih dari 0"),
-  adCost: z.coerce.number().min(0, "Biaya iklan harus positif").optional().default(0),
   otherCostsPercentage: z.coerce.number().min(0).max(100).optional().default(0),
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
   avgSalesPerMonth: z.coerce.number().min(1, "Target penjualan minimal 1 unit"),
@@ -31,7 +30,6 @@ export async function runAnalysis(data: FormData) {
   const { 
     sellPrice, 
     costOfGoods, 
-    adCost, // This is CAC per unit
     otherCostsPercentage, 
     fixedCostsPerMonth, 
     avgSalesPerMonth: targetUnits,
@@ -50,7 +48,7 @@ export async function runAnalysis(data: FormData) {
 
   // Marketing Strategy Logic
   let effectivenessFactor = 1;
-  const hasMarketingSpend = (adCost > 0 || totalMarketingBudget > 0);
+  const hasMarketingSpend = totalMarketingBudget > 0;
   
   if (hasMarketingSpend) {
     if (useVideoContent) effectivenessFactor += 0.8;
@@ -61,34 +59,33 @@ export async function runAnalysis(data: FormData) {
 
   const soldUnits = Math.floor(targetUnits * 0.6 + (targetUnits * 0.4 * effectivenessFactor / 2.1));
   
-  // --- FINANCIAL CALCULATIONS ---
+  // --- FINANCIAL CALCULATIONS (REFACTORED) ---
   const monthlyRevenue = sellPrice * soldUnits;
   const annualRevenue = monthlyRevenue * 12;
 
   const monthlyCostOfGoods = costOfGoods * soldUnits;
-  const monthlyAdCost = adCost * soldUnits; // Total variable ad cost from CAC
   const monthlyOtherVariableCosts = monthlyRevenue * (otherCostsPercentage / 100);
   
-  // Total costs for profit calculation
-  const totalVariableCosts = monthlyCostOfGoods + monthlyAdCost + monthlyOtherVariableCosts;
-  const totalMonthlyCosts = totalVariableCosts + fixedCostsPerMonth + totalMarketingBudget;
+  const totalVariableCosts = monthlyCostOfGoods + monthlyOtherVariableCosts;
+  const totalMonthlyOperatingCosts = totalVariableCosts + fixedCostsPerMonth;
+  const totalMonthlyCosts = totalMonthlyOperatingCosts + totalMarketingBudget;
+  
   const monthlyProfit = monthlyRevenue - totalMonthlyCosts;
   const annualProfit = monthlyProfit * 12;
 
   // Corrected ROAS Calculation
-  const totalAdSpend = monthlyAdCost + totalMarketingBudget;
-  const roas = totalAdSpend > 0 ? monthlyRevenue / totalAdSpend : 0;
+  const roas = totalMarketingBudget > 0 ? monthlyRevenue / totalMarketingBudget : 0;
   
   // Corrected BEP Calculation
-  const profitPerUnit = sellPrice - costOfGoods - adCost - (sellPrice * (otherCostsPercentage / 100));
-  const bepUnit = profitPerUnit > 0 ? Math.ceil((fixedCostsPerMonth + totalMarketingBudget) / profitPerUnit) : Infinity;
+  const profitPerUnitExcludingMarketing = sellPrice - costOfGoods - (sellPrice * (otherCostsPercentage / 100));
+  const bepUnit = profitPerUnitExcludingMarketing > 0 ? Math.ceil((fixedCostsPerMonth + totalMarketingBudget) / profitPerUnitExcludingMarketing) : Infinity;
 
   // --- WARNINGS ---
   const warnings = [];
-  if ((useVideoContent || useKOL || usePromo || useOtherChannels) && totalAdSpend === 0) {
-    warnings.push("Strategi pemasaran diaktifkan tapi biaya CAC dan bujet pemasaran nol. Ini tidak realistis dan tidak akan mempengaruhi hasil penjualan.");
+  if ((useVideoContent || useKOL || usePromo || useOtherChannels) && totalMarketingBudget === 0) {
+    warnings.push("Strategi pemasaran diaktifkan tapi bujet pemasaran nol. Hasil simulasi mungkin tidak akurat karena tidak ada biaya iklan yang dihitung.");
   }
-  if (totalAdSpend > 0 && roas < 1) {
+  if (totalMarketingBudget > 0 && roas < 1) {
     warnings.push("Iklan kamu belum balik modal (ROAS < 1). Perlu evaluasi konten atau targeting iklan.");
   }
   if (isFinite(bepUnit) && bepUnit > soldUnits) {
@@ -97,13 +94,13 @@ export async function runAnalysis(data: FormData) {
 
   // --- P&L and Cashflow Tables ---
   const grossProfit = monthlyRevenue - monthlyCostOfGoods;
-  const operationalCosts = monthlyAdCost + monthlyOtherVariableCosts + fixedCostsPerMonth;
   
   const pnlTable = [
     { item: 'Omzet Bulanan (dari '+ soldUnits +' unit)', value: monthlyRevenue, isNegative: false },
     { item: 'Modal Produk (HPP)', value: monthlyCostOfGoods, isNegative: true },
     { item: 'Untung Kotor', value: grossProfit, isNegative: grossProfit < 0 },
-    { item: 'Biaya Operasional (termasuk CAC)', value: operationalCosts, isNegative: true },
+    { item: 'Biaya Variabel Lainnya', value: monthlyOtherVariableCosts, isNegative: true },
+    { item: 'Biaya Tetap', value: fixedCostsPerMonth, isNegative: true },
     { item: 'Biaya Pemasaran (Bujet)', value: totalMarketingBudget, isNegative: true },
     { item: 'Untung Bersih Bulanan', value: monthlyProfit, isNegative: monthlyProfit < 0 },
   ];
@@ -113,7 +110,6 @@ export async function runAnalysis(data: FormData) {
   const cashflowTable = [
     { item: 'Duit Masuk dari Penjualan', value: monthlyRevenue, isNegative: false },
     { item: 'Duit Keluar buat Modal (HPP)', value: monthlyCostOfGoods, isNegative: true },
-    { item: 'Duit Keluar buat Iklan (per penjualan)', value: monthlyAdCost, isNegative: true },
     { item: 'Duit Keluar buat Biaya Tetap & Lainnya', value: fixedCostsPerMonth + monthlyOtherVariableCosts, isNegative: true },
     { item: 'Duit Keluar buat Bujet Pemasaran', value: totalMarketingBudget, isNegative: true },
     { item: 'Arus Kas Bersih', value: netCashFlow, isNegative: netCashFlow < 0 },

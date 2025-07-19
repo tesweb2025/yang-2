@@ -12,8 +12,8 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { BrainCircuit, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle, CheckCircle, ArrowRight, Video, Users, Receipt, Share2, Clock, Percent, Zap, Sparkles } from 'lucide-react';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { ClipboardList, Loader2, Lightbulb, TrendingUp, Target, AlertTriangle, CheckCircle, ArrowRight, Video, Users, Receipt, Share2, Clock, Percent, Zap, Sparkles } from 'lucide-react';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import Image from 'next/image';
 import { runAnalysis } from './actions';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from '@/components/ui/chart';
@@ -241,7 +241,7 @@ const platformStrategyDescriptions = [
     }
 ];
 
-const NumericInput = ({ name, control, label, disabled = false }: { name: keyof FormData; control: any; label: string; disabled?: boolean }) => {
+const NumericInput = ({ name, control, label, disabled = false, description }: { name: keyof FormData; control: any; label: string; disabled?: boolean, description?: string }) => {
     return (
         <Controller
             name={name}
@@ -274,6 +274,7 @@ const NumericInput = ({ name, control, label, disabled = false }: { name: keyof 
                                 disabled={disabled}
                             />
                         </FormControl>
+                        {description && <FormDescription>{description}</FormDescription>}
                         <FormMessage>{fieldState.error?.message}</FormMessage>
                     </FormItem>
                 );
@@ -625,7 +626,7 @@ export default function AnalystPage() {
               <Card className="p-6 md:p-8">
                 <CardHeader className="p-0">
                   <div className="flex items-center gap-3">
-                    <BrainCircuit className="w-8 h-8 text-primary" />
+                    <ClipboardList className="w-8 h-8 text-primary" />
                     <div>
                       <CardTitle className="text-h3 font-medium">Data Bisnismu</CardTitle>
                       <CardDescription>Isi data ini agar AI bisa menganalisis strategimu.</CardDescription>
@@ -741,7 +742,12 @@ export default function AnalystPage() {
                             <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-4">
                                 <NumericInput name="sellPrice" control={form.control} label="Harga Jual" />
                                 <NumericInput name="costOfGoods" control={form.control} label="Modal Produk (HPP)" />
-                                <NumericInput name="otherCostsPercentage" control={form.control} label="Biaya Lain (%)" />
+                                <NumericInput 
+                                  name="otherCostsPercentage" 
+                                  control={form.control} 
+                                  label="Biaya Lain (%)"
+                                  description="Contoh: biaya admin marketplace, packaging, fee transaksi."
+                                />
                             </div>
                         </div>
                         <div className="grid md:grid-cols-2 gap-4">

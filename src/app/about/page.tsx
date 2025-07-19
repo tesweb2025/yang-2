@@ -1,6 +1,7 @@
 
 import { Header } from '@/components/header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Target } from 'lucide-react';
 
 export default function AboutPage() {
   return (
@@ -27,10 +28,13 @@ export default function AboutPage() {
           </div>
           
           <Card>
-            <CardHeader>
-              <CardTitle className="text-h3">Di Petakan.ai, lo bisa:</CardTitle>
+            <CardHeader className="p-6 pb-2">
+              <CardTitle className="text-h3 flex items-center gap-2">
+                <Target className="w-5 h-5 text-primary"/>
+                Di Petakan.ai, lo bisa:
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-6 pt-2 space-y-4">
               <ul className="list-disc list-inside space-y-2 text-body">
                 <li>Cek <strong className="text-foreground">untung-rugi</strong> dari ide yang mau lo jalanin.</li>
                 <li>Uji <strong className="text-foreground">harga jual</strong> dan budget iklan.</li>

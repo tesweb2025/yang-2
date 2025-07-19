@@ -1,8 +1,8 @@
 
 "use client";
 
-import React, { useState, useMemo, useEffect, Suspense } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,7 @@ import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from '@/components/ui/separator';
-import { BarChart as RechartsBarChart, LabelList, Cell, ResponsiveContainer } from 'recharts';
+import { BarChart as RechartsBarChart, LabelList, Cell } from 'recharts';
 
 const formSchema = z.object({
   productName: z.string().min(1, "Nama produk harus diisi"),
@@ -251,7 +251,7 @@ const platformStrategyDescriptions = [
 
 const NumericInput = ({ name, control, label, disabled = false, description }: { name: keyof FormData; control: any; label: string; disabled?: boolean, description?: string }) => {
     return (
-        <Controller
+        <FormField
             name={name}
             control={control}
             render={({ field, fieldState }) => {
@@ -477,7 +477,7 @@ export default function AnalystPage() {
             </h1>
            <div className="my-4 flex justify-center">
               <Image 
-                src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/cf73fec79612238e02a3ddc3b7bae788c81dfd3a/HEADER%20BARU%20(1).png"
+                src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/5b6a1a383615c433ee8165fc4d0317bd0daaa46f/HEADER%20COY.png"
                 alt="Dashboard Mockup"
                 width={720}
                 height={480}

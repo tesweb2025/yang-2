@@ -1,7 +1,6 @@
 
 import { Header } from '@/components/header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle } from 'lucide-react';
 
 export default function AboutPage() {
   return (
@@ -38,23 +37,11 @@ export default function AboutPage() {
               <CardTitle className="text-h3">Di Petakan.ai, lo bisa:</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                  <span>Cek <strong className="text-foreground">untung-rugi</strong> dari ide yang mau lo jalanin.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                  <span>Uji <strong className="text-foreground">harga jual</strong> dan budget iklan.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                  <span>Baca <strong className="text-foreground">tren perilaku pasar</strong> digital Indonesia.</span>
-                </li>
-                 <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                  <span>Dapat <strong className="text-foreground">rekomendasi strategi</strong> berbasis data lokal — dari AI yang ngerti konteks.</span>
-                </li>
+              <ul className="list-disc list-inside space-y-2 text-body">
+                <li>Cek <strong className="text-foreground">untung-rugi</strong> dari ide yang mau lo jalanin.</li>
+                <li>Uji <strong className="text-foreground">harga jual</strong> dan budget iklan.</li>
+                <li>Baca <strong className="text-foreground">tren perilaku pasar</strong> digital Indonesia.</li>
+                <li>Dapat <strong className="text-foreground">rekomendasi strategi</strong> berbasis data lokal — dari AI yang ngerti konteks.</li>
               </ul>
             </CardContent>
           </Card>
@@ -75,7 +62,7 @@ export default function AboutPage() {
           </div>
         </div>
       </main>
-      <footer className="text-center text-sm text-muted-foreground mt-12 mb-8 container max-w-3xl px-4">
+      <footer className="text-center text-sm text-muted-foreground mt-8 mb-8 container max-w-3xl px-4">
         <p>Laporan ini disusun berdasarkan analisis dan proyeksi dari data publik. Gunakan petakan.ai sebagai alat bantu strategis.</p>
         <p className="mt-2">© 2025 Dibuat oleh RizkyFadil.</p>
       </footer>

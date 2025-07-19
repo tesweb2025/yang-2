@@ -31,7 +31,6 @@ export default function AboutPage() {
             <p className="text-subtitle text-foreground max-w-2xl mx-auto">
               Dari situ muncul satu pertanyaan penting: <strong className="text-primary">“Gimana caranya tahu strategi ini layak, sebelum uang dan waktu benar-benar habis?”</strong>
             </p>
-            <p className="text-h2 font-semibold">Itu titik lahirnya Petakan.ai.</p>
           </div>
           
           <Card>

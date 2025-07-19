@@ -8,7 +8,6 @@
  * - AnalyzeMarketEntryInput - The input type for the analyzeMarketEntry function.
  * - AnalyzeMarketEntryOutput - The return type for the analyzeMarketEntry function.
  */
-
 import { z } from 'zod';
 import { generativeModel } from '@/ai/genkit';
 
@@ -20,7 +19,7 @@ const AnalyzeMarketEntryInputSchema = z.object({
     .describe('The initial marketing budget in Indonesian Rupiah (Rp).'),
   financialForecastSummary: z
     .string()
-    .describe('A summary of the financial forecast, including projected revenue, profit, and cash flow.'),
+    .describe('A summary of the financial forecast, including projected revenue, profit, and cash flow. Contains key metrics like ROAS and BEP.'),
   marketConditionSummary: z
     .string()
     .describe('A summary of the current market conditions in the Indonesian e-commerce market.'),
@@ -40,32 +39,47 @@ export async function analyzeMarketEntry(input: AnalyzeMarketEntryInput): Promis
 
   const prompt = `Kamu adalah seorang Business Analyst AI yang ahli di pasar e-commerce Indonesia. Gaya bicaramu santai, to the point, dan mudah dimengerti UMKM.
 
-Tugasmu adalah mengevaluasi kelayakan sebuah ide bisnis berdasarkan data berikut:
+Tugasmu adalah memberikan evaluasi cepat dan tajam terhadap sebuah ide bisnis berdasarkan data berikut:
 
 Nama Produk: ${validatedInput.productName}
 Target Pasar: ${validatedInput.targetSegment}
-Modal Awal (Bujet Promosi): Rp ${validatedInput.initialMarketingBudget}
 Ringkasan Finansial: ${validatedInput.financialForecastSummary}
-Kondisi Pasar: ${validatedInput.marketConditionSummary}
+Kondisi Pasar Umum: ${validatedInput.marketConditionSummary}
 
-**PENTING**: Gunakan HANYA informasi dari "Kondisi Pasar" di atas untuk konteks pasarnya. Jangan membuat asumsi tentang pasar berdasarkan nama produk.
+**Analisis & Respon:**
+1.  **Baca Ringkasan Finansial**: Lihat apakah hasilnya untung atau rugi. Perhatikan ROAS dan BEP.
+2.  **Berikan \`evaluation\`**: 
+    -   Jika untung & ROAS bagus (>2.5x), berikan kalimat positif dan kuat. Contoh: "Strategi kamu terlihat sehat!", "Ini ide yang menjanjikan, bro!".
+    -   Jika rugi atau ROAS rendah (<1.5x) atau BEP tidak tercapai, berikan kalimat yang menunjukkan risiko. Contoh: "Wah, strategi kamu masih berisiko.", "Waduh, ini perlu dihitung ulang.".
+**Berikan \`keyConsiderations\`**: Lanjutkan dengan 1-2 kalimat penjelasan singkat. Fokus pada **SATU** poin paling krusial.
+    -   Jika untung: Sebutkan apa yang membuatnya bagus. Contoh: "ROAS di atas 3x menunjukkan efisiensi iklan yang baik."
+    -   Jika rugi: Sebutkan penyebab utamanya. Contoh: "Penyebab utamanya adalah BEP yang lebih tinggi dari target penjualan, artinya biaya belum tertutup." atau "ROAS yang rendah jadi sinyal strategi pemasaran belum efektif."
 
-Berdasarkan data di atas, berikan evaluasi singkat.
-1.  **Evaluation**: Mulai dengan kalimat pembuka yang tegas. Contoh: "Potensial banget, bro!", "Wah, ini ide bagus!", atau "Waduh, ini strategi yang berisiko.".
-2.  **Key Considerations**: Lanjutkan dengan 1-2 kalimat penjelasan singkat dan padat mengenai 'kenapa'-nya. Fokus pada poin paling krusial dari data yang ada (misal: profit tipis, target pasar terlalu luas, dll).
+**PENTING**:
+-   Gunakan HANYA informasi dari data di atas. Jangan berasumsi.
+-   Buat seolah-olah kamu sedang memberi nasihat cepat ke teman bisnismu.
+-   Output harus berupa objek JSON yang valid.
 
-Buat seolah-olah kamu sedang memberi nasihat cepat ke teman bisnismu.
-
-Pastikan outputmu adalah objek JSON yang valid, sesuai dengan skema berikut:
+Contoh Output (Untung):
 {
-  "evaluation": "string",
-  "keyConsiderations": "string"
+  "evaluation": "Strategi kamu terlihat sehat!",
+  "keyConsiderations": "ROAS 3.15x berarti setiap Rp1 juta iklan menghasilkan omzet Rp3,15 juta. Ini efisiensi yang bagus."
+}
+
+Contoh Output (Rugi):
+{
+  "evaluation": "Wah, strategi kamu masih berisiko.",
+  "keyConsiderations": "Penyebab utama: Biaya operasional terlalu tinggi sehingga laba tahunan negatif. Perlu ada efisiensi."
 }
 `;
 
   const result = await generativeModel.generateContent(prompt);
   const responseText = result.response.text();
-  const responseObject = JSON.parse(responseText);
-  
-  return AnalyzeMarketEntryOutputSchema.parse(responseObject);
+  try {
+    const responseObject = JSON.parse(responseText);
+    return AnalyzeMarketEntryOutputSchema.parse(responseObject);
+  } catch(e) {
+    console.error("Failed to parse AI response:", responseText);
+    throw new Error("Gagal memproses respon dari AI. Coba lagi.");
+  }
 }

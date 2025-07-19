@@ -13,15 +13,15 @@ import { z } from 'zod';
 import { generativeModel } from '@/ai/genkit';
 
 const StrategicRecommendationsInputSchema = z.object({
-  annualRevenueProjection: z.number().describe('The projected annual revenue.'),
-  annualProfitProjection: z.number().describe('The projected annual profit.'),
-  roas: z.number().describe('The Return on Ad Spend (ROAS).'),
-  monthlyProfitAndLossStatement: z.string().describe('The monthly profit and loss statement.'),
-  monthlyCashFlowSimulation: z.string().describe('The monthly cash flow simulation.'),
   productName: z.string().describe('The name of the product or business.'),
   targetSegmentation: z.string().describe('The primary target segmentation.'),
-  initialMarketingBudget: z.number().describe('The initial marketing budget.'),
   selectedMarketingStrategies: z.array(z.string()).describe('List of marketing strategies selected by the user.'),
+  monthlyProfitAndLossStatement: z.string().describe('The monthly profit and loss statement.'),
+  monthlyCashFlowSimulation: z.string().describe('The monthly cash flow simulation.'),
+  initialMarketingBudget: z.number().describe('The initial marketing budget.'),
+  annualProfitProjection: z.number().describe('The projected annual profit.'),
+  roas: z.number().describe('The Return on Ad Spend (ROAS).'),
+  warnings: z.array(z.string()).describe('A list of logical warnings based on user input, e.g., BEP > Target Sales.'),
 });
 export type StrategicRecommendationsInput = z.infer<typeof StrategicRecommendationsInputSchema>;
 
@@ -39,31 +39,43 @@ export async function generateStrategicRecommendations(
 
   const prompt = `Kamu adalah seorang Business Strategist AI yang jago banget ngasih saran praktis buat UMKM di Indonesia. Gaya bicaramu santai, memotivasi, dan solutif.
 
-Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi bisnis ini. Fokus pada saran yang paling besar dampaknya.
+Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi bisnis ini.
 
 **Data Bisnis:**
 - Nama Produk: ${validatedInput.productName}
 - Target Pasar: ${validatedInput.targetSegmentation}
-- Bujet Promosi Bulanan: Rp ${validatedInput.initialMarketingBudget}
 - Strategi Pemasaran Pilihan: ${validatedInput.selectedMarketingStrategies.join(', ')}
 
-**Hasil Simulasi Keuangan:**
-- Proyeksi Omzet Tahunan: Rp ${validatedInput.annualRevenueProjection}
-- Proyeksi Untung Tahunan: Rp ${validatedInput.annualProfitProjection}
-- ROAS (Return on Ad Spend): ${validatedInput.roas}x
+**Hasil Simulasi Keuangan & Peringatan:**
+- Proyeksi Untung Tahunan: Rp ${validatedInput.annualProfitProjection.toLocaleString('id-ID')}
+- ROAS (Return on Ad Spend): ${validatedInput.roas.toFixed(2)}x
+- Peringatan Logika: ${validatedInput.warnings.length > 0 ? validatedInput.warnings.join('. ') : 'Tidak ada.'}
 - Laporan Untung Rugi Bulanan: ${validatedInput.monthlyProfitAndLossStatement}
 - Arus Kas Bulanan: ${validatedInput.monthlyCashFlowSimulation}
 
 **Instruksi:**
-1.  Analisis semua data di atas. Cari di mana letak "kebocoran" atau "potensi" terbesarnya.
-2.  Berikan 3-5 rekomendasi dalam bentuk list.
-3.  Setiap rekomendasi harus berupa langkah taktis yang bisa langsung dikerjakan, dan harus relevan dengan strategi pemasaran yang dipilih. Contoh: "Karena memilih KOL, fokuskan bujet iklan ke KOL micro-niche di kategori parenting", "Naikkan harga jual sebesar 10% jadi Rp XX.XXX", "Cari supplier baru untuk turunkan HPP sebesar Rp X.XXX".
-4.  Gunakan bahasa Indonesia yang santai dan jelas. Mulai setiap poin dengan kata kerja.
-5.  Jika hasilnya rugi, berikan saran yang fokus untuk membalikkan keadaan. Jika sudah untung, berikan saran untuk scale-up.
+-   **Analisis Menyeluruh**: Cermati semua data, terutama \`Proyeksi Untung Tahunan\` dan \`Peringatan Logika\`.
+-   **Prioritaskan Rekomendasi**:
+    *   **Jika ada \`Peringatan Logika\`**: Jadikan solusi untuk peringatan itu sebagai rekomendasi PERTAMA. Contoh: Jika peringatan "BEP > Target", rekomendasi pertama harus tentang "Cara menurunkan BEP atau menaikkan penjualan".
+    *   **Jika \`Untung Tahunan\` negatif (RUGI)**: Fokuskan rekomendasi pada cara membalikkan keadaan (efisiensi biaya, menaikkan harga, optimasi strategi).
+    *   **Jika \`Untung Tahunan\` positif (UNTUNG)**: Fokuskan rekomendasi pada cara *scale-up* (meningkatkan bujet iklan secara bertahap, ekspansi channel, optimasi konversi).
+-   **Buat Rekomendasi Spesifik & Kontekstual (3-5 poin)**:
+    *   Sebutkan \`Nama Produk\` dalam rekomendasi jika relevan. Contoh: "Tingkatkan persepsi nilai untuk '${validatedInput.productName}' dengan..."
+    *   Hubungkan rekomendasi dengan \`Target Pasar\`. Contoh: "Karena target Anda '${validatedInput.targetSegmentation}', fokuskan iklan di Instagram Reels dan TikTok."
+    *   Rekomendasi harus berupa langkah taktis yang bisa langsung dikerjakan. Mulai setiap poin dengan kata kerja.
+    *   Gunakan bahasa Indonesia yang santai dan jelas.
 
-Contoh output item: "Naikin harga pelan-pelan sambil tetap pantau kompetitor" atau "Tekan biaya operasional bulanan Rp 4 juta".
+**Contoh Rekomendasi (Rugi):**
+-   "Turunkan BEP dengan negosiasi ulang HPP ke supplier agar bisa turun minimal 10%."
+-   "Karena ROAS rendah, uji coba audiens iklan baru yang lebih spesifik untuk '${validatedInput.productName}'."
+-   "Naikkan harga jual secara bertahap sebesar 5% untuk meningkatkan margin per produk."
 
-Pastikan outputmu adalah objek JSON yang valid dan hanya berisi list string, sesuai dengan skema berikut:
+**Contoh Rekomendasi (Untung):**
+-   "Alokasikan 20% dari keuntungan bulanan untuk meningkatkan bujet iklan secara bertahap."
+-   "Karena targetnya '${validatedInput.targetSegmentation}', buat konten video testimoni untuk meningkatkan kepercayaan."
+-   "Pertimbangkan untuk membuat varian baru dari '${validatedInput.productName}' untuk menjangkau pasar yang lebih luas."
+
+Pastikan outputmu adalah objek JSON yang valid, hanya berisi list string, sesuai dengan skema berikut:
 {
   "recommendations": ["rekomendasi 1", "rekomendasi 2", "dst..."]
 }
@@ -71,7 +83,11 @@ Pastikan outputmu adalah objek JSON yang valid dan hanya berisi list string, ses
 
   const result = await generativeModel.generateContent(prompt);
   const responseText = result.response.text();
-  const responseObject = JSON.parse(responseText);
-
-  return StrategicRecommendationsOutputSchema.parse(responseObject);
+  try {
+    const responseObject = JSON.parse(responseText);
+    return StrategicRecommendationsOutputSchema.parse(responseObject);
+  } catch (e) {
+    console.error("Failed to parse AI response:", responseText);
+    throw new Error("Gagal memproses respon dari AI. Coba lagi.");
+  }
 }

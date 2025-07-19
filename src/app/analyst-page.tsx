@@ -17,11 +17,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import Image from 'next/image';
 import { runAnalysis } from './actions';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from '@/components/ui/chart';
-import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart as RechartsBarChart, ResponsiveContainer, LabelList, Cell, ComposedChart, Line } from 'recharts';
+import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ComposedChart, Line } from 'recharts';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from '@/components/ui/separator';
+import { BarChart as RechartsBarChart, LabelList, Cell, ResponsiveContainer } from 'recharts';
 
 
 const formSchema = z.object({
@@ -29,12 +30,12 @@ const formSchema = z.object({
   targetSegment: z.string().min(1, "Segmentasi target harus diisi"),
   marginModel: z.enum(['tipis', 'tebal']),
   brandStrength: z.enum(['baru', 'kuat']),
-  sellPrice: z.coerce.number().min(0, "Harga harus positif").optional().default(0),
-  costOfGoods: z.coerce.number().min(0, "HPP harus positif").optional().default(0),
+  sellPrice: z.coerce.number().min(100, "Harga jual minimal Rp 100"),
+  costOfGoods: z.coerce.number().min(1, "HPP harus lebih dari 0"),
   adCost: z.coerce.number().min(0, "Biaya iklan harus positif").optional().default(0),
   otherCostsPercentage: z.coerce.number().min(0).max(100).optional().default(0),
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
-  avgSalesPerMonth: z.coerce.number().min(0, "Penjualan harus positif").optional().default(0),
+  avgSalesPerMonth: z.coerce.number().min(1, "Target penjualan minimal 1 unit"),
   totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
   useVideoContent: z.boolean().optional().default(false),
   useKOL: z.boolean().optional().default(false),
@@ -47,10 +48,14 @@ type AnalysisResult = {
   annualRevenue: number;
   annualProfit: number;
   roas: number;
+  bepUnit: number;
   pnlTable: any[];
   cashflowTable: any[];
   marketAnalysis: any;
   strategicPlan: any;
+  warnings: string[];
+  soldUnits: number;
+  targetUnits: number;
 };
 
 const marketingStrategies = [
@@ -230,11 +235,9 @@ const NumericInput = ({ name, control, label }: { name: keyof FormData; control:
             name={name}
             control={control}
             render={({ field, fieldState }) => {
-                // We manage a separate display value
                 const [displayValue, setDisplayValue] = useState(formatNumberInput(field.value));
 
                 useEffect(() => {
-                    // Update display value if the form value changes externally
                     setDisplayValue(formatNumberInput(field.value));
                 }, [field.value]);
 
@@ -242,10 +245,7 @@ const NumericInput = ({ name, control, label }: { name: keyof FormData; control:
                     const rawValue = e.target.value.replace(/[^\d]/g, '');
                     const numericValue = rawValue === '' ? 0 : parseInt(rawValue, 10);
                     
-                    // Update the form state with the raw numeric value
                     field.onChange(numericValue);
-                    
-                    // Update the display value with the formatted string
                     setDisplayValue(formatNumberInput(rawValue));
                 };
 
@@ -305,13 +305,13 @@ export default function AnalystPage() {
     const ac = adCost || 0;
     const ocp = otherCostsPercentage || 0;
     const fcm = fixedCostsPerMonth || 0;
+    const tmb = totalMarketingBudget || 0;
 
-    const grossProfitPerUnit = sp - cogs;
-    const netProfitPerUnit = grossProfitPerUnit - ac - (sp * ocp / 100);
-    const bepUnit = netProfitPerUnit > 0 ? fcm / netProfitPerUnit : Infinity;
+    const profitPerUnit = sp - cogs - ac - (sp * ocp / 100);
+    const bepUnit = profitPerUnit > 0 ? (fcm + tmb) / profitPerUnit : Infinity;
     
-    return { netProfitPerUnit, bepUnit };
-  }, [sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth]);
+    return { profitPerUnit, bepUnit };
+  }, [sellPrice, costOfGoods, adCost, otherCostsPercentage, fixedCostsPerMonth, totalMarketingBudget]);
 
   const budgetAllocations = useMemo(() => {
     const budget = totalMarketingBudget || 0;
@@ -361,6 +361,16 @@ export default function AnalystPage() {
   }, [budgetAllocations, useVideoContent, useKOL, usePromo, useOtherChannels]);
 
   const onSubmit = async (data: FormData) => {
+    const activeStrategies = Object.values(marketingStrategies).filter(s => data[s.id]);
+    if (activeStrategies.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Validasi Gagal",
+        description: "Pilih minimal satu strategi pemasaran untuk menjalankan simulasi.",
+      });
+      return;
+    }
+
     setIsLoading(true);
     setAnalysisResult(null);
     setTimeout(() => {
@@ -425,7 +435,7 @@ export default function AnalystPage() {
               priority
             />
           </div>
-          <p className="text-subtitle text-muted-foreground max-w-2xl mx-auto"> Simulasikan strategi bisnis kamu dalam hitungan detik. Gratis, instan, dan akurat—petakan.ai bantu kamu ambil keputusan sebelum buang waktu & modal.</p>
+          <p className="text-subtitle text-muted-foreground max-w-2xl mx-auto">Simulasikan strategi bisnis kamu dalam hitungan detik. Gratis, instan, dan akurat—petakan.ai bantu kamu ambil keputusan sebelum buang waktu & modal.</p>
            <Button asChild size="lg" className="mt-8 rounded-full h-12 px-8">
              <Link href="#cek-strategi">
                 Mulai Simulasi Gratis
@@ -602,7 +612,7 @@ export default function AnalystPage() {
                   </div>
                   
                   <div className="space-y-2 pt-2">
-                    <h3 className="font-medium text-sm">Pilih Strategi Pemasaran</h3>
+                    <h3 className="font-medium text-sm">Pilih Strategi Pemasaran (min. 1)</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {marketingStrategies.map((strategy) => (
                         <FormField
@@ -712,9 +722,9 @@ export default function AnalystPage() {
                                             <p className="text-caption text-muted-foreground">Laba/unit</p>
                                             <p className={cn(
                                                 "text-xl font-bold break-all",
-                                                calculations.netProfitPerUnit > 0 ? "text-green-600" :
-                                                calculations.netProfitPerUnit < 0 ? "text-destructive" : "text-foreground"
-                                            )}>{formatCurrency(calculations.netProfitPerUnit)}</p>
+                                                calculations.profitPerUnit > 0 ? "text-green-600" :
+                                                calculations.profitPerUnit < 0 ? "text-destructive" : "text-foreground"
+                                            )}>{formatCurrency(calculations.profitPerUnit)}</p>
                                         </div>
                                         <p className="text-xs text-muted-foreground mt-1">Keuntungan bersih setelah semua biaya dari satu produk terjual.</p>
                                     </Card>
@@ -750,7 +760,7 @@ export default function AnalystPage() {
                         </div>
                         
                         <div className="grid md:grid-cols-2 gap-8 items-center">
-                             <div className="overflow-x-auto flex justify-center">
+                            <div className="overflow-x-auto flex justify-center">
                                 {budgetChartData.length > 0 ? (
                                     <div className="w-full h-64">
                                         <ChartContainer config={budgetChartConfig} className="h-full w-full">
@@ -857,7 +867,7 @@ export default function AnalystPage() {
                         <p className="text-subtitle text-muted-foreground mt-2">Proyeksi kesehatan bisnismu berdasarkan data yang kamu isi.</p>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-6 mt-8">
+                    <div className="grid md:grid-cols-4 gap-6 mt-8">
                         <Card className="p-6 text-center flex flex-col justify-between">
                             <div>
                                <p className="text-body font-semibold">Proyeksi Pendapatan Tahunan</p>
@@ -879,6 +889,15 @@ export default function AnalystPage() {
                             </div>
                             <p className="text-caption text-muted-foreground mt-2">Pengembalian dari setiap Rupiah untuk iklan.</p>
                         </Card>
+                         <Card className="p-6 text-center flex flex-col justify-between">
+                            <div>
+                               <p className="text-body font-semibold">BEP (Break-Even Point)</p>
+                               <p className="text-2xl md:text-3xl mt-2 font-bold break-words">
+                                {isFinite(analysisResult.bepUnit) ? `${new Intl.NumberFormat('id-ID').format(Math.ceil(analysisResult.bepUnit))} unit` : 'N/A'}
+                                </p>
+                            </div>
+                            <p className="text-caption text-muted-foreground mt-2">Target penjualan bulanan untuk balik modal.</p>
+                        </Card>
                     </div>
                 <div className="grid md:grid-cols-2 gap-8 mt-8">
                         <Card>
@@ -888,8 +907,8 @@ export default function AnalystPage() {
                                     <TableBody>
                                     {analysisResult.pnlTable.map(item => (
                                         <TableRow key={item.item}>
-                                          <TableCell className={cn("w-[60%] py-3 px-2 md:px-4", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>{item.item}</TableCell>
-                                          <TableCell className={cn("w-[40%] text-right font-medium py-3 px-2 md:px-4 text-sm whitespace-nowrap", item.item === 'Untung Kotor' || item.item === 'Untung Bersih Bulanan' ? 'font-bold' : '')}>
+                                          <TableCell className={cn("w-[60%] py-3 px-2 md:px-4", item.item.includes('Untung') ? 'font-bold' : '')}>{item.item}</TableCell>
+                                          <TableCell className={cn("w-[40%] text-right font-medium py-3 px-2 md:px-4 text-sm whitespace-nowrap", item.item.includes('Untung') ? 'font-bold' : '')}>
                                               {renderFittableTableCellSimple(item.value, item.isNegative)}
                                           </TableCell>
                                         </TableRow>
@@ -921,7 +940,7 @@ export default function AnalystPage() {
                         <CardHeader className="p-0">
                             <CardTitle>Status Strategi Bisnismu</CardTitle>
                         </CardHeader>
-                        <CardContent className="p-0 mt-4">
+                        <CardContent className="p-0 mt-4 space-y-4">
                             {analysisResult.marketAnalysis.evaluation.includes("berisiko") || analysisResult.annualProfit < 0 ?
                                 (<Alert variant="destructive">
                                     <AlertTriangle className="h-4 w-4" />
@@ -934,6 +953,19 @@ export default function AnalystPage() {
                                     <AlertDescription>{analysisResult.marketAnalysis.keyConsiderations}</AlertDescription>
                                 </Alert>)
                             }
+                            {analysisResult.warnings && analysisResult.warnings.length > 0 && (
+                               <Alert variant="destructive" className="mt-4">
+                                  <AlertTriangle className="h-4 w-4" />
+                                  <AlertTitle>Perhatikan Poin Ini!</AlertTitle>
+                                  <AlertDescription>
+                                    <ul className="list-disc pl-5">
+                                      {analysisResult.warnings.map((warning, index) => (
+                                        <li key={index}>{warning}</li>
+                                      ))}
+                                    </ul>
+                                  </AlertDescription>
+                                </Alert>
+                            )}
                         </CardContent>
                     </Card>
 

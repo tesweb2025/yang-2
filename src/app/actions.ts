@@ -16,7 +16,6 @@ const formSchema = z.object({
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
   avgSalesPerMonth: z.coerce.number().min(1, "Target penjualan minimal 1 unit"),
   
-  costMode: z.enum(['budget', 'cac']).default('budget'),
   totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
   targetCAC: z.coerce.number().min(0, "CAC harus positif").optional().default(0),
 
@@ -25,16 +24,18 @@ const formSchema = z.object({
   usePromo: z.boolean().optional().default(false),
   useOtherChannels: z.boolean().optional().default(false),
 }).refine(data => {
-    if (data.costMode === 'budget') {
-        return data.totalMarketingBudget > 0;
+    // Ensure that either budget or CAC is provided, but not both. And at least one marketing strategy is selected.
+    const marketingStrategiesSelected = data.useVideoContent || data.useKOL || data.usePromo || data.useOtherChannels;
+    if (marketingStrategiesSelected) {
+        return data.totalMarketingBudget > 0 || data.targetCAC > 0;
     }
-    if (data.costMode === 'cac') {
-        return data.targetCAC > 0;
-    }
-    return true;
+    return true; // if no strategy is selected, we don't enforce this
 }, {
     message: "Biaya pemasaran harus diisi (tidak boleh nol)",
-    path: ["totalMarketingBudget"],
+    path: ["totalMarketingBudget"], // Point error to the first field
+}).refine(data => data.totalMarketingBudget === 0 || data.targetCAC === 0, {
+    message: "Hanya bisa memilih satu metode biaya: Budget atau CAC, tidak keduanya.",
+    path: ["targetCAC"], // Point error to the second field
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -48,7 +49,6 @@ export async function runAnalysis(data: FormData) {
     otherCostsPercentage, 
     fixedCostsPerMonth, 
     avgSalesPerMonth: targetUnits,
-    costMode,
     totalMarketingBudget: inputBudget,
     targetCAC,
     useVideoContent,
@@ -64,9 +64,9 @@ export async function runAnalysis(data: FormData) {
   if (useOtherChannels) selectedStrategies.push("Kanal Lainnya");
 
   // Determine the actual marketing budget used for calculation
-  const calculatedMarketingBudget = costMode === 'cac' 
-    ? (targetCAC || 0) * targetUnits 
-    : (inputBudget || 0);
+  const calculatedMarketingBudget = (inputBudget && inputBudget > 0)
+    ? inputBudget 
+    : (targetCAC || 0) * targetUnits;
   
   // Marketing Strategy Logic
   let effectivenessFactor = 1;

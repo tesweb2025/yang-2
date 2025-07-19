@@ -36,7 +36,6 @@ const formSchema = z.object({
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
   avgSalesPerMonth: z.coerce.number().min(1, "Target penjualan minimal 1 unit"),
   
-  costMode: z.enum(['budget', 'cac']).default('budget'),
   totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
   targetCAC: z.coerce.number().min(0, "CAC harus positif").optional().default(0),
 
@@ -45,16 +44,18 @@ const formSchema = z.object({
   usePromo: z.boolean().optional().default(false),
   useOtherChannels: z.boolean().optional().default(false),
 }).refine(data => {
-    if (data.costMode === 'budget') {
-        return data.totalMarketingBudget > 0;
+    // Ensure that either budget or CAC is provided, but not both. And at least one marketing strategy is selected.
+    const marketingStrategiesSelected = data.useVideoContent || data.useKOL || data.usePromo || data.useOtherChannels;
+    if (marketingStrategiesSelected) {
+        return data.totalMarketingBudget > 0 || data.targetCAC > 0;
     }
-    if (data.costMode === 'cac') {
-        return data.targetCAC > 0;
-    }
-    return true;
+    return true; // if no strategy is selected, we don't enforce this
 }, {
     message: "Biaya pemasaran harus diisi (tidak boleh nol)",
-    path: ["totalMarketingBudget"],
+    path: ["totalMarketingBudget"], // Point error to the first field
+}).refine(data => data.totalMarketingBudget === 0 || data.targetCAC === 0, {
+    message: "Hanya bisa memilih satu metode biaya: Budget atau CAC, tidak keduanya.",
+    path: ["targetCAC"], // Point error to the second field
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -244,7 +245,7 @@ const platformStrategyDescriptions = [
     }
 ];
 
-const NumericInput = ({ name, control, label, disabled = false, description }: { name: keyof FormData; control: any; label: string; disabled?: boolean, description?: string }) => {
+const NumericInput = ({ name, control, label, disabled = false, description, onValueChange }: { name: keyof FormData; control: any; label: string; disabled?: boolean, description?: string, onValueChange?: (value: number) => void }) => {
     return (
         <Controller
             name={name}
@@ -262,6 +263,9 @@ const NumericInput = ({ name, control, label, disabled = false, description }: {
                     
                     field.onChange(numericValue);
                     setDisplayValue(formatNumberInput(rawValue));
+                    if (onValueChange) {
+                        onValueChange(numericValue);
+                    }
                 };
 
                 return (
@@ -303,7 +307,6 @@ export default function AnalystPage() {
       otherCostsPercentage: 0,
       fixedCostsPerMonth: 0,
       avgSalesPerMonth: 0,
-      costMode: 'budget',
       totalMarketingBudget: 0,
       targetCAC: 0,
       useVideoContent: false,
@@ -316,14 +319,14 @@ export default function AnalystPage() {
   const watchedValues = form.watch();
   const { setValue } = form;
 
-  const { sellPrice, costOfGoods, otherCostsPercentage, fixedCostsPerMonth, totalMarketingBudget, useVideoContent, useKOL, usePromo, useOtherChannels, avgSalesPerMonth, costMode, targetCAC } = watchedValues;
+  const { sellPrice, costOfGoods, otherCostsPercentage, fixedCostsPerMonth, totalMarketingBudget, useVideoContent, useKOL, usePromo, useOtherChannels, avgSalesPerMonth, targetCAC } = watchedValues;
   
   const calculatedMarketingBudget = useMemo(() => {
-    if (costMode === 'cac') {
-      return (targetCAC || 0) * (avgSalesPerMonth || 0);
+    if (totalMarketingBudget && totalMarketingBudget > 0) {
+      return totalMarketingBudget;
     }
-    return totalMarketingBudget || 0;
-  }, [costMode, targetCAC, avgSalesPerMonth, totalMarketingBudget]);
+    return (targetCAC || 0) * (avgSalesPerMonth || 0);
+  }, [targetCAC, avgSalesPerMonth, totalMarketingBudget]);
 
   const calculations = useMemo(() => {
     const sp = sellPrice || 0;
@@ -404,7 +407,7 @@ export default function AnalystPage() {
       return;
     }
     
-    const finalBudget = data.costMode === 'cac' ? (data.targetCAC || 0) * (data.avgSalesPerMonth || 0) : (data.totalMarketingBudget || 0);
+    const finalBudget = (data.totalMarketingBudget && data.totalMarketingBudget > 0) ? data.totalMarketingBudget : (data.targetCAC || 0) * (data.avgSalesPerMonth || 0);
 
     if ((data.useVideoContent || data.useKOL || data.usePromo || data.useOtherChannels) && finalBudget === 0) {
         toast({
@@ -796,135 +799,126 @@ export default function AnalystPage() {
                 </Card>
             </section>
             
-            <section id="alokasi-bujet">
-                 <Card className="p-6 md:p-8">
-                    <CardHeader className="p-0 text-center mb-6">
-                        <CardTitle className="text-h3 font-medium">Strategic Marketing Allocation</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-0">
-                       <div className="mb-8 max-w-lg mx-auto grid grid-cols-1 gap-4 items-center">
-                            <FormField
-                                control={form.control}
-                                name="costMode"
-                                render={({ field }) => (
-                                    <Tabs
-                                        defaultValue={field.value}
-                                        onValueChange={(value) => {
-                                            field.onChange(value);
-                                            if (value === 'budget') {
-                                                setValue('targetCAC', 0);
-                                            } else {
-                                                setValue('totalMarketingBudget', 0);
-                                            }
-                                        }}
-                                        className="w-full"
-                                    >
-                                        <TabsList className="grid w-full grid-cols-2">
-                                            <TabsTrigger value="budget">Biaya Iklan (Budget)</TabsTrigger>
-                                            <TabsTrigger value="cac">Biaya Iklan (CAC)</TabsTrigger>
-                                        </TabsList>
-                                    </Tabs>
-                                )}
-                            />
-                            <NumericInput name="totalMarketingBudget" control={form.control} label="Total Budget Pemasaran" disabled={costMode === 'cac'} />
-                            <NumericInput name="targetCAC" control={form.control} label="Target CAC per Unit" disabled={costMode === 'budget'} />
-                        </div>
-                        
-                        {costMode === 'budget' && (
-                          <>
-                            <div className="grid md:grid-cols-2 gap-8 items-center">
-                                <div className="overflow-x-auto flex justify-center">
-                                    {budgetChartData.length > 0 ? (
-                                        <div className="w-full h-64">
-                                            <ChartContainer config={budgetChartConfig} className="h-full w-full">
-                                                <RechartsBarChart
-                                                    data={budgetChartData}
-                                                    margin={{ top: 20, right: 10, left: 10, bottom: 5 }}
-                                                >
-                                                    <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                                                    <XAxis
-                                                        dataKey="name"
-                                                        tickLine={false}
-                                                        axisLine={false}
-                                                        tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
-                                                    />
-                                                    <YAxis type="number" hide />
-                                                    <RechartsTooltip
-                                                        cursor={{ fill: 'hsl(var(--muted))' }}
-                                                        content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />}
-                                                    />
-                                                    <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                                                        {budgetChartData.map((entry, index) => (
-                                                            <Cell key={`cell-${index}`} fill={entry.fill} />
-                                                        ))}
-                                                         <LabelList
-                                                            dataKey="value"
-                                                            position="top"
-                                                            offset={8}
-                                                            className="fill-foreground font-medium"
-                                                            fontSize={12}
-                                                            formatter={(value: number) => {
-                                                                if (value === 0) return '';
-                                                                return formatCurrency(value);
-                                                            }}
-                                                        />
-                                                    </Bar>
-                                                </RechartsBarChart>
-                                            </ChartContainer>
-                                        </div>
-                                    ) : (
-                                        <div className="w-full h-64 flex items-center justify-center bg-muted/50 rounded-xl">
-                                          <p className="text-muted-foreground">Pilih strategi untuk melihat alokasi</p>
-                                        </div>
-                                    )}
-                                </div>
+            <section id="alokasi-bujet" className="space-y-8">
+                <div className="text-center">
+                    <h2 className="text-h2 font-semibold">Pendekatan Biaya Pemasaran</h2>
+                    <p className="text-subtitle text-muted-foreground mt-2 max-w-2xl mx-auto">Pilih salah satu metode: tentukan budget di awal (top-down), atau hitung budget berdasarkan target biaya per pelanggan (bottom-up).</p>
+                </div>
 
-                                <div className="space-y-4">
-                                    {marketingStrategies.map(strategy => (
-                                        <FormField
-                                            key={strategy.id}
-                                            control={form.control}
-                                            name={strategy.id}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                  <FormLabel htmlFor={strategy.id} className="flex items-center justify-between rounded-xl border p-3 cursor-pointer">
-                                                      <div className="flex items-center gap-3">
-                                                          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                          <span className="flex-1 font-medium">{strategy.title}</span>
-                                                      </div>
-                                                      <div className="flex items-center gap-4">
-                                                        <span className="font-medium text-sm w-28 text-right break-all">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
-                                                        <FormControl>
-                                                          <Switch
-                                                            id={strategy.id}
-                                                            checked={field.value}
-                                                            onCheckedChange={field.onChange}
-                                                          />
-                                                        </FormControl>
-                                                      </div>
-                                                  </FormLabel>
-                                                </FormItem>
-                                            )}
-                                        />
-                                    ))}
-                                </div>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Pendekatan 1: Alokasi Berbasis Budget (Top-Down)</CardTitle>
+                        <CardDescription>Tentukan total anggaran pemasaran bulanan Anda. Kami akan mengalokasikannya secara proporsional ke strategi yang Anda pilih.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <NumericInput 
+                            name="totalMarketingBudget" 
+                            control={form.control} 
+                            label="Total Budget Pemasaran Bulanan"
+                            onValueChange={(value) => {
+                                if (value > 0) {
+                                    setValue('targetCAC', 0, { shouldValidate: true });
+                                }
+                            }}
+                        />
+                         <div className="grid md:grid-cols-2 gap-8 items-center">
+                            <div className="overflow-x-auto flex justify-center">
+                                {budgetChartData.length > 0 ? (
+                                    <div className="w-full h-64">
+                                        <ChartContainer config={budgetChartConfig} className="h-full w-full">
+                                            <RechartsBarChart
+                                                data={budgetChartData}
+                                                margin={{ top: 20, right: 10, left: 10, bottom: 5 }}
+                                            >
+                                                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                                                <XAxis
+                                                    dataKey="name"
+                                                    tickLine={false}
+                                                    axisLine={false}
+                                                    tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
+                                                />
+                                                <YAxis type="number" hide />
+                                                <RechartsTooltip
+                                                    cursor={{ fill: 'hsl(var(--muted))' }}
+                                                    content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />}
+                                                />
+                                                <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                                                    {budgetChartData.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                                                    ))}
+                                                        <LabelList
+                                                        dataKey="value"
+                                                        position="top"
+                                                        offset={8}
+                                                        className="fill-foreground font-medium"
+                                                        fontSize={12}
+                                                        formatter={(value: number) => {
+                                                            if (value === 0) return '';
+                                                            return formatCurrency(value);
+                                                        }}
+                                                    />
+                                                </Bar>
+                                            </RechartsBarChart>
+                                        </ChartContainer>
+                                    </div>
+                                ) : (
+                                    <div className="w-full h-64 flex items-center justify-center bg-muted/50 rounded-xl">
+                                        <p className="text-muted-foreground">Pilih strategi untuk melihat alokasi</p>
+                                    </div>
+                                )}
                             </div>
 
-                            <p className="text-center text-muted-foreground text-caption pt-4">
-                               Bujet dibagi secara proporsional berdasarkan strategi yang aktif.
-                            </p>
-                          </>
-                        )}
+                            <div className="space-y-4">
+                                {marketingStrategies.map(strategy => (
+                                    <div key={strategy.id} className="flex items-center justify-between rounded-xl border p-3">
+                                        <div className="flex items-center gap-3">
+                                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
+                                            <span className="flex-1 font-medium">{strategy.title}</span>
+                                        </div>
+                                        <span className="font-medium text-sm w-28 text-right break-all">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <p className="text-center text-muted-foreground text-caption pt-4">
+                            Bujet dibagi secara proporsional berdasarkan dampak potensial dari setiap strategi yang aktif.
+                        </p>
                     </CardContent>
-                    <div className="border-t -mx-8 my-8"></div>
-                    <div className="flex justify-center">
-                        {!isLoading && (
-                            <Button type="submit" className="h-14 text-lg rounded-full px-10" disabled={isLoading}>
-                                <Zap className="mr-2 h-5 w-5" /> Petakan Sekarang
-                            </Button>
-                        )}
-                    </div>
                 </Card>
+
+                <div className="relative text-center">
+                    <Separator />
+                    <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-background px-4 font-semibold text-muted-foreground">ATAU</span>
+                </div>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Pendekatan 2: Alokasi Berbasis Target Kinerja (Bottom-Up)</CardTitle>
+                        <CardDescription>Tentukan berapa biaya maksimal yang Anda rela keluarkan untuk mendapatkan satu pelanggan (Customer Acquisition Cost/CAC). Total budget akan dihitung otomatis berdasarkan target penjualan Anda.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <NumericInput 
+                            name="targetCAC" 
+                            control={form.control} 
+                            label="Target Biaya Akuisisi per Unit (CAC)"
+                            onValueChange={(value) => {
+                                if (value > 0) {
+                                    setValue('totalMarketingBudget', 0, { shouldValidate: true });
+                                }
+                            }}
+                        />
+                    </CardContent>
+                </Card>
+                
+                <div className="border-t -mx-8 my-8"></div>
+                <div className="flex justify-center pt-4">
+                    {!isLoading && (
+                        <Button type="submit" className="h-14 text-lg rounded-full px-10" disabled={isLoading}>
+                            <Zap className="mr-2 h-5 w-5" /> Petakan Sekarang
+                        </Button>
+                    )}
+                </div>
             </section>
           </form>
         </Form>

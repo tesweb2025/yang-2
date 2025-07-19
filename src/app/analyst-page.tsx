@@ -842,9 +842,11 @@ export default function AnalystPage() {
                         </p>
                     </CardContent>
                     <div className="border-t -mx-8 my-8"></div>
-                    <Button type="submit" className="w-full h-14 text-lg rounded-full" disabled={isLoading}>
-                       {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : '🎯 Petakan Sekarang'}
-                    </Button>
+                    <div className="flex justify-center">
+                        <Button type="submit" className="h-14 text-lg rounded-full px-10" disabled={isLoading}>
+                           {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <><Zap className="mr-2 h-5 w-5" /> Petakan Sekarang</>}
+                        </Button>
+                    </div>
                 </Card>
             </section>
           </form>
@@ -991,7 +993,7 @@ export default function AnalystPage() {
         </div>
       </main>
       <footer className="text-center text-sm text-muted-foreground mt-20 py-8 border-t">
-        <p>Laporan ini disusun berdasarkan analisis dan proyeksi dari data publik.Gunakan petakan.ai sebagai alat bantu strategis.</p>
+        <p>Laporan ini disusun berdasarkan analisis dan proyeksi dari data publik. Gunakan petakan.ai sebagai alat bantu strategis.</p>
         <p className="mt-2">© 2025 Dibuat oleh RizkyFadil.</p>
       </footer>
     </div>

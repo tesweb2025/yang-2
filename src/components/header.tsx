@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle 
 import Link from 'next/link';
 import { useState } from 'react';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 const navLinks = [
     { href: '/#wawasan-pasar', label: 'Wawasan Pasar' },
@@ -21,13 +22,13 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center max-w-7xl">
         <div className="mr-4 flex">
-          <Link className="flex items-center space-x-2" href="/">
+          <Link className="flex items-center gap-x-1.5" href="/">
             <Image 
               src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/ee3935807a4b4acf1e4ed22754edc5e764e916ab/petakanai%20icon.png"
               alt="Petakan.ai logo"
-              width={24}
-              height={24}
-              className="h-6 w-6"
+              width={28}
+              height={28}
+              className="h-7 w-7"
             />
             <span className="font-bold text-lg">Petakan.ai</span>
           </Link>
@@ -49,7 +50,18 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                 <SheetHeader>
-                  <SheetTitle className="sr-only">Menu Navigasi</SheetTitle>
+                  <SheetTitle>
+                    <Link className="flex items-center gap-x-1.5" href="/" onClick={() => setIsOpen(false)}>
+                        <Image 
+                          src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/ee3935807a4b4acf1e4ed22754edc5e764e916ab/petakanai%20icon.png"
+                          alt="Petakan.ai logo"
+                          width={28}
+                          height={28}
+                          className="h-7 w-7"
+                        />
+                        <span className="font-bold text-lg">Petakan.ai</span>
+                      </Link>
+                  </SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col gap-4 mt-8">
                     {navLinks.map(link => (

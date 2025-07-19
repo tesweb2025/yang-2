@@ -12,17 +12,16 @@ const navLinks = [
     { href: '/#wawasan-pasar', label: 'Wawasan Pasar' },
     { href: '/#pangsa-pasar', label: 'Pangsa Pasar' },
     { href: '/#cek-strategi', label: 'Simulasi' },
-    { href: '/#hasil-simulasi', label: 'Hasil AI' },
     { href: '/about', label: 'About' },
 ];
 
 export function Header() {
     const [isOpen, setIsOpen] = useState(false);
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center max-w-7xl">
-        <div className="flex-1 flex items-center">
-          <Link className="mr-6 flex items-center space-x-2" href="/">
+        <div className="mr-4 flex">
+          <Link className="flex items-center space-x-2" href="/">
             <Image 
               src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/ee3935807a4b4acf1e4ed22754edc5e764e916ab/petakanai%20icon.png"
               alt="Petakan.ai logo"
@@ -34,15 +33,21 @@ export function Header() {
           </Link>
         </div>
         
-        <div className="flex items-center justify-end space-x-2">
+        <nav className="hidden md:flex items-center gap-6 text-sm">
+             {navLinks.map(link => (
+                <Link key={link.href} href={link.href} className="font-medium text-muted-foreground transition-colors hover:text-foreground">{link.label}</Link>
+             ))}
+        </nav>
+
+        <div className="flex flex-1 items-center justify-end space-x-2">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="md:hidden">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Buka Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px]">
+            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                 <SheetHeader>
                   <SheetTitle className="sr-only">Menu Navigasi</SheetTitle>
                 </SheetHeader>

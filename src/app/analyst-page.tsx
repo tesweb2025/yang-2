@@ -612,7 +612,7 @@ export default function AnalystPage() {
                   </div>
                   
                   <div className="space-y-2 pt-2">
-                    <h3 className="font-medium text-sm">Pilih Strategi Pemasaran (min. 1)</h3>
+                    <h3 className="font-medium text-sm">Pilih Strategi Pemasaran</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {marketingStrategies.map((strategy) => (
                         <FormField

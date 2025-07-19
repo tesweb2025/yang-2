@@ -100,7 +100,7 @@ export async function runAnalysis(data: FormData) {
     { item: 'Modal Produk (HPP)', value: monthlyCostOfGoods, isNegative: true },
     { item: 'Untung Kotor', value: grossProfit, isNegative: grossProfit < 0 },
     { item: 'Biaya Variabel Lainnya', value: monthlyOtherVariableCosts, isNegative: true },
-    { item: 'Biaya Tetap', value: fixedCostsPerMonth, isNegative: true },
+    { item: 'Biaya Tetap Bulanan', value: fixedCostsPerMonth, isNegative: true },
     { item: 'Biaya Pemasaran (Bujet)', value: totalMarketingBudget, isNegative: true },
     { item: 'Untung Bersih Bulanan', value: monthlyProfit, isNegative: monthlyProfit < 0 },
   ];
@@ -109,9 +109,10 @@ export async function runAnalysis(data: FormData) {
 
   const cashflowTable = [
     { item: 'Duit Masuk dari Penjualan', value: monthlyRevenue, isNegative: false },
-    { item: 'Duit Keluar buat Modal (HPP)', value: monthlyCostOfGoods, isNegative: true },
-    { item: 'Duit Keluar buat Biaya Tetap & Lainnya', value: fixedCostsPerMonth + monthlyOtherVariableCosts, isNegative: true },
-    { item: 'Duit Keluar buat Bujet Pemasaran', value: totalMarketingBudget, isNegative: true },
+    { item: 'Duit Keluar: Modal Produk (HPP)', value: monthlyCostOfGoods, isNegative: true },
+    { item: 'Duit Keluar: Biaya Variabel Lain', value: monthlyOtherVariableCosts, isNegative: true },
+    { item: 'Duit Keluar: Biaya Tetap', value: fixedCostsPerMonth, isNegative: true },
+    { item: 'Duit Keluar: Bujet Pemasaran', value: totalMarketingBudget, isNegative: true },
     { item: 'Arus Kas Bersih', value: netCashFlow, isNegative: netCashFlow < 0 },
   ];
   

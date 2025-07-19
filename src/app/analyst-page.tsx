@@ -367,6 +367,24 @@ export default function AnalystPage() {
       });
       return;
     }
+    
+    if (data.costOfGoods >= data.sellPrice) {
+      toast({
+        variant: "destructive",
+        title: "Validasi Gagal",
+        description: "Modal Produk (HPP) harus lebih rendah dari Harga Jual.",
+      });
+      return;
+    }
+    
+    if ((data.useVideoContent || data.useKOL || data.usePromo || data.useOtherChannels) && data.totalMarketingBudget === 0) {
+        toast({
+            variant: "destructive",
+            title: "Peringatan Logika",
+            description: "Strategi pemasaran aktif tapi bujet nol. Hasil simulasi mungkin tidak akurat.",
+        });
+    }
+
 
     setIsLoading(true);
     setAnalysisResult(null);
@@ -401,13 +419,13 @@ export default function AnalystPage() {
     const displayValue = formatCurrency(value);
     return (
         <span className={cn('break-all', isNegative ? 'text-destructive' : 'text-foreground')}>
-            {isNegative ? `- ${displayValue}`: displayValue}
+            {isNegative ? `- ${displayValue.replace('Rp', '').trim()}`: displayValue}
         </span>
     );
   };
 
   const renderFittableTableCell = (value: number, isNegative = false, addSign = false) => {
-    const displayValue = formatCurrency(value);
+    const displayValue = formatCurrency(Math.abs(value));
     const prefix = addSign ? (isNegative ? '− ' : '+ ') : (isNegative ? '− ' : '');
     const finalDisplayValue = prefix + displayValue.replace('Rp', '').trim();
     return (

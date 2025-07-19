@@ -66,7 +66,7 @@ const marketingStrategies = [
         channel: "Video & Ads",
         color: "hsl(var(--chart-1))",
         icon: Video,
-        percentage: 0.479
+        percentage: 0.489
     },
     {
         id: 'useKOL' as const,
@@ -75,7 +75,7 @@ const marketingStrategies = [
         channel: "KOL",
         color: "hsl(var(--chart-2))",
         icon: Users,
-        percentage: 0.394
+        percentage: 0.414
     },
     {
         id: 'usePromo' as const,
@@ -84,7 +84,7 @@ const marketingStrategies = [
         channel: "Promo",
         color: "hsl(var(--chart-3))",
         icon: Receipt,
-        percentage: 0.0635
+        percentage: 0.0835
     },
     {
         id: 'useOtherChannels' as const,
@@ -93,7 +93,7 @@ const marketingStrategies = [
         channel: "Lainnya",
         color: "hsl(var(--chart-4))",
         icon: Share2,
-        percentage: 0.0635
+        percentage: 0.0135
     }
 ];
 

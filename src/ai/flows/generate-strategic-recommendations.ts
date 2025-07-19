@@ -18,7 +18,7 @@ const StrategicRecommendationsInputSchema = z.object({
   selectedMarketingStrategies: z.array(z.string()).describe('List of marketing strategies selected by the user.'),
   monthlyProfitAndLossStatement: z.string().describe('The monthly profit and loss statement.'),
   monthlyCashFlowSimulation: z.string().describe('The monthly cash flow simulation.'),
-  initialMarketingBudget: z.number().describe('The initial marketing budget.'),
+  calculatedMarketingBudget: z.number().describe('The calculated monthly marketing budget.'),
   annualProfitProjection: z.number().describe('The projected annual profit.'),
   roas: z.number().describe('The Return on Ad Spend (ROAS).'),
   warnings: z.array(z.string()).describe('A list of logical warnings based on user input, e.g., BEP > Target Sales.'),
@@ -45,7 +45,7 @@ Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi b
 - Nama Produk: ${validatedInput.productName}
 - Target Pasar: ${validatedInput.targetSegmentation}
 - Strategi Pemasaran Pilihan: ${validatedInput.selectedMarketingStrategies.join(', ')}
-- Bujet Pemasaran: Rp ${validatedInput.initialMarketingBudget.toLocaleString('id-ID')}
+- Bujet Pemasaran: Rp ${validatedInput.calculatedMarketingBudget.toLocaleString('id-ID')}
 
 **Hasil Simulasi Keuangan & Peringatan:**
 - Proyeksi Untung Tahunan: Rp ${validatedInput.annualProfitProjection.toLocaleString('id-ID')}

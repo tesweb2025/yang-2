@@ -62,13 +62,13 @@ export async function runAnalysis(data: FormData) {
   if (useOtherChannels) selectedStrategies.push("Kanal Lainnya");
 
   // Determine the actual marketing budget used for calculation
-  const totalMarketingBudget = costMode === 'cac' 
+  const calculatedMarketingBudget = costMode === 'cac' 
     ? (targetCAC || 0) * targetUnits 
     : (inputBudget || 0);
   
   // Marketing Strategy Logic
   let effectivenessFactor = 1;
-  const hasMarketingSpend = totalMarketingBudget > 0;
+  const hasMarketingSpend = calculatedMarketingBudget > 0;
   
   if (hasMarketingSpend) {
     if (useVideoContent) effectivenessFactor += 0.8;
@@ -88,26 +88,26 @@ export async function runAnalysis(data: FormData) {
   
   const totalVariableCosts = monthlyCostOfGoods + monthlyOtherVariableCosts;
   
-  const totalMonthlyCosts = totalVariableCosts + fixedCostsPerMonth + totalMarketingBudget;
+  const totalMonthlyCosts = totalVariableCosts + fixedCostsPerMonth + calculatedMarketingBudget;
   
   const monthlyProfit = monthlyRevenue - totalMonthlyCosts;
   const annualProfit = monthlyProfit * 12;
 
   // ROAS Calculation
-  const roas = totalMarketingBudget > 0 ? monthlyRevenue / totalMarketingBudget : 0;
+  const roas = calculatedMarketingBudget > 0 ? monthlyRevenue / calculatedMarketingBudget : 0;
   
   // BEP Calculation
   const profitPerUnitExcludingMarketing = sellPrice - costOfGoods - (sellPrice * (otherCostsPercentage / 100));
   const bepUnit = profitPerUnitExcludingMarketing > 0 
-    ? Math.ceil((fixedCostsPerMonth + totalMarketingBudget) / profitPerUnitExcludingMarketing) 
+    ? Math.ceil((fixedCostsPerMonth + calculatedMarketingBudget) / profitPerUnitExcludingMarketing) 
     : Infinity;
 
   // --- WARNINGS ---
   const warnings = [];
-  if ((useVideoContent || useKOL || usePromo || useOtherChannels) && totalMarketingBudget === 0) {
+  if ((useVideoContent || useKOL || usePromo || useOtherChannels) && calculatedMarketingBudget === 0) {
     warnings.push("Strategi pemasaran diaktifkan tapi bujet pemasaran nol. Hasil simulasi mungkin tidak akurat karena tidak ada biaya iklan yang dihitung.");
   }
-  if (totalMarketingBudget > 0 && roas < 1) {
+  if (calculatedMarketingBudget > 0 && roas < 1) {
     warnings.push("Iklan kamu belum balik modal (ROAS < 1). Perlu evaluasi konten atau targeting iklan.");
   }
   if (isFinite(bepUnit) && bepUnit > soldUnits) {
@@ -123,11 +123,11 @@ export async function runAnalysis(data: FormData) {
     { item: 'Untung Kotor', value: grossProfit, isNegative: grossProfit < 0 },
     { item: 'Biaya Variabel Lainnya', value: monthlyOtherVariableCosts, isNegative: true },
     { item: 'Biaya Tetap Bulanan', value: fixedCostsPerMonth, isNegative: true },
-    { item: 'Biaya Pemasaran (Bujet)', value: totalMarketingBudget, isNegative: true },
+    { item: 'Biaya Pemasaran (Bujet)', value: calculatedMarketingBudget, isNegative: true },
     { item: 'Untung Bersih Bulanan', value: monthlyProfit, isNegative: monthlyProfit < 0 },
   ];
 
-  const netCashFlow = monthlyRevenue - (monthlyCostOfGoods + monthlyOtherVariableCosts + fixedCostsPerMonth + totalMarketingBudget);
+  const netCashFlow = monthlyRevenue - (monthlyCostOfGoods + monthlyOtherVariableCosts + fixedCostsPerMonth + calculatedMarketingBudget);
 
   const cashflowTable = [
     { item: 'Duit Masuk dari Penjualan', value: monthlyRevenue, isNegative: false },
@@ -135,7 +135,7 @@ export async function runAnalysis(data: FormData) {
     { item: 'Untung Kotor (Non-operasional)', value: grossProfit, isNegative: grossProfit < 0, isPlaceholder: true },
     { item: 'Duit Keluar: Biaya Variabel Lain', value: monthlyOtherVariableCosts, isNegative: true },
     { item: 'Duit Keluar: Biaya Tetap', value: fixedCostsPerMonth, isNegative: true },
-    { item: 'Duit Keluar: Bujet Pemasaran', value: totalMarketingBudget, isNegative: true },
+    { item: 'Duit Keluar: Bujet Pemasaran', value: calculatedMarketingBudget, isNegative: true },
     { item: 'Arus Kas Bersih', value: netCashFlow, isNegative: netCashFlow < 0 },
   ];
   
@@ -148,14 +148,14 @@ export async function runAnalysis(data: FormData) {
     analyzeMarketEntry({
         productName: validatedData.productName,
         targetSegment: validatedData.targetSegment,
-        initialMarketingBudget: totalMarketingBudget,
+        calculatedMarketingBudget,
         financialForecastSummary,
         marketConditionSummary
     }),
     generateStrategicRecommendations({
         productName: validatedData.productName,
         targetSegmentation: validatedData.targetSegment,
-        initialMarketingBudget: totalMarketingBudget,
+        calculatedMarketingBudget,
         selectedMarketingStrategies: selectedStrategies,
         annualProfitProjection: annualProfit,
         roas,
@@ -177,6 +177,6 @@ export async function runAnalysis(data: FormData) {
     warnings,
     soldUnits,
     targetUnits,
-    calculatedMarketingBudget: totalMarketingBudget
+    calculatedMarketingBudget,
   };
 }

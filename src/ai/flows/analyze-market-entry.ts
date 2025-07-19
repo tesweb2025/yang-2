@@ -14,9 +14,9 @@ import { generativeModel } from '@/ai/genkit';
 const AnalyzeMarketEntryInputSchema = z.object({
   productName: z.string().describe('The name of the product or business.'),
   targetSegment: z.string().describe('The main target segment for the product.'),
-  initialMarketingBudget: z
+  calculatedMarketingBudget: z
     .number()
-    .describe('The initial marketing budget in Indonesian Rupiah (Rp).'),
+    .describe('The calculated monthly marketing budget in Indonesian Rupiah (Rp).'),
   financialForecastSummary: z
     .string()
     .describe('A summary of the financial forecast, including projected revenue, profit, and cash flow. Contains key metrics like ROAS and BEP.'),

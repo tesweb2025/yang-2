@@ -683,7 +683,7 @@ export default function AnalystPage() {
                                 <FormLabel
                                   htmlFor={strategy.id}
                                   className={cn(
-                                    "block p-4 rounded-xl border transition-all cursor-pointer",
+                                    "block p-4 rounded-xl border transition-all cursor-pointer h-full",
                                     field.value
                                       ? "bg-primary text-primary-foreground border-primary"
                                       : "bg-muted/30 hover:bg-muted/60"
@@ -1070,3 +1070,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

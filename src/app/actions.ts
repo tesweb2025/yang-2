@@ -63,8 +63,8 @@ export async function runAnalysis(data: FormData) {
 
   // Determine the actual marketing budget used for calculation
   const totalMarketingBudget = costMode === 'cac' 
-    ? targetCAC * targetUnits 
-    : inputBudget;
+    ? (targetCAC || 0) * targetUnits 
+    : (inputBudget || 0);
   
   // Marketing Strategy Logic
   let effectivenessFactor = 1;
@@ -87,10 +87,8 @@ export async function runAnalysis(data: FormData) {
   const monthlyOtherVariableCosts = monthlyRevenue * (otherCostsPercentage / 100);
   
   const totalVariableCosts = monthlyCostOfGoods + monthlyOtherVariableCosts;
-  const totalMonthlyOperatingCosts = totalVariableCosts + fixedCostsPerMonth;
   
-  // The single source of truth for total costs now correctly includes the marketing budget
-  const totalMonthlyCosts = totalMonthlyOperatingCosts + totalMarketingBudget;
+  const totalMonthlyCosts = totalVariableCosts + fixedCostsPerMonth + totalMarketingBudget;
   
   const monthlyProfit = monthlyRevenue - totalMonthlyCosts;
   const annualProfit = monthlyProfit * 12;
@@ -98,7 +96,7 @@ export async function runAnalysis(data: FormData) {
   // ROAS Calculation
   const roas = totalMarketingBudget > 0 ? monthlyRevenue / totalMarketingBudget : 0;
   
-  // BEP Calculation - now correctly includes totalMarketingBudget
+  // BEP Calculation
   const profitPerUnitExcludingMarketing = sellPrice - costOfGoods - (sellPrice * (otherCostsPercentage / 100));
   const bepUnit = profitPerUnitExcludingMarketing > 0 
     ? Math.ceil((fixedCostsPerMonth + totalMarketingBudget) / profitPerUnitExcludingMarketing) 
@@ -129,11 +127,12 @@ export async function runAnalysis(data: FormData) {
     { item: 'Untung Bersih Bulanan', value: monthlyProfit, isNegative: monthlyProfit < 0 },
   ];
 
-  const netCashFlow = monthlyRevenue - totalMonthlyCosts;
+  const netCashFlow = monthlyRevenue - (monthlyCostOfGoods + monthlyOtherVariableCosts + fixedCostsPerMonth + totalMarketingBudget);
 
   const cashflowTable = [
     { item: 'Duit Masuk dari Penjualan', value: monthlyRevenue, isNegative: false },
     { item: 'Duit Keluar: Modal Produk (HPP)', value: monthlyCostOfGoods, isNegative: true },
+    { item: 'Untung Kotor (Non-operasional)', value: grossProfit, isNegative: grossProfit < 0, isPlaceholder: true },
     { item: 'Duit Keluar: Biaya Variabel Lain', value: monthlyOtherVariableCosts, isNegative: true },
     { item: 'Duit Keluar: Biaya Tetap', value: fixedCostsPerMonth, isNegative: true },
     { item: 'Duit Keluar: Bujet Pemasaran', value: totalMarketingBudget, isNegative: true },

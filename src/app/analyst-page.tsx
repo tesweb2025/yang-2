@@ -989,10 +989,10 @@ export default function AnalystPage() {
                                 <Table>
                                     <TableBody>
                                     {analysisResult.cashflowTable.map((row, index) => (
-                                        <TableRow key={index}>
+                                        <TableRow key={index} className={cn(row.isPlaceholder && 'text-muted-foreground opacity-60')}>
                                             <TableCell className={cn("w-[60%] py-3 px-2 md:px-4", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>{row.item}</TableCell>
                                             <TableCell className={cn("w-[40%] text-right font-medium py-3 px-2 md:px-4 text-sm whitespace-nowrap", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>
-                                            {renderFittableTableCell(row.value, row.isNegative, true)}
+                                            {renderFittableTableCell(row.value, row.isNegative, row.item !== 'Arus Kas Bersih')}
                                             </TableCell>
                                         </TableRow>
                                     ))}

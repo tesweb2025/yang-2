@@ -793,7 +793,7 @@ export default function AnalystPage() {
                         <CardTitle className="text-h3 font-medium">Strategic Marketing Allocation</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
-                       <div className="mb-8 max-w-lg mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                       <div className="mb-8 max-w-lg mx-auto grid grid-cols-1 gap-4 items-center">
                             <FormField
                                 control={form.control}
                                 name="costMode"
@@ -808,7 +808,7 @@ export default function AnalystPage() {
                                                 setValue('totalMarketingBudget', 0);
                                             }
                                         }}
-                                        className="w-full col-span-1 md:col-span-2"
+                                        className="w-full"
                                     >
                                         <TabsList className="grid w-full grid-cols-2">
                                             <TabsTrigger value="budget">Biaya Iklan (Budget)</TabsTrigger>

@@ -9,7 +9,8 @@ export default function AboutPage() {
       <main className="container mx-auto max-w-3xl px-4 py-12">
         <div className="space-y-8">
           <div className="space-y-2 text-center">
-            <h1 className="text-h1 font-bold">Lahir dari Strategi yang Salah.</h1>
+            <h1 className="text-h1 font-bold">Petakan.ai</h1>
+            <p className="text-subtitle text-muted-foreground">Lahir dari Strategi yang Salah.</p>
           </div>
 
           <Card>

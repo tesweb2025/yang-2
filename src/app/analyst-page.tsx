@@ -35,11 +35,23 @@ const formSchema = z.object({
   otherCostsPercentage: z.coerce.number().min(0).max(100).optional().default(0),
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
   avgSalesPerMonth: z.coerce.number().min(1, "Target penjualan minimal 1 unit"),
+  
+  costMode: z.enum(['budget', 'cac']).default('budget'),
   totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
+  targetCAC: z.coerce.number().min(0, "CAC harus positif").optional().default(0),
+
   useVideoContent: z.boolean().optional().default(false),
   useKOL: z.boolean().optional().default(false),
   usePromo: z.boolean().optional().default(false),
   useOtherChannels: z.boolean().optional().default(false),
+}).refine(data => {
+    if (data.costMode === 'budget') {
+        return data.totalMarketingBudget >= 0;
+    }
+    return data.targetCAC >= 0;
+}, {
+    message: "Biaya pemasaran harus diisi",
+    path: ["totalMarketingBudget"],
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -55,6 +67,7 @@ type AnalysisResult = {
   warnings: string[];
   soldUnits: number;
   targetUnits: number;
+  calculatedMarketingBudget: number;
 };
 
 const marketingStrategies = [
@@ -228,7 +241,7 @@ const platformStrategyDescriptions = [
     }
 ];
 
-const NumericInput = ({ name, control, label }: { name: keyof FormData; control: any; label: string }) => {
+const NumericInput = ({ name, control, label, disabled = false }: { name: keyof FormData; control: any; label: string; disabled?: boolean }) => {
     return (
         <Controller
             name={name}
@@ -258,6 +271,7 @@ const NumericInput = ({ name, control, label }: { name: keyof FormData; control:
                                 value={displayValue}
                                 onChange={handleChange}
                                 onBlur={field.onBlur}
+                                disabled={disabled}
                             />
                         </FormControl>
                         <FormMessage>{fieldState.error?.message}</FormMessage>
@@ -285,7 +299,9 @@ export default function AnalystPage() {
       otherCostsPercentage: 0,
       fixedCostsPerMonth: 0,
       avgSalesPerMonth: 0,
+      costMode: 'budget',
       totalMarketingBudget: 0,
+      targetCAC: 0,
       useVideoContent: false,
       useKOL: false,
       usePromo: false,
@@ -294,24 +310,31 @@ export default function AnalystPage() {
   });
 
   const watchedValues = form.watch();
+  const { setValue } = form;
 
-  const { sellPrice, costOfGoods, otherCostsPercentage, fixedCostsPerMonth, totalMarketingBudget, useVideoContent, useKOL, usePromo, useOtherChannels } = watchedValues;
+  const { sellPrice, costOfGoods, otherCostsPercentage, fixedCostsPerMonth, totalMarketingBudget, useVideoContent, useKOL, usePromo, useOtherChannels, avgSalesPerMonth, costMode, targetCAC } = watchedValues;
+  
+  const calculatedMarketingBudget = useMemo(() => {
+    if (costMode === 'cac') {
+      return (targetCAC || 0) * (avgSalesPerMonth || 0);
+    }
+    return totalMarketingBudget || 0;
+  }, [costMode, targetCAC, avgSalesPerMonth, totalMarketingBudget]);
 
   const calculations = useMemo(() => {
     const sp = sellPrice || 0;
     const cogs = costOfGoods || 0;
     const ocp = otherCostsPercentage || 0;
     const fcm = fixedCostsPerMonth || 0;
-    const tmb = totalMarketingBudget || 0;
 
     const profitPerUnitExcludingMarketing = sp - cogs - (sp * ocp / 100);
-    const bepUnit = profitPerUnitExcludingMarketing > 0 ? (fcm + tmb) / profitPerUnitExcludingMarketing : Infinity;
+    const bepUnit = profitPerUnitExcludingMarketing > 0 ? (fcm + calculatedMarketingBudget) / profitPerUnitExcludingMarketing : Infinity;
     
     return { profitPerUnitExcludingMarketing, bepUnit };
-  }, [sellPrice, costOfGoods, otherCostsPercentage, fixedCostsPerMonth, totalMarketingBudget]);
+  }, [sellPrice, costOfGoods, otherCostsPercentage, fixedCostsPerMonth, calculatedMarketingBudget]);
 
   const budgetAllocations = useMemo(() => {
-    const budget = totalMarketingBudget || 0;
+    const budget = calculatedMarketingBudget || 0;
     const activeStrategies = marketingStrategies.filter(s => {
         if (s.id === 'useVideoContent') return useVideoContent;
         if (s.id === 'useKOL') return useKOL;
@@ -339,7 +362,7 @@ export default function AnalystPage() {
     }
     
     return allocations;
-  }, [totalMarketingBudget, useVideoContent, useKOL, usePromo, useOtherChannels]);
+  }, [calculatedMarketingBudget, useVideoContent, useKOL, usePromo, useOtherChannels]);
 
   const budgetChartData = useMemo(() => {
     return marketingStrategies
@@ -377,14 +400,15 @@ export default function AnalystPage() {
       return;
     }
     
-    if ((data.useVideoContent || data.useKOL || data.usePromo || data.useOtherChannels) && data.totalMarketingBudget === 0) {
+    const finalBudget = data.costMode === 'cac' ? (data.targetCAC || 0) * (data.avgSalesPerMonth || 0) : (data.totalMarketingBudget || 0);
+
+    if ((data.useVideoContent || data.useKOL || data.usePromo || data.useOtherChannels) && finalBudget === 0) {
         toast({
             variant: "destructive",
             title: "Peringatan Logika",
             description: "Strategi pemasaran aktif tapi bujet nol. Hasil simulasi mungkin tidak akurat.",
         });
     }
-
 
     setIsLoading(true);
     setAnalysisResult(null);
@@ -769,8 +793,32 @@ export default function AnalystPage() {
                         <CardTitle className="text-h3 font-medium">Strategic Marketing Allocation</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
-                       <div className="mb-8 max-w-sm mx-auto">
-                           <NumericInput name="totalMarketingBudget" control={form.control} label="Total Budget Pemasaran"/>
+                       <div className="mb-8 max-w-lg mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                            <FormField
+                                control={form.control}
+                                name="costMode"
+                                render={({ field }) => (
+                                    <Tabs
+                                        defaultValue={field.value}
+                                        onValueChange={(value) => {
+                                            field.onChange(value);
+                                            if (value === 'budget') {
+                                                setValue('targetCAC', 0);
+                                            } else {
+                                                setValue('totalMarketingBudget', 0);
+                                            }
+                                        }}
+                                        className="w-full col-span-1 md:col-span-2"
+                                    >
+                                        <TabsList className="grid w-full grid-cols-2">
+                                            <TabsTrigger value="budget">Hitung dari Bujet</TabsTrigger>
+                                            <TabsTrigger value="cac">Hitung dari CAC</TabsTrigger>
+                                        </TabsList>
+                                    </Tabs>
+                                )}
+                            />
+                            <NumericInput name="totalMarketingBudget" control={form.control} label="Total Budget Pemasaran" disabled={costMode === 'cac'} />
+                            <NumericInput name="targetCAC" control={form.control} label="Target CAC per Unit" disabled={costMode === 'budget'} />
                         </div>
                         
                         <div className="grid md:grid-cols-2 gap-8 items-center">

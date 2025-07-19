@@ -15,11 +15,24 @@ const formSchema = z.object({
   otherCostsPercentage: z.coerce.number().min(0).max(100).optional().default(0),
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
   avgSalesPerMonth: z.coerce.number().min(1, "Target penjualan minimal 1 unit"),
+  
+  // Logic for one-of budget or CAC
+  costMode: z.enum(['budget', 'cac']).default('budget'),
   totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
+  targetCAC: z.coerce.number().min(0, "CAC harus positif").optional().default(0),
+
   useVideoContent: z.boolean().optional().default(false),
   useKOL: z.boolean().optional().default(false),
   usePromo: z.boolean().optional().default(false),
   useOtherChannels: z.boolean().optional().default(false),
+}).refine(data => {
+    if (data.costMode === 'budget') {
+        return data.totalMarketingBudget >= 0;
+    }
+    return data.targetCAC >= 0;
+}, {
+    message: "Biaya pemasaran harus diisi",
+    path: ["totalMarketingBudget"],
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -33,7 +46,9 @@ export async function runAnalysis(data: FormData) {
     otherCostsPercentage, 
     fixedCostsPerMonth, 
     avgSalesPerMonth: targetUnits,
-    totalMarketingBudget,
+    costMode,
+    totalMarketingBudget: inputBudget,
+    targetCAC,
     useVideoContent,
     useKOL,
     usePromo,
@@ -46,6 +61,11 @@ export async function runAnalysis(data: FormData) {
   if (usePromo) selectedStrategies.push("Promosi & Diskon");
   if (useOtherChannels) selectedStrategies.push("Kanal Lainnya");
 
+  // Determine the actual marketing budget used for calculation
+  const totalMarketingBudget = costMode === 'cac' 
+    ? targetCAC * targetUnits 
+    : inputBudget;
+  
   // Marketing Strategy Logic
   let effectivenessFactor = 1;
   const hasMarketingSpend = totalMarketingBudget > 0;
@@ -59,7 +79,7 @@ export async function runAnalysis(data: FormData) {
 
   const soldUnits = Math.floor(targetUnits * 0.6 + (targetUnits * 0.4 * effectivenessFactor / 2.1));
   
-  // --- FINANCIAL CALCULATIONS (REFACTORED) ---
+  // --- FINANCIAL CALCULATIONS ---
   const monthlyRevenue = sellPrice * soldUnits;
   const annualRevenue = monthlyRevenue * 12;
 
@@ -68,17 +88,21 @@ export async function runAnalysis(data: FormData) {
   
   const totalVariableCosts = monthlyCostOfGoods + monthlyOtherVariableCosts;
   const totalMonthlyOperatingCosts = totalVariableCosts + fixedCostsPerMonth;
+  
+  // The single source of truth for total costs now correctly includes the marketing budget
   const totalMonthlyCosts = totalMonthlyOperatingCosts + totalMarketingBudget;
   
   const monthlyProfit = monthlyRevenue - totalMonthlyCosts;
   const annualProfit = monthlyProfit * 12;
 
-  // Corrected ROAS Calculation
+  // ROAS Calculation
   const roas = totalMarketingBudget > 0 ? monthlyRevenue / totalMarketingBudget : 0;
   
-  // Corrected BEP Calculation
+  // BEP Calculation - now correctly includes totalMarketingBudget
   const profitPerUnitExcludingMarketing = sellPrice - costOfGoods - (sellPrice * (otherCostsPercentage / 100));
-  const bepUnit = profitPerUnitExcludingMarketing > 0 ? Math.ceil((fixedCostsPerMonth + totalMarketingBudget) / profitPerUnitExcludingMarketing) : Infinity;
+  const bepUnit = profitPerUnitExcludingMarketing > 0 
+    ? Math.ceil((fixedCostsPerMonth + totalMarketingBudget) / profitPerUnitExcludingMarketing) 
+    : Infinity;
 
   // --- WARNINGS ---
   const warnings = [];
@@ -89,14 +113,14 @@ export async function runAnalysis(data: FormData) {
     warnings.push("Iklan kamu belum balik modal (ROAS < 1). Perlu evaluasi konten atau targeting iklan.");
   }
   if (isFinite(bepUnit) && bepUnit > soldUnits) {
-    warnings.push("Target penjualanmu belum bisa menutupi biaya tetap (BEP > Penjualan Aktual). Atur ulang harga atau target volume.");
+    warnings.push("Target penjualanmu belum bisa menutupi biaya (BEP > Penjualan Aktual). Atur ulang harga, biaya, atau target volume.");
   }
 
   // --- P&L and Cashflow Tables ---
   const grossProfit = monthlyRevenue - monthlyCostOfGoods;
   
   const pnlTable = [
-    { item: 'Omzet Bulanan (dari '+ soldUnits +' unit)', value: monthlyRevenue, isNegative: false },
+    { item: `Omzet Bulanan (dari ${soldUnits} unit)`, value: monthlyRevenue, isNegative: false },
     { item: 'Modal Produk (HPP)', value: monthlyCostOfGoods, isNegative: true },
     { item: 'Untung Kotor', value: grossProfit, isNegative: grossProfit < 0 },
     { item: 'Biaya Variabel Lainnya', value: monthlyOtherVariableCosts, isNegative: true },
@@ -153,6 +177,7 @@ export async function runAnalysis(data: FormData) {
     strategicPlan,
     warnings,
     soldUnits,
-    targetUnits
+    targetUnits,
+    calculatedMarketingBudget: totalMarketingBudget
   };
 }

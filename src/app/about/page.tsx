@@ -6,7 +6,7 @@ export default function AboutPage() {
   return (
     <>
       <Header />
-      <main className="container mx-auto max-w-3xl px-4 py-12">
+      <main className="container mx-auto max-w-3xl px-4 pt-12 pb-6">
         <div className="space-y-8">
           <div className="space-y-2 text-center">
             <h1 className="text-h1 font-bold">Petakan.ai</h1>
@@ -63,7 +63,7 @@ export default function AboutPage() {
           </div>
         </div>
       </main>
-      <footer className="text-center text-sm text-muted-foreground mt-8 mb-8 container max-w-3xl px-4">
+      <footer className="text-center text-sm text-muted-foreground mt-4 mb-8 container max-w-3xl px-4">
         <p>Laporan ini disusun berdasarkan analisis dan proyeksi dari data publik. Gunakan petakan.ai sebagai alat bantu strategis.</p>
         <p className="mt-2">© 2025 Dibuat oleh RizkyFadil.</p>
       </footer>

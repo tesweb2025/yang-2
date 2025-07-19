@@ -808,7 +808,7 @@ export default function AnalystPage() {
                 <Card className="p-6 md:p-8">
                     <CardHeader className="p-0">
                         <CardTitle className="text-h3 font-medium">Pendekatan Biaya Pemasaran</CardTitle>
-                        <CardDescription>Kendalikan penuh pengeluaran marketing. Tentukan total anggaran bulanan di awal untuk kontrol penuh, atau tetapkan target biaya per akuisisi (CAC) untuk menghitung anggaran optimal yang dibutuhkan.</CardDescription>
+                        <CardDescription>Kendalikan penuh pengeluaran marketing. Tentukan total anggaran bulanan di awal atau tetapkan target biaya per akuisisi (CAC) untuk menghitung anggaran optimal yang dibutuhkan.</CardDescription>
                     </CardHeader>
                     <CardContent className="p-0 mt-6">
                         <FormField

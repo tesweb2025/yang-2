@@ -478,8 +478,8 @@ export default function AnalystPage() {
             </h1>
            <div className="my-4 flex justify-center">
             <Image 
-              src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/3edf05a86f1e1ccf79e7463bb00ba3e48561fb1e/mobil%20paket%20kurir.png" 
-              alt="Ilustrasi 3D truk pengiriman merah dengan boks dan pin lokasi"
+              src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/cf73fec79612238e02a3ddc3b7bae788c81dfd3a/HEADER%20BARU%20(1).png" 
+              alt="Ilustrasi dasbor analitik dan grafik bisnis"
               width={500} 
               height={375}
               className="max-w-sm md:max-w-md my-2"

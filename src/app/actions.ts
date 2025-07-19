@@ -16,7 +16,6 @@ const formSchema = z.object({
   fixedCostsPerMonth: z.coerce.number().min(0, "Biaya tetap harus positif").optional().default(0),
   avgSalesPerMonth: z.coerce.number().min(1, "Target penjualan minimal 1 unit"),
   
-  // Logic for one-of budget or CAC
   costMode: z.enum(['budget', 'cac']).default('budget'),
   totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
   targetCAC: z.coerce.number().min(0, "CAC harus positif").optional().default(0),
@@ -27,11 +26,14 @@ const formSchema = z.object({
   useOtherChannels: z.boolean().optional().default(false),
 }).refine(data => {
     if (data.costMode === 'budget') {
-        return data.totalMarketingBudget >= 0;
+        return data.totalMarketingBudget > 0;
     }
-    return data.targetCAC >= 0;
+    if (data.costMode === 'cac') {
+        return data.targetCAC > 0;
+    }
+    return true;
 }, {
-    message: "Biaya pemasaran harus diisi",
+    message: "Biaya pemasaran harus diisi (tidak boleh nol)",
     path: ["totalMarketingBudget"],
 });
 

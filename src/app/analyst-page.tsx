@@ -811,8 +811,8 @@ export default function AnalystPage() {
                                         className="w-full col-span-1 md:col-span-2"
                                     >
                                         <TabsList className="grid w-full grid-cols-2">
-                                            <TabsTrigger value="budget">Hitung dari Bujet</TabsTrigger>
-                                            <TabsTrigger value="cac">Hitung dari CAC</TabsTrigger>
+                                            <TabsTrigger value="budget">Biaya Iklan (Budget)</TabsTrigger>
+                                            <TabsTrigger value="cac">Biaya Iklan (CAC)</TabsTrigger>
                                         </TabsList>
                                     </Tabs>
                                 )}

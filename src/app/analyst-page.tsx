@@ -474,15 +474,7 @@ export default function AnalystPage() {
         <section className="text-center">
             <h1 className="text-h1 font-bold tracking-tight mb-4">
               Lihat Untung-Ruginya,
-              <br />Sebelum Kamu <span className="relative inline-block">Jalanin Strateginya.
-                <Image 
-                  src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/fa8791917ab4bd734591e1785cfedb13ce058170/perintilan%20web.png?raw=true"
-                  alt="Coretan"
-                  width={300}
-                  height={30}
-                  className="absolute left-0 -bottom-2 w-full"
-                />
-              </span>
+              <br />Sebelum Kamu Jalanin Strateginya.
             </h1>
            <div className="my-4 flex justify-center">
             <Image 

@@ -167,7 +167,7 @@ const businessModelContent: any = {
 };
 
 const marketShareData = [
-    { name: 'Tokopedia & TikTok Shop', value: 39 },
+    { name: 'Tokopedia & TikTok', value: 39 },
     { name: 'Shopee', value: 37 },
     { name: 'Lazada', value: 10 },
     { name: 'Bukalapak', value: 6 },
@@ -176,7 +176,7 @@ const marketShareData = [
 
 const marketShareChartConfig = {
   value: { label: 'Value' },
-  'Tokopedia & TikTok Shop': { label: 'Tokopedia & TikTok Shop', color: 'hsl(var(--primary))' },
+  'Tokopedia & TikTok': { label: 'Tokopedia & TikTok', color: 'hsl(var(--primary))' },
   'Shopee': { label: 'Shopee', color: 'hsl(var(--primary))' },
   'Lazada': { label: 'Lazada', color: 'hsl(var(--primary))' },
   'Bukalapak': { label: 'Bukalapak', color: 'hsl(var(--primary))' },
@@ -553,7 +553,7 @@ export default function AnalystPage() {
             <Card className="p-6 md:p-8">
                 <CardHeader className="p-0">
                     <CardTitle className="text-h3 font-medium">Peta Kekuasaan E-Commerce (Estimasi Pangsa Pasar GMV 2025)</CardTitle>
-                    <CardDescription>Integrasi Tokopedia & TikTok Shop menciptakan duopoli baru yang menantang dominasi Shopee.</CardDescription>
+                    <CardDescription>Integrasi Tokopedia & TikTok menciptakan duopoli baru yang menantang dominasi Shopee.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-0 mt-8 space-y-8">
                     <div className="w-full h-[300px] overflow-x-auto">
@@ -566,28 +566,7 @@ export default function AnalystPage() {
                                     axisLine={false}
                                     interval={0}
                                     dy={10}
-                                    tick={(props) => {
-                                        const { x, y, payload } = props;
-                                        const value = payload.value;
-                                        if (value.includes(' & ')) {
-                                          const parts = value.split(' & ');
-                                          return (
-                                            <g transform={`translate(${x},${y})`}>
-                                              <text x={0} y={0} dy={5} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
-                                                <tspan x="0" dy="0em">{parts[0]}</tspan>
-                                                <tspan x="0" dy="1.2em">&amp; {parts[1]}</tspan>
-                                              </text>
-                                            </g>
-                                          );
-                                        }
-                                        return (
-                                          <g transform={`translate(${x},${y})`}>
-                                            <text x={0} y={0} dy={16} textAnchor="middle" fill="hsl(var(--foreground))" fontSize={12}>
-                                              {value}
-                                            </text>
-                                          </g>
-                                        );
-                                    }}
+                                    tick={{ textAnchor: 'middle', fontSize: 12, fill: 'hsl(var(--foreground))' }}
                                 />
                                 <YAxis hide />
                                 <RechartsTooltip 

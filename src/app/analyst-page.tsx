@@ -23,13 +23,6 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from '@/components/ui/separator';
 import { BarChart as RechartsBarChart, LabelList, Cell, ResponsiveContainer } from 'recharts';
-import dynamic from 'next/dynamic';
-
-const HeroAnimation = dynamic(() => import('@/components/hero-animation').then(mod => mod.HeroAnimation), {
-    ssr: false,
-    loading: () => <div className="w-full h-full bg-muted rounded-lg" />
-});
-
 
 const formSchema = z.object({
   productName: z.string().min(1, "Nama produk harus diisi"),
@@ -482,8 +475,15 @@ export default function AnalystPage() {
               Lihat Untung-Ruginya,
               <br />Sebelum Kamu Jalanin Strateginya.
             </h1>
-           <div className="my-4 flex justify-center h-[300px] md:h-[400px]">
-             <HeroAnimation />
+           <div className="my-4 flex justify-center">
+              <Image 
+                src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/cf73fec79612238e02a3ddc3b7bae788c81dfd3a/HEADER%20BARU%20(1).png"
+                alt="Dashboard Mockup"
+                width={720}
+                height={480}
+                className="rounded-xl shadow-lg max-w-lg w-full"
+                priority
+              />
           </div>
           <p className="text-body text-muted-foreground max-w-2xl mx-auto">Simulasikan strategi bisnis kamu dalam hitungan detik. Gratis, instan, dan akurat—petakan.ai bantu kamu ambil keputusan sebelum buang waktu & modal.</p>
            <Button asChild size="lg" className="mt-8 rounded-full h-12 px-8">
@@ -1068,3 +1068,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

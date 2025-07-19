@@ -45,7 +45,7 @@ export default function AboutPage() {
           </Card>
            
            <Card>
-             <CardContent className="text-center p-6 space-y-4">
+             <CardContent className="p-6 space-y-4">
                 <p className="text-body text-muted-foreground">
                     Platform ini dibuat oleh RizkyFadil, karena gue inget banget waktu pertama kali jualan di internet... ujung-ujungnya rungkad. Bukan karena produknya jelek, atau gak punya nilai. Tapi karena gak ngerti siapa targetnya. Dan yang paling parah: gak paham strategi apa yang sebenarnya dibutuhin.
                 </p>

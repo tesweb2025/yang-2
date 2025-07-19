@@ -34,16 +34,10 @@ export function Header() {
           </Link>
         </div>
         
-        <nav className="hidden md:flex items-center gap-6 text-sm">
-             {navLinks.map(link => (
-                <Link key={link.href} href={link.href} className="font-medium text-muted-foreground transition-colors hover:text-foreground">{link.label}</Link>
-             ))}
-        </nav>
-
         <div className="flex flex-1 items-center justify-end space-x-2">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
+              <Button variant="ghost" size="icon">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Buka Menu</span>
               </Button>

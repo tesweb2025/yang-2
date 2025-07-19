@@ -843,9 +843,11 @@ export default function AnalystPage() {
                     </CardContent>
                     <div className="border-t -mx-8 my-8"></div>
                     <div className="flex justify-center">
-                        <Button type="submit" className="h-14 text-lg rounded-full px-10" disabled={isLoading}>
-                           {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <><Zap className="mr-2 h-5 w-5" /> Petakan Sekarang</>}
-                        </Button>
+                        {!isLoading && (
+                            <Button type="submit" className="h-14 text-lg rounded-full px-10" disabled={isLoading}>
+                                <Zap className="mr-2 h-5 w-5" /> Petakan Sekarang
+                            </Button>
+                        )}
                     </div>
                 </Card>
             </section>

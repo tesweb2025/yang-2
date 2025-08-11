@@ -498,7 +498,7 @@ export default function AnalystPage() {
           <p className="text-body text-muted-foreground max-w-2xl mx-auto">Simulasikan strategi bisnis kamu dalam hitungan detik. Gratis, instan, dan akurat—petakan.ai bantu kamu ambil keputusan sebelum buang waktu & modal.</p>
            <div className="my-8">
               <Image 
-                src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/5b6a1a383615c433ee8165fc4d0317bd0daaa46f/HEADER%20BARU%20(1).png"
+                src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/5b6a1a383615c433ee8165fc4d0317bd0daaa46f/HEADER%20BARU%20(1).png?raw=true"
                 alt="Header simulasi petakan.ai"
                 width={1200}
                 height={630}
@@ -1094,4 +1094,3 @@ export default function AnalystPage() {
   );
 }
 
-    

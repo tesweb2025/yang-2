@@ -40,7 +40,7 @@ export const StrategicRecommendationsInputSchema = z.object({
   calculatedMarketingBudget: z.number().describe('The calculated monthly marketing budget.'),
   annualProfitProjection: z.number().describe('The projected annual profit.'),
   roas: z.number().describe('The Return on Ad Spend (ROAS).'),
-  warnings: z.array(z.string()).describe('A list of logical warnings based on user input, e.g., BEP > Target Sales.'),
+  warningsSummary: z.string().describe('A summary string of logical warnings based on user input, e.g., "BEP > Target Sales." or "Tidak ada." if no warnings.'),
 });
 export type StrategicRecommendationsInput = z.infer<typeof StrategicRecommendationsInputSchema>;
 

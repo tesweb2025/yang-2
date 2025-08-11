@@ -33,14 +33,14 @@ Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi b
 **Hasil Simulasi Keuangan & Peringatan:**
 - Proyeksi Untung Tahunan: Rp {{annualProfitProjection}}
 - ROAS (Return on Ad Spend): {{roas}}x
-- Peringatan Logika: {{#if warnings.length}}{{warnings.join ". "}}{{else}}Tidak ada.{{/if}}
+- Peringatan Logika: {{{warningsSummary}}}
 - Laporan Untung Rugi Bulanan: {{{monthlyProfitAndLossStatement}}}
 - Arus Kas Bulanan: {{{monthlyCashFlowSimulation}}}
 
 **Instruksi:**
 -   **Analisis Menyeluruh**: Cermati semua data, terutama \`Proyeksi Untung Tahunan\` dan \`Peringatan Logika\`.
 -   **Prioritaskan Rekomendasi**:
-    *   **Jika ada \`Peringatan Logika\`**: Jadikan solusi untuk peringatan itu sebagai rekomendasi PERTAMA. Contoh: Jika peringatan "BEP > Penjualan", rekomendasi pertama harus tentang "Cara menurunkan BEP atau menaikkan penjualan".
+    *   **Jika ada \`Peringatan Logika\` yang signifikan (selain "Tidak ada.")**: Jadikan solusi untuk peringatan itu sebagai rekomendasi PERTAMA. Contoh: Jika peringatan "BEP > Penjualan", rekomendasi pertama harus tentang "Cara menurunkan BEP atau menaikkan penjualan".
     *   **Jika \`Budget Pemasaran\` adalah 0**: Fokuskan rekomendasi untuk menjelaskan mengapa hasil mungkin tidak akurat dan sarankan untuk mengalokasikan budget.
     *   **Jika \`Untung Tahunan\` negatif (RUGI)**: Fokuskan rekomendasi pada cara membalikkan keadaan (efisiensi biaya, menaikkan harga, optimasi strategi).
     *   **Jika \`Untung Tahunan\` positif (UNTUNG)**: Fokuskan rekomendasi pada cara *scale-up* (meningkatkan budget iklan secara bertahap, ekspansi channel, optimasi konversi).

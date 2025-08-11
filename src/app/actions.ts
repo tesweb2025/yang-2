@@ -193,6 +193,8 @@ export async function runAnalysis(data: FormData): Promise<{
   
   const marketConditionSummary = "Pasar e-commerce Indonesia sangat kompetitif, didominasi oleh Shopee dan TikTok Shop. Konsumen sensitif harga dan suka promo. Pertumbuhan didorong oleh adopsi digital di kota-kota lapis kedua dan ketiga.";
   
+  const warningsSummary = warnings.length > 0 ? warnings.join('. ') : 'Tidak ada.';
+
   const [marketAnalysis, strategicPlan] = await Promise.all([
     analyzeMarketEntry({
         productName: validatedData.productName,
@@ -210,7 +212,7 @@ export async function runAnalysis(data: FormData): Promise<{
         roas,
         monthlyProfitAndLossStatement: JSON.stringify(pnlTable.map(p => `${p.item}: Rp ${p.value.toLocaleString('id-ID')}`)),
         monthlyCashFlowSimulation: JSON.stringify(cashflowTable.map(c => `${c.item}: Rp ${c.value.toLocaleString('id-ID')}`)),
-        warnings,
+        warningsSummary,
     })
   ]);
 

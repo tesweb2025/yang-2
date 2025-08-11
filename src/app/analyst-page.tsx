@@ -911,7 +911,7 @@ export default function AnalystPage() {
                                     </div>
                                 </div>
                                 <p className="text-center text-muted-foreground text-caption pt-4">
-                                    Bujet dibagi secara proporsional berdasarkan dampak potensial dari setiap strategi yang aktif.
+                                    Budget dibagi secara proporsional berdasarkan dampak potensial dari setiap strategi yang aktif.
                                 </p>
                             </div>
                         )}

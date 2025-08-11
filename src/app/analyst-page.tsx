@@ -501,7 +501,7 @@ export default function AnalystPage() {
                 alt="Header simulasi petakan.ai"
                 width={1200}
                 height={630}
-                className="rounded-xl shadow-lg mx-auto"
+                className="mx-auto"
                 priority
               />
             </div>
@@ -899,22 +899,24 @@ export default function AnalystPage() {
                                                 control={form.control}
                                                 name={strategy.id}
                                                 render={({ field }) => (
-                                                    <FormItem className="flex items-center justify-between rounded-xl border p-3">
-                                                        <div className="flex items-center gap-3">
-                                                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                            <FormLabel htmlFor={strategy.id} className="flex-1 font-medium cursor-pointer">{strategy.title}</FormLabel>
-                                                        </div>
-                                                        <div className="flex items-center gap-4">
-                                                             <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
-                                                            <FormControl>
-                                                                <Switch
-                                                                    id={strategy.id}
-                                                                    checked={field.value}
-                                                                    onCheckedChange={field.onChange}
-                                                                />
-                                                            </FormControl>
-                                                        </div>
-                                                    </FormItem>
+                                                  <FormItem className="flex items-center justify-between rounded-xl border p-3">
+                                                    <FormControl>
+                                                      <div className="flex items-center gap-3 flex-1">
+                                                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
+                                                        <FormLabel htmlFor={strategy.id} className="flex-1 font-medium cursor-pointer">{strategy.title}</FormLabel>
+                                                      </div>
+                                                    </FormControl>
+                                                    <div className="flex items-center gap-4">
+                                                        <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
+                                                        <FormControl>
+                                                            <Switch
+                                                                id={strategy.id}
+                                                                checked={field.value}
+                                                                onCheckedChange={field.onChange}
+                                                            />
+                                                        </FormControl>
+                                                    </div>
+                                                  </FormItem>
                                                 )}
                                             />
                                         ))}
@@ -1096,3 +1098,5 @@ export default function AnalystPage() {
   );
 }
 
+
+    

@@ -36,7 +36,7 @@ const formSchema = z.object({
   avgSalesPerMonth: z.coerce.number().min(1, "Target penjualan minimal 1 unit"),
   
   costMode: z.enum(['budget', 'cac']),
-  totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
+  totalMarketingBudget: z.coerce.number().min(0, "Budget harus positif").optional().default(0),
   targetCAC: z.coerce.number().min(0, "CAC harus positif").optional().default(0),
 
   useVideoContent: z.boolean().optional().default(false),
@@ -416,7 +416,7 @@ export default function AnalystPage() {
         toast({
             variant: "destructive",
             title: "Peringatan Logika",
-            description: "Strategi pemasaran aktif tapi bujet nol. Hasil simulasi mungkin tidak akurat.",
+            description: "Strategi pemasaran aktif tapi budget nol. Hasil simulasi mungkin tidak akurat.",
         });
     }
 
@@ -882,29 +882,29 @@ export default function AnalystPage() {
 
                                     <div className="space-y-4">
                                         {marketingStrategies.map(strategy => (
-                                          <FormField
-                                            key={strategy.id}
-                                            control={form.control}
-                                            name={strategy.id}
-                                            render={({ field }) => (
-                                                <FormItem className="flex items-center justify-between rounded-xl border p-3">
-                                                    <div className="flex items-center gap-3">
-                                                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                        <FormLabel htmlFor={strategy.id} className="flex-1 font-medium cursor-pointer">{strategy.title}</FormLabel>
-                                                    </div>
-                                                    <div className="flex items-center gap-4">
-                                                        <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
-                                                        <FormControl>
-                                                            <Switch
-                                                                id={strategy.id}
-                                                                checked={field.value}
-                                                                onCheckedChange={field.onChange}
-                                                            />
-                                                        </FormControl>
-                                                    </div>
-                                                </FormItem>
-                                            )}
-                                          />
+                                            <FormField
+                                                key={strategy.id}
+                                                control={form.control}
+                                                name={strategy.id}
+                                                render={({ field }) => (
+                                                    <FormItem className="flex items-center justify-between rounded-xl border p-3">
+                                                        <div className="flex items-center gap-3">
+                                                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
+                                                            <FormLabel htmlFor={strategy.id} className="flex-1 font-medium cursor-pointer">{strategy.title}</FormLabel>
+                                                        </div>
+                                                        <div className="flex items-center gap-4">
+                                                            <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
+                                                            <FormControl>
+                                                                <Switch
+                                                                    id={strategy.id}
+                                                                    checked={field.value}
+                                                                    onCheckedChange={field.onChange}
+                                                                />
+                                                            </FormControl>
+                                                        </div>
+                                                    </FormItem>
+                                                )}
+                                            />
                                         ))}
                                     </div>
                                 </div>

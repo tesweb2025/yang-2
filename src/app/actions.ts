@@ -17,7 +17,7 @@ const formSchema = z.object({
   avgSalesPerMonth: z.coerce.number().min(1, "Target penjualan minimal 1 unit"),
   
   costMode: z.enum(['budget', 'cac']),
-  totalMarketingBudget: z.coerce.number().min(0, "Bujet harus positif").optional().default(0),
+  totalMarketingBudget: z.coerce.number().min(0, "Budget harus positif").optional().default(0),
   targetCAC: z.coerce.number().min(0, "CAC harus positif").optional().default(0),
 
   useVideoContent: z.boolean().optional().default(false),
@@ -118,7 +118,7 @@ export async function runAnalysis(data: FormData) {
   // --- WARNINGS ---
   const warnings = [];
   if ((useVideoContent || useKOL || usePromo || useOtherChannels) && calculatedMarketingBudget === 0) {
-    warnings.push("Strategi pemasaran diaktifkan tapi bujet pemasaran nol. Hasil simulasi mungkin tidak akurat karena tidak ada biaya iklan yang dihitung.");
+    warnings.push("Strategi pemasaran diaktifkan tapi budget pemasaran nol. Hasil simulasi mungkin tidak akurat karena tidak ada biaya iklan yang dihitung.");
   }
   if (calculatedMarketingBudget > 0 && roas < 1) {
     warnings.push("Iklan kamu belum balik modal (ROAS < 1). Perlu evaluasi konten atau targeting iklan.");
@@ -136,7 +136,7 @@ export async function runAnalysis(data: FormData) {
     { item: 'Untung Kotor', value: grossProfit, isNegative: grossProfit < 0 },
     { item: `Biaya Variabel Lainnya (${otherCostsPercentage}%)`, value: monthlyOtherVariableCosts, isNegative: true },
     { item: 'Biaya Tetap Bulanan', value: fixedCostsPerMonth, isNegative: true },
-    { item: 'Biaya Pemasaran (Bujet)', value: calculatedMarketingBudget, isNegative: true },
+    { item: 'Biaya Pemasaran (Budget)', value: calculatedMarketingBudget, isNegative: true },
     { item: 'Untung Bersih Bulanan', value: monthlyProfit, isNegative: monthlyProfit < 0 },
   ];
   const netCashFlow = monthlyRevenue - (monthlyCostOfGoods + monthlyOtherVariableCosts + fixedCostsPerMonth + calculatedMarketingBudget);
@@ -146,7 +146,7 @@ export async function runAnalysis(data: FormData) {
     { item: 'Untung Kotor (Non-operasional)', value: grossProfit, isNegative: grossProfit < 0, isPlaceholder: true },
     { item: `Duit Keluar: Biaya Variabel Lain (${otherCostsPercentage}%)`, value: monthlyOtherVariableCosts, isNegative: true },
     { item: 'Duit Keluar: Biaya Tetap', value: fixedCostsPerMonth, isNegative: true },
-    { item: 'Duit Keluar: Bujet Pemasaran', value: calculatedMarketingBudget, isNegative: true },
+    { item: 'Duit Keluar: Budget Pemasaran', value: calculatedMarketingBudget, isNegative: true },
     { item: 'Arus Kas Bersih', value: netCashFlow, isNegative: netCashFlow < 0 },
   ];
 
@@ -158,7 +158,7 @@ export async function runAnalysis(data: FormData) {
     { item: 'Untung Kotor', value: weeklyGrossProfit, isNegative: weeklyGrossProfit < 0 },
     { item: `Biaya Variabel Lainnya (${otherCostsPercentage}%)`, value: weeklyOtherVariableCosts, isNegative: true },
     { item: 'Biaya Tetap Mingguan', value: weeklyFixedCosts, isNegative: true },
-    { item: 'Biaya Pemasaran (Bujet)', value: weeklyMarketingBudget, isNegative: true },
+    { item: 'Biaya Pemasaran (Budget)', value: weeklyMarketingBudget, isNegative: true },
     { item: 'Untung Bersih Mingguan', value: weeklyProfit, isNegative: weeklyProfit < 0 },
   ];
   const weeklyNetCashFlow = weeklyRevenue - (weeklyCostOfGoods + weeklyOtherVariableCosts + weeklyFixedCosts + weeklyMarketingBudget);
@@ -168,7 +168,7 @@ export async function runAnalysis(data: FormData) {
     { item: 'Untung Kotor (Non-operasional)', value: weeklyGrossProfit, isNegative: weeklyGrossProfit < 0, isPlaceholder: true },
     { item: `Duit Keluar: Biaya Variabel Lain (${otherCostsPercentage}%)`, value: weeklyOtherVariableCosts, isNegative: true },
     { item: 'Duit Keluar: Biaya Tetap', value: weeklyFixedCosts, isNegative: true },
-    { item: 'Duit Keluar: Bujet Pemasaran', value: weeklyMarketingBudget, isNegative: true },
+    { item: 'Duit Keluar: Budget Pemasaran', value: weeklyMarketingBudget, isNegative: true },
     { item: 'Arus Kas Bersih', value: weeklyNetCashFlow, isNegative: weeklyNetCashFlow < 0 },
   ];
   

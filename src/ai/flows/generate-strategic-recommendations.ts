@@ -45,7 +45,7 @@ Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi b
 - Nama Produk: ${validatedInput.productName}
 - Target Pasar: ${validatedInput.targetSegmentation}
 - Strategi Pemasaran Pilihan: ${validatedInput.selectedMarketingStrategies.join(', ')}
-- Bujet Pemasaran: Rp ${validatedInput.calculatedMarketingBudget.toLocaleString('id-ID')}
+- Budget Pemasaran: Rp ${validatedInput.calculatedMarketingBudget.toLocaleString('id-ID')}
 
 **Hasil Simulasi Keuangan & Peringatan:**
 - Proyeksi Untung Tahunan: Rp ${validatedInput.annualProfitProjection.toLocaleString('id-ID')}
@@ -58,16 +58,16 @@ Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi b
 -   **Analisis Menyeluruh**: Cermati semua data, terutama \`Proyeksi Untung Tahunan\` dan \`Peringatan Logika\`.
 -   **Prioritaskan Rekomendasi**:
     *   **Jika ada \`Peringatan Logika\`**: Jadikan solusi untuk peringatan itu sebagai rekomendasi PERTAMA. Contoh: Jika peringatan "BEP > Penjualan", rekomendasi pertama harus tentang "Cara menurunkan BEP atau menaikkan penjualan".
-    *   **Jika \`Bujet Pemasaran\` adalah 0**: Fokuskan rekomendasi untuk menjelaskan mengapa hasil mungkin tidak akurat dan sarankan untuk mengalokasikan bujet.
+    *   **Jika \`Budget Pemasaran\` adalah 0**: Fokuskan rekomendasi untuk menjelaskan mengapa hasil mungkin tidak akurat dan sarankan untuk mengalokasikan budget.
     *   **Jika \`Untung Tahunan\` negatif (RUGI)**: Fokuskan rekomendasi pada cara membalikkan keadaan (efisiensi biaya, menaikkan harga, optimasi strategi).
-    *   **Jika \`Untung Tahunan\` positif (UNTUNG)**: Fokuskan rekomendasi pada cara *scale-up* (meningkatkan bujet iklan secara bertahap, ekspansi channel, optimasi konversi).
+    *   **Jika \`Untung Tahunan\` positif (UNTUNG)**: Fokuskan rekomendasi pada cara *scale-up* (meningkatkan budget iklan secara bertahap, ekspansi channel, optimasi konversi).
 -   **Buat Rekomendasi Spesifik & Kontekstual (3-5 poin)**:
     *   Sebutkan \`Nama Produk\` dalam rekomendasi jika relevan. Contoh: "Tingkatkan persepsi nilai untuk '${validatedInput.productName}' dengan..."
     *   Hubungkan rekomendasi dengan \`Target Pasar\`. Contoh: "Karena target Anda '${validatedInput.targetSegmentation}', fokuskan iklan di Instagram Reels dan TikTok."
     *   Rekomendasi harus berupa langkah taktis yang bisa langsung dikerjakan. Mulai setiap poin dengan kata kerja.
     *   Gunakan bahasa Indonesia yang santai dan jelas.
 
-**Contoh Rekomendasi (Bujet Pemasaran = 0):**
+**Contoh Rekomendasi (Budget Pemasaran = 0):**
 -   "Kamu belum mengalokasikan anggaran pemasaran. Untuk mendapatkan proyeksi realistis, aktifkan setidaknya satu strategi promosi dengan biaya."
 -   "Tanpa iklan atau diskon, hasil penjualan yang ditampilkan tidak mencerminkan potensi pertumbuhan dari strategi digital yang akurat."
 
@@ -77,7 +77,7 @@ Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi b
 -   "Naikkan harga jual secara bertahap sebesar 5% untuk meningkatkan margin per produk."
 
 **Contoh Rekomendasi (Untung):**
--   "Alokasikan 20% dari keuntungan bulanan untuk meningkatkan bujet iklan secara bertahap."
+-   "Alokasikan 20% dari keuntungan bulanan untuk meningkatkan budget iklan secara bertahap."
 -   "Karena targetnya '${validatedInput.targetSegmentation}', buat konten video testimoni untuk meningkatkan kepercayaan."
 -   "Pertimbangkan untuk membuat varian baru dari '${validatedInput.productName}' untuk menjangkau pasar yang lebih luas."
 

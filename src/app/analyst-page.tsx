@@ -493,7 +493,8 @@ export default function AnalystPage() {
         <section className="text-center">
             <h1 className="text-h1 font-bold tracking-tight mb-4">
               Lihat Untung-Ruginya,
-              <br />Sebelum Kamu Jalanin Strateginya.
+              <br />
+              Sebelum Kamu Jalanin Strateginya.
             </h1>
             <div className="my-8">
               <Image 
@@ -749,7 +750,7 @@ export default function AnalystPage() {
                               <p className="mt-2 text-caption font-semibold">{selectedBusinessModel.platforms}</p>
                             </div>
                         </div>
-                        <div className="border-t -mx-8 my-8"></div>
+                        
                         <div>
                             <h3 className="font-semibold text-lg mb-4">Kalkulator Harga & Biaya per Produk</h3>
                             <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-4">
@@ -1097,6 +1098,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-
-    

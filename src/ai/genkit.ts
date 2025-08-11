@@ -1,7 +1,7 @@
 'use server';
 
 import {genkit, ai} from 'genkit';
-import {googleAI}s from '@genkit-ai/googleai';
+import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'zod';
 
 genkit({

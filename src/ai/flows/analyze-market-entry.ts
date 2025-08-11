@@ -5,33 +5,15 @@
  * @fileOverview An AI agent that evaluates market entry potential for e-commerce sellers.
  *
  * - analyzeMarketEntry - A function that analyzes market entry potential.
- * - AnalyzeMarketEntryInput - The input type for the analyzeMarketEntry function.
- * - AnalyzeMarketEntryOutput - The return type for the analyzeMarketEntry function.
  */
-import { ai, z } from '@/ai/genkit';
+import { ai } from '@/ai/genkit';
+import { 
+    AnalyzeMarketEntryInputSchema, 
+    AnalyzeMarketEntryOutputSchema,
+    type AnalyzeMarketEntryInput,
+    type AnalyzeMarketEntryOutput
+} from './types';
 
-const AnalyzeMarketEntryInputSchema = z.object({
-  productName: z.string().describe('The name of the product or business.'),
-  targetSegment: z.string().describe('The main target segment for the product.'),
-  calculatedMarketingBudget: z
-    .number()
-    .describe('The calculated monthly marketing budget in Indonesian Rupiah (Rp).'),
-  financialForecastSummary: z
-    .string()
-    .describe('A summary of the financial forecast, including projected revenue, profit, and cash flow. Contains key metrics like ROAS and BEP.'),
-  marketConditionSummary: z
-    .string()
-    .describe('A summary of the current market conditions in the Indonesian e-commerce market.'),
-});
-export type AnalyzeMarketEntryInput = z.infer<typeof AnalyzeMarketEntryInputSchema>;
-
-const AnalyzeMarketEntryOutputSchema = z.object({
-  evaluation: z.string().describe('An evaluation of the market entry potential. Start with a bold one-liner like "Potensial banget!" or "Waduh, ini berisiko.".'),
-  keyConsiderations: z
-    .string()
-    .describe('Key considerations for the e-commerce seller based on the analysis. Provide 1-2 sentences explaining why.'),
-});
-export type AnalyzeMarketEntryOutput = z.infer<typeof AnalyzeMarketEntryOutputSchema>;
 
 const analyzeMarketEntryPrompt = ai.definePrompt({
   name: 'analyzeMarketEntryPrompt',

@@ -5,31 +5,16 @@
  * @fileOverview Generates strategic recommendations based on the simulation's outcome.
  *
  * - generateStrategicRecommendations - A function that generates a list of actionable recommendations.
- * - StrategicRecommendationsInput - The input type for the generateStrategicRecommendations function.
- * - StrategicRecommendationsOutput - The return type for the generateStrategicRecommendations function.
  */
 
-import { ai, z } from '@/ai/genkit';
+import { ai } from '@/ai/genkit';
+import {
+    StrategicRecommendationsInputSchema,
+    StrategicRecommendationsOutputSchema,
+    type StrategicRecommendationsInput,
+    type StrategicRecommendationsOutput
+} from './types';
 
-const StrategicRecommendationsInputSchema = z.object({
-  productName: z.string().describe('The name of the product or business.'),
-  targetSegmentation: z.string().describe('The primary target segmentation.'),
-  selectedMarketingStrategies: z.array(z.string()).describe('List of marketing strategies selected by the user.'),
-  monthlyProfitAndLossStatement: z.string().describe('The monthly profit and loss statement.'),
-  monthlyCashFlowSimulation: z.string().describe('The monthly cash flow simulation.'),
-  calculatedMarketingBudget: z.number().describe('The calculated monthly marketing budget.'),
-  annualProfitProjection: z.number().describe('The projected annual profit.'),
-  roas: z.number().describe('The Return on Ad Spend (ROAS).'),
-  warnings: z.array(z.string()).describe('A list of logical warnings based on user input, e.g., BEP > Target Sales.'),
-});
-export type StrategicRecommendationsInput = z.infer<typeof StrategicRecommendationsInputSchema>;
-
-const StrategicRecommendationsOutputSchema = z.object({
-  recommendations: z.array(
-    z.string().describe('A single, actionable, and prioritized recommendation. Be specific and tactical.')
-  ),
-});
-export type StrategicRecommendationsOutput = z.infer<typeof StrategicRecommendationsOutputSchema>;
 
 const generateStrategicRecommendationsPrompt = ai.definePrompt({
   name: 'generateStrategicRecommendationsPrompt',

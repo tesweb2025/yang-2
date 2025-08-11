@@ -4,6 +4,7 @@
 import { z } from "zod";
 import { analyzeMarketEntry } from "@/ai/flows/analyze-market-entry";
 import { generateStrategicRecommendations } from "@/ai/flows/generate-strategic-recommendations";
+import type { AnalyzeMarketEntryOutput, StrategicRecommendationsOutput } from "@/ai/flows/types";
 
 const formSchema = z.object({
   productName: z.string().min(1, "Nama produk harus diisi"),
@@ -44,7 +45,22 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-export async function runAnalysis(data: FormData) {
+export async function runAnalysis(data: FormData): Promise<{
+    annualRevenue: number;
+    annualProfit: number;
+    roas: number;
+    bepUnit: number;
+    pnlTable: any[];
+    cashflowTable: any[];
+    pnlTableWeekly: any[];
+    cashflowTableWeekly: any[];
+    marketAnalysis: AnalyzeMarketEntryOutput;
+    strategicPlan: StrategicRecommendationsOutput;
+    warnings: string[];
+    soldUnits: number;
+    targetUnits: number;
+    calculatedMarketingBudget: number;
+}> {
   const validatedData = formSchema.parse(data);
 
   const { 

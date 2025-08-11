@@ -640,31 +640,31 @@ export default function AnalystPage() {
                           name={strategy.id}
                           render={({ field }) => (
                             <FormItem>
-                              <FormControl>
-                                <div className="relative">
-                                  <Switch
-                                    id={strategy.id}
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                    className="absolute top-4 right-4 cursor-pointer"
-                                  />
-                                  <FormLabel
-                                    htmlFor={strategy.id}
-                                    className={cn(
-                                      "block p-4 rounded-xl border transition-all cursor-pointer h-full",
-                                      field.value
-                                        ? "bg-primary text-primary-foreground border-primary"
-                                        : "bg-muted/30 hover:bg-muted/60"
-                                    )}
-                                  >
-                                    <div className="flex flex-col gap-1 pr-8">
-                                      <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-primary")} />
-                                      <span className="font-semibold">{strategy.title}</span>
-                                      <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
+                                <FormControl>
+                                    <div className="relative">
+                                    <Switch
+                                        id={strategy.id}
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                        className="absolute top-4 right-4 cursor-pointer"
+                                    />
+                                    <FormLabel
+                                        htmlFor={strategy.id}
+                                        className={cn(
+                                        "block p-4 rounded-xl border transition-all cursor-pointer h-full",
+                                        field.value
+                                            ? "bg-primary text-primary-foreground border-primary"
+                                            : "bg-muted/30 hover:bg-muted/60"
+                                        )}
+                                    >
+                                        <div className="flex flex-col gap-1 pr-8">
+                                            <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-primary")} />
+                                            <span className="font-semibold">{strategy.title}</span>
+                                            <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
+                                        </div>
+                                    </FormLabel>
                                     </div>
-                                  </FormLabel>
-                                </div>
-                              </FormControl>
+                                </FormControl>
                             </FormItem>
                           )}
                         />
@@ -862,13 +862,29 @@ export default function AnalystPage() {
 
                                     <div className="space-y-4">
                                         {marketingStrategies.map(strategy => (
-                                            <div key={strategy.id} className="flex items-center justify-between rounded-xl border p-3">
+                                          <FormField
+                                            key={strategy.id}
+                                            control={form.control}
+                                            name={strategy.id}
+                                            render={({ field }) => (
+                                              <FormItem className="flex items-center justify-between rounded-xl border p-3">
                                                 <div className="flex items-center gap-3">
-                                                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                    <span className="flex-1 font-medium">{strategy.title}</span>
+                                                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
+                                                  <FormLabel htmlFor={strategy.id} className="flex-1 font-medium cursor-pointer">{strategy.title}</FormLabel>
                                                 </div>
-                                                <span className="font-medium text-sm w-28 text-right break-all">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
-                                            </div>
+                                                <div className="flex items-center gap-4">
+                                                    <span className="font-medium text-sm w-20 text-right break-all">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
+                                                    <FormControl>
+                                                        <Switch
+                                                            id={strategy.id}
+                                                            checked={field.value}
+                                                            onCheckedChange={field.onChange}
+                                                        />
+                                                    </FormControl>
+                                                </div>
+                                              </FormItem>
+                                            )}
+                                          />
                                         ))}
                                     </div>
                                 </div>
@@ -1039,3 +1055,5 @@ export default function AnalystPage() {
     </div>
   );
 }
+
+    

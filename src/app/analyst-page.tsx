@@ -431,18 +431,10 @@ export default function AnalystPage() {
       setAnalysisResult(result);
     } catch (error: any) {
       console.error("Analysis failed:", error);
-      let errorMessage = "Waduh, AI-nya lagi pusing. Coba lagi beberapa saat, ya.";
-       if (error.message && error.message.includes('400')) {
-        errorMessage = "API Key sepertinya tidak valid. Cek kembali konfigurasimu di Vercel.";
-      } else if (error.message && (error.message.includes('429') || error.message.includes('quota'))) {
-        errorMessage = "Kuota gratis hari ini sudah habis. Coba lagi besok ya, atau upgrade paketmu!";
-      } else if (error.message && (error.message.includes('503') || error.message.includes('overloaded'))) {
-        errorMessage = "Server AI lagi penuh, bro. Coba refresh dan ulangi lagi, ya.";
-      }
       toast({
         variant: "destructive",
         title: "Analisis Gagal",
-        description: errorMessage,
+        description: "Waduh, AI-nya lagi pusing. Coba lagi beberapa saat, ya.",
       });
     } finally {
       setIsLoading(false);

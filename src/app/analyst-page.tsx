@@ -521,16 +521,18 @@ export default function AnalystPage() {
                 </CardHeader>
                 <CardContent className="p-0 mt-4 space-y-4">
                     <p className="text-5xl font-bold text-primary">US$56,5 M</p>
-                    <div className="h-60 w-full overflow-x-auto">
-                        <ChartContainer config={gmvComboChartConfig} className="h-full min-w-[600px]">
-                            <ComposedChart data={gmvComboData} barCategoryGap="30%" margin={{ top: 20, right: 0, left: -20, bottom: 5 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
-                                <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
-                                <Bar dataKey="shopee" barSize={20} fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                                <Line type="monotone" dataKey="average" stroke="hsl(var(--success))" strokeWidth={2} dot={false} />
-                            </ComposedChart>
-                        </ChartContainer>
+                    <div className="overflow-x-auto">
+                        <div className="h-60 w-full min-w-[600px]">
+                            <ChartContainer config={gmvComboChartConfig} className="h-full w-full">
+                                <ComposedChart data={gmvComboData} barCategoryGap="30%" margin={{ top: 20, right: 0, left: -20, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                    <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
+                                    <RechartsTooltip content={<ChartTooltipContent formatter={(value, name) => [`$${value}`, gmvComboChartConfig[name as keyof typeof gmvComboChartConfig]?.label]} />} />
+                                    <Bar dataKey="shopee" barSize={20} fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                                    <Line type="monotone" dataKey="average" stroke="hsl(var(--success))" strokeWidth={2} dot={false} />
+                                </ComposedChart>
+                            </ChartContainer>
+                        </div>
                     </div>
                     <p className="text-caption text-muted-foreground text-center">Visualisasi tren GMV antar platform besar.</p>
                 </CardContent>
@@ -581,27 +583,29 @@ export default function AnalystPage() {
                     <CardDescription>Integrasi Tokopedia & TikTok menciptakan duopoli baru yang menantang dominasi Shopee.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-0 mt-8 space-y-8">
-                    <div className="w-full h-[300px] overflow-x-auto">
-                        <ChartContainer config={marketShareChartConfig} className="h-full min-w-[500px]">
-                            <RechartsBarChart data={marketShareData} barCategoryGap="20%" margin={{ bottom: 20 }}>
-                                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                                <XAxis 
-                                    dataKey="name" 
-                                    tickLine={false} 
-                                    axisLine={false}
-                                    interval={0}
-                                    dy={10}
-                                    tick={{ textAnchor: 'middle', fontSize: 12, fill: 'hsl(var(--foreground))' }}
-                                />
-                                <YAxis hide />
-                                <RechartsTooltip 
-                                    cursor={{ fill: 'hsl(var(--muted))' }} 
-                                    content={<ChartTooltipContent formatter={(value) => `${value}%`} />}
-                                />
-                                <Bar dataKey="value" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]}>
-                                 </Bar>
-                            </RechartsBarChart>
-                        </ChartContainer>
+                    <div className="overflow-x-auto">
+                        <div className="w-full h-[300px] min-w-[500px]">
+                            <ChartContainer config={marketShareChartConfig} className="h-full w-full">
+                                <RechartsBarChart data={marketShareData} barCategoryGap="20%" margin={{ bottom: 20 }}>
+                                    <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                                    <XAxis 
+                                        dataKey="name" 
+                                        tickLine={false} 
+                                        axisLine={false}
+                                        interval={0}
+                                        dy={10}
+                                        tick={{ textAnchor: 'middle', fontSize: 12, fill: 'hsl(var(--foreground))' }}
+                                    />
+                                    <YAxis hide />
+                                    <RechartsTooltip 
+                                        cursor={{ fill: 'hsl(var(--muted))' }} 
+                                        content={<ChartTooltipContent formatter={(value) => `${value}%`} />}
+                                    />
+                                    <Bar dataKey="value" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]}>
+                                     </Bar>
+                                </RechartsBarChart>
+                            </ChartContainer>
+                        </div>
                     </div>
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-4">
                         {platformStrategyDescriptions.map((platform, index) => (

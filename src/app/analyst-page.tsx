@@ -495,8 +495,7 @@ export default function AnalystPage() {
               Lihat Untung-Ruginya,
               <br />Sebelum Kamu Jalanin Strateginya.
             </h1>
-          <p className="text-body text-muted-foreground max-w-2xl mx-auto">Simulasikan strategi bisnis kamu dalam hitungan detik. Gratis, instan, dan akurat—petakan.ai bantu kamu ambil keputusan sebelum buang waktu & modal.</p>
-           <div className="my-8">
+            <div className="my-8">
               <Image 
                 src="https://raw.githubusercontent.com/tesweb2025/Market-Intelligence-5.1/5b6a1a383615c433ee8165fc4d0317bd0daaa46f/HEADER%20BARU%20(1).png?raw=true"
                 alt="Header simulasi petakan.ai"
@@ -506,12 +505,15 @@ export default function AnalystPage() {
                 priority
               />
             </div>
-           <Button asChild size="lg" className="rounded-full h-12 px-8">
-             <Link href="#cek-strategi">
-                Mulai Simulasi Gratis
-                <ArrowRight className="ml-2"/>
-             </Link>
-           </Button>
+          <p className="text-body text-muted-foreground max-w-2xl mx-auto">Simulasikan strategi bisnis kamu dalam hitungan detik. Gratis, instan, dan akurat—petakan.ai bantu kamu ambil keputusan sebelum buang waktu & modal.</p>
+           <div className="my-8">
+             <Button asChild size="lg" className="rounded-full h-12 px-8">
+               <Link href="#cek-strategi">
+                  Mulai Simulasi Gratis
+                  <ArrowRight className="ml-2"/>
+               </Link>
+             </Button>
+           </div>
         </section>
 
         <section id="wawasan-pasar" className="space-y-8 scroll-mt-24">

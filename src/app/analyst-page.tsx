@@ -70,6 +70,8 @@ type AnalysisResult = {
   bepUnit: number;
   pnlTable: any[];
   cashflowTable: any[];
+  pnlTableWeekly: any[];
+  cashflowTableWeekly: any[];
   marketAnalysis: any;
   strategicPlan: any;
   warnings: string[];
@@ -466,6 +468,24 @@ export default function AnalystPage() {
       </span>
     );
   };
+  
+    const renderTable = (data: any[], simple: boolean) => (
+    <Table>
+      <TableBody>
+        {data.map((item, index) => (
+          <TableRow key={item.item || index} className={cn(item.isPlaceholder && 'text-muted-foreground opacity-60')}>
+            <TableCell className={cn("w-[60%] py-3 px-2 md:px-4", (item.item.includes('Untung') || item.item.includes('Arus Kas')) ? 'font-bold' : '')}>{item.item}</TableCell>
+            <TableCell className={cn("w-[40%] text-right font-medium py-3 px-2 md:px-4 text-sm whitespace-nowrap", (item.item.includes('Untung') || item.item.includes('Arus Kas')) ? 'font-bold' : '')}>
+              {simple 
+                ? renderFittableTableCellSimple(item.value, item.isNegative)
+                : renderFittableTableCell(item.value, item.isNegative, !item.item.includes('Arus Kas Bersih'))
+              }
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -633,42 +653,42 @@ export default function AnalystPage() {
                   <div className="space-y-2 pt-2">
                     <h3 className="font-medium text-sm">Pilih Strategi Pemasaran</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {marketingStrategies.map((strategy) => (
-                        <FormField
-                          key={strategy.id}
-                          control={form.control}
-                          name={strategy.id}
-                          render={({ field }) => (
-                            <FormItem>
-                                <FormControl>
-                                    <div className="relative">
-                                    <Switch
-                                        id={strategy.id}
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                        className="absolute top-4 right-4 cursor-pointer"
-                                    />
-                                    <FormLabel
-                                        htmlFor={strategy.id}
-                                        className={cn(
-                                        "block p-4 rounded-xl border transition-all cursor-pointer h-full",
-                                        field.value
-                                            ? "bg-primary text-primary-foreground border-primary"
-                                            : "bg-muted/30 hover:bg-muted/60"
-                                        )}
-                                    >
-                                        <div className="flex flex-col gap-1 pr-8">
-                                            <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-primary")} />
-                                            <span className="font-semibold">{strategy.title}</span>
-                                            <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
-                                        </div>
-                                    </FormLabel>
-                                    </div>
-                                </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                      ))}
+                        {marketingStrategies.map((strategy) => (
+                            <FormField
+                                key={strategy.id}
+                                control={form.control}
+                                name={strategy.id}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <div className="relative">
+                                                <Switch
+                                                    id={strategy.id}
+                                                    checked={field.value}
+                                                    onCheckedChange={field.onChange}
+                                                    className="absolute top-4 right-4 cursor-pointer"
+                                                />
+                                                <FormLabel
+                                                    htmlFor={strategy.id}
+                                                    className={cn(
+                                                        "block p-4 rounded-xl border transition-all cursor-pointer h-full",
+                                                        field.value
+                                                            ? "bg-primary text-primary-foreground border-primary"
+                                                            : "bg-muted/30 hover:bg-muted/60"
+                                                    )}
+                                                >
+                                                    <div className="flex flex-col gap-1 pr-8">
+                                                        <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-primary")} />
+                                                        <span className="font-semibold">{strategy.title}</span>
+                                                        <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
+                                                    </div>
+                                                </FormLabel>
+                                            </div>
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                        ))}
                     </div>
                   </div>
                 </CardContent>
@@ -867,22 +887,24 @@ export default function AnalystPage() {
                                             control={form.control}
                                             name={strategy.id}
                                             render={({ field }) => (
-                                              <FormItem className="flex items-center justify-between rounded-xl border p-3">
-                                                <div className="flex items-center gap-3">
-                                                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                  <FormLabel htmlFor={strategy.id} className="flex-1 font-medium cursor-pointer">{strategy.title}</FormLabel>
-                                                </div>
-                                                <div className="flex items-center gap-4">
-                                                    <span className="font-medium text-sm w-20 text-right break-all">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
+                                                <FormItem className="flex items-center justify-between rounded-xl border p-3">
                                                     <FormControl>
-                                                        <Switch
-                                                            id={strategy.id}
-                                                            checked={field.value}
-                                                            onCheckedChange={field.onChange}
-                                                        />
+                                                        <div className="flex items-center gap-3">
+                                                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
+                                                            <FormLabel htmlFor={strategy.id} className="flex-1 font-medium cursor-pointer">{strategy.title}</FormLabel>
+                                                        </div>
                                                     </FormControl>
-                                                </div>
-                                              </FormItem>
+                                                    <div className="flex items-center gap-4">
+                                                        <span className="font-medium text-sm w-20 text-right break-all">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
+                                                        <FormControl>
+                                                            <Switch
+                                                                id={strategy.id}
+                                                                checked={field.value}
+                                                                onCheckedChange={field.onChange}
+                                                            />
+                                                        </FormControl>
+                                                    </div>
+                                                </FormItem>
                                             )}
                                           />
                                         ))}
@@ -959,38 +981,46 @@ export default function AnalystPage() {
                     </div>
                 <div className="grid md:grid-cols-2 gap-8 mt-8">
                         <Card>
-                            <CardHeader><CardTitle>Laporan Untung Rugi (Bulanan)</CardTitle></CardHeader>
-                            <CardContent>
-                                <Table>
-                                    <TableBody>
-                                    {analysisResult.pnlTable.map(item => (
-                                        <TableRow key={item.item}>
-                                          <TableCell className={cn("w-[60%] py-3 px-2 md:px-4", item.item.includes('Untung') ? 'font-bold' : '')}>{item.item}</TableCell>
-                                          <TableCell className={cn("w-[40%] text-right font-medium py-3 px-2 md:px-4 text-sm whitespace-nowrap", item.item.includes('Untung') ? 'font-bold' : '')}>
-                                              {renderFittableTableCellSimple(item.value, item.isNegative)}
-                                          </TableCell>
-                                        </TableRow>
-                                    ))}
-                                    </TableBody>
-                                </Table>
-                            </CardContent>
+                             <Tabs defaultValue="monthly" className="w-full">
+                                <CardHeader>
+                                    <div className="flex justify-between items-center">
+                                        <CardTitle>Laporan Untung Rugi</CardTitle>
+                                        <TabsList className="grid w-full max-w-[200px] grid-cols-2 h-9">
+                                            <TabsTrigger value="monthly" className="h-7 text-xs">Bulanan</TabsTrigger>
+                                            <TabsTrigger value="weekly" className="h-7 text-xs">Mingguan</TabsTrigger>
+                                        </TabsList>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <TabsContent value="monthly">
+                                        {renderTable(analysisResult.pnlTable, true)}
+                                    </TabsContent>
+                                    <TabsContent value="weekly">
+                                        {renderTable(analysisResult.pnlTableWeekly, true)}
+                                    </TabsContent>
+                                </CardContent>
+                            </Tabs>
                         </Card>
-                        <Card>
-                            <CardHeader><CardTitle>Simulasi Arus Kas (Bulanan)</CardTitle></CardHeader>
-                            <CardContent>
-                                <Table>
-                                    <TableBody>
-                                    {analysisResult.cashflowTable.map((row, index) => (
-                                        <TableRow key={index} className={cn(row.isPlaceholder && 'text-muted-foreground opacity-60')}>
-                                            <TableCell className={cn("w-[60%] py-3 px-2 md:px-4", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>{row.item}</TableCell>
-                                            <TableCell className={cn("w-[40%] text-right font-medium py-3 px-2 md:px-4 text-sm whitespace-nowrap", row.item === 'Arus Kas Bersih' ? 'font-bold' : '')}>
-                                            {renderFittableTableCell(row.value, row.isNegative, row.item !== 'Arus Kas Bersih')}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                    </TableBody>
-                                </Table>
-                            </CardContent>
+                         <Card>
+                            <Tabs defaultValue="monthly" className="w-full">
+                                <CardHeader>
+                                    <div className="flex justify-between items-center">
+                                        <CardTitle>Simulasi Arus Kas</CardTitle>
+                                        <TabsList className="grid w-full max-w-[200px] grid-cols-2 h-9">
+                                            <TabsTrigger value="monthly" className="h-7 text-xs">Bulanan</TabsTrigger>
+                                            <TabsTrigger value="weekly" className="h-7 text-xs">Mingguan</TabsTrigger>
+                                        </TabsList>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <TabsContent value="monthly">
+                                        {renderTable(analysisResult.cashflowTable, false)}
+                                    </TabsContent>
+                                    <TabsContent value="weekly">
+                                        {renderTable(analysisResult.cashflowTableWeekly, false)}
+                                    </TabsContent>
+                                </CardContent>
+                            </Tabs>
                         </Card>
                     </div>
                     
@@ -1055,5 +1085,3 @@ export default function AnalystPage() {
     </div>
   );
 }
-
-    

@@ -87,18 +87,24 @@ export async function runAnalysis(data: FormData) {
   const soldUnits = Math.floor(targetUnits * 0.6 + (targetUnits * 0.4 * effectivenessFactor / 2.1));
   
   // --- FINANCIAL CALCULATIONS ---
+  // Monthly
   const monthlyRevenue = sellPrice * soldUnits;
   const annualRevenue = monthlyRevenue * 12;
-
   const monthlyCostOfGoods = costOfGoods * soldUnits;
   const monthlyOtherVariableCosts = monthlyRevenue * (otherCostsPercentage / 100);
-  
   const totalVariableCosts = monthlyCostOfGoods + monthlyOtherVariableCosts;
-  
   const totalMonthlyCosts = totalVariableCosts + fixedCostsPerMonth + calculatedMarketingBudget;
-  
   const monthlyProfit = monthlyRevenue - totalMonthlyCosts;
   const annualProfit = monthlyProfit * 12;
+
+  // Weekly (approximated)
+  const weeklySoldUnits = Math.floor(soldUnits / 4);
+  const weeklyRevenue = monthlyRevenue / 4;
+  const weeklyCostOfGoods = monthlyCostOfGoods / 4;
+  const weeklyOtherVariableCosts = monthlyOtherVariableCosts / 4;
+  const weeklyFixedCosts = fixedCostsPerMonth / 4;
+  const weeklyMarketingBudget = calculatedMarketingBudget / 4;
+  const weeklyProfit = monthlyProfit / 4;
 
   // ROAS Calculation
   const roas = calculatedMarketingBudget > 0 ? monthlyRevenue / calculatedMarketingBudget : 0;
@@ -122,8 +128,8 @@ export async function runAnalysis(data: FormData) {
   }
 
   // --- P&L and Cashflow Tables ---
+  // Monthly Tables
   const grossProfit = monthlyRevenue - monthlyCostOfGoods;
-  
   const pnlTable = [
     { item: `Omzet Bulanan (dari ${soldUnits} unit)`, value: monthlyRevenue, isNegative: false },
     { item: 'Modal Produk (HPP)', value: monthlyCostOfGoods, isNegative: true },
@@ -133,9 +139,7 @@ export async function runAnalysis(data: FormData) {
     { item: 'Biaya Pemasaran (Bujet)', value: calculatedMarketingBudget, isNegative: true },
     { item: 'Untung Bersih Bulanan', value: monthlyProfit, isNegative: monthlyProfit < 0 },
   ];
-
   const netCashFlow = monthlyRevenue - (monthlyCostOfGoods + monthlyOtherVariableCosts + fixedCostsPerMonth + calculatedMarketingBudget);
-
   const cashflowTable = [
     { item: 'Duit Masuk dari Penjualan', value: monthlyRevenue, isNegative: false },
     { item: 'Duit Keluar: Modal Produk (HPP)', value: monthlyCostOfGoods, isNegative: true },
@@ -144,6 +148,28 @@ export async function runAnalysis(data: FormData) {
     { item: 'Duit Keluar: Biaya Tetap', value: fixedCostsPerMonth, isNegative: true },
     { item: 'Duit Keluar: Bujet Pemasaran', value: calculatedMarketingBudget, isNegative: true },
     { item: 'Arus Kas Bersih', value: netCashFlow, isNegative: netCashFlow < 0 },
+  ];
+
+  // Weekly Tables
+  const weeklyGrossProfit = weeklyRevenue - weeklyCostOfGoods;
+  const pnlTableWeekly = [
+    { item: `Omzet Mingguan (dari ${weeklySoldUnits} unit)`, value: weeklyRevenue, isNegative: false },
+    { item: 'Modal Produk (HPP)', value: weeklyCostOfGoods, isNegative: true },
+    { item: 'Untung Kotor', value: weeklyGrossProfit, isNegative: weeklyGrossProfit < 0 },
+    { item: `Biaya Variabel Lainnya (${otherCostsPercentage}%)`, value: weeklyOtherVariableCosts, isNegative: true },
+    { item: 'Biaya Tetap Mingguan', value: weeklyFixedCosts, isNegative: true },
+    { item: 'Biaya Pemasaran (Bujet)', value: weeklyMarketingBudget, isNegative: true },
+    { item: 'Untung Bersih Mingguan', value: weeklyProfit, isNegative: weeklyProfit < 0 },
+  ];
+  const weeklyNetCashFlow = weeklyRevenue - (weeklyCostOfGoods + weeklyOtherVariableCosts + weeklyFixedCosts + weeklyMarketingBudget);
+  const cashflowTableWeekly = [
+    { item: 'Duit Masuk dari Penjualan', value: weeklyRevenue, isNegative: false },
+    { item: 'Duit Keluar: Modal Produk (HPP)', value: weeklyCostOfGoods, isNegative: true },
+    { item: 'Untung Kotor (Non-operasional)', value: weeklyGrossProfit, isNegative: weeklyGrossProfit < 0, isPlaceholder: true },
+    { item: `Duit Keluar: Biaya Variabel Lain (${otherCostsPercentage}%)`, value: weeklyOtherVariableCosts, isNegative: true },
+    { item: 'Duit Keluar: Biaya Tetap', value: weeklyFixedCosts, isNegative: true },
+    { item: 'Duit Keluar: Bujet Pemasaran', value: weeklyMarketingBudget, isNegative: true },
+    { item: 'Arus Kas Bersih', value: weeklyNetCashFlow, isNegative: weeklyNetCashFlow < 0 },
   ];
   
   // --- AI Flow Inputs ---
@@ -179,6 +205,8 @@ export async function runAnalysis(data: FormData) {
     bepUnit,
     pnlTable,
     cashflowTable,
+    pnlTableWeekly,
+    cashflowTableWeekly,
     marketAnalysis,
     strategicPlan,
     warnings,

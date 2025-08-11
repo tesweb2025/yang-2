@@ -888,14 +888,12 @@ export default function AnalystPage() {
                                             name={strategy.id}
                                             render={({ field }) => (
                                                 <FormItem className="flex items-center justify-between rounded-xl border p-3">
-                                                    <FormControl>
-                                                        <div className="flex items-center gap-3">
-                                                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
-                                                            <FormLabel htmlFor={strategy.id} className="flex-1 font-medium cursor-pointer">{strategy.title}</FormLabel>
-                                                        </div>
-                                                    </FormControl>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategy.color }}></span>
+                                                        <FormLabel htmlFor={strategy.id} className="flex-1 font-medium cursor-pointer">{strategy.title}</FormLabel>
+                                                    </div>
                                                     <div className="flex items-center gap-4">
-                                                        <span className="font-medium text-sm w-20 text-right break-all">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
+                                                        <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(budgetAllocations[strategy.id] || 0)}</span>
                                                         <FormControl>
                                                             <Switch
                                                                 id={strategy.id}

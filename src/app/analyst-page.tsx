@@ -605,14 +605,6 @@ export default function AnalystPage() {
                                     content={<ChartTooltipContent formatter={(value) => `${value}%`} />}
                                 />
                                 <Bar dataKey="value" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]}>
-                                    <LabelList 
-                                        dataKey="value" 
-                                        position="top" 
-                                        offset={8} 
-                                        className="fill-foreground font-semibold"
-                                        formatter={(value: number) => `${value}%`}
-                                        fontSize={12}
-                                    />
                                  </Bar>
                             </RechartsBarChart>
                         </ChartContainer>

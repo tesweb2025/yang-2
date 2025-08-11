@@ -8,8 +8,7 @@
  * - AnalyzeMarketEntryInput - The input type for the analyzeMarketEntry function.
  * - AnalyzeMarketEntryOutput - The return type for the analyzeMarketEntry function.
  */
-import { z } from 'zod';
-import { generativeModel } from '@/ai/genkit';
+import { ai, z } from '@/ai/genkit';
 
 const AnalyzeMarketEntryInputSchema = z.object({
   productName: z.string().describe('The name of the product or business.'),
@@ -34,17 +33,18 @@ const AnalyzeMarketEntryOutputSchema = z.object({
 });
 export type AnalyzeMarketEntryOutput = z.infer<typeof AnalyzeMarketEntryOutputSchema>;
 
-export async function analyzeMarketEntry(input: AnalyzeMarketEntryInput): Promise<AnalyzeMarketEntryOutput> {
-  const validatedInput = AnalyzeMarketEntryInputSchema.parse(input);
-
-  const prompt = `Kamu adalah seorang Business Analyst AI yang ahli di pasar e-commerce Indonesia. Gaya bicaramu santai, to the point, dan mudah dimengerti UMKM.
+const analyzeMarketEntryPrompt = ai.definePrompt({
+  name: 'analyzeMarketEntryPrompt',
+  input: { schema: AnalyzeMarketEntryInputSchema },
+  output: { schema: AnalyzeMarketEntryOutputSchema },
+  prompt: `Kamu adalah seorang Business Analyst AI yang ahli di pasar e-commerce Indonesia. Gaya bicaramu santai, to the point, dan mudah dimengerti UMKM.
 
 Tugasmu adalah memberikan evaluasi cepat dan tajam terhadap sebuah ide bisnis berdasarkan data berikut:
 
-Nama Produk: ${validatedInput.productName}
-Target Pasar: ${validatedInput.targetSegment}
-Ringkasan Finansial: ${validatedInput.financialForecastSummary}
-Kondisi Pasar Umum: ${validatedInput.marketConditionSummary}
+Nama Produk: {{{productName}}}
+Target Pasar: {{{targetSegment}}}
+Ringkasan Finansial: {{{financialForecastSummary}}}
+Kondisi Pasar Umum: {{{marketConditionSummary}}}
 
 **Analisis & Respon:**
 1.  **Baca Ringkasan Finansial**: Lihat apakah hasilnya untung atau rugi. Perhatikan ROAS dan BEP.
@@ -71,15 +71,22 @@ Contoh Output (Rugi):
   "evaluation": "Wah, strategi kamu masih berisiko.",
   "keyConsiderations": "Penyebab utama: Biaya operasional terlalu tinggi sehingga laba tahunan negatif. Perlu ada efisiensi."
 }
-`;
+`
+});
 
-  const result = await generativeModel.generateContent(prompt);
-  const responseText = result.response.text();
-  try {
-    const responseObject = JSON.parse(responseText);
-    return AnalyzeMarketEntryOutputSchema.parse(responseObject);
-  } catch(e) {
-    console.error("Failed to parse AI response:", responseText);
-    throw new Error("Gagal memproses respon dari AI. Coba lagi.");
+const analyzeMarketEntryFlow = ai.defineFlow(
+  {
+    name: 'analyzeMarketEntryFlow',
+    inputSchema: AnalyzeMarketEntryInputSchema,
+    outputSchema: AnalyzeMarketEntryOutputSchema,
+  },
+  async (input) => {
+    const { output } = await analyzeMarketEntryPrompt(input);
+    return output!;
   }
+);
+
+
+export async function analyzeMarketEntry(input: AnalyzeMarketEntryInput): Promise<AnalyzeMarketEntryOutput> {
+  return analyzeMarketEntryFlow(input);
 }

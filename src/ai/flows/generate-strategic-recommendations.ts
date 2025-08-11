@@ -9,8 +9,7 @@
  * - StrategicRecommendationsOutput - The return type for the generateStrategicRecommendations function.
  */
 
-import { z } from 'zod';
-import { generativeModel } from '@/ai/genkit';
+import { ai, z } from '@/ai/genkit';
 
 const StrategicRecommendationsInputSchema = z.object({
   productName: z.string().describe('The name of the product or business.'),
@@ -32,27 +31,26 @@ const StrategicRecommendationsOutputSchema = z.object({
 });
 export type StrategicRecommendationsOutput = z.infer<typeof StrategicRecommendationsOutputSchema>;
 
-export async function generateStrategicRecommendations(
-  input: StrategicRecommendationsInput
-): Promise<StrategicRecommendationsOutput> {
-  const validatedInput = StrategicRecommendationsInputSchema.parse(input);
-
-  const prompt = `Kamu adalah seorang Business Strategist AI yang jago banget ngasih saran praktis buat UMKM di Indonesia. Gaya bicaramu santai, memotivasi, dan solutif.
+const generateStrategicRecommendationsPrompt = ai.definePrompt({
+  name: 'generateStrategicRecommendationsPrompt',
+  input: { schema: StrategicRecommendationsInputSchema },
+  output: { schema: StrategicRecommendationsOutputSchema },
+  prompt: `Kamu adalah seorang Business Strategist AI yang jago banget ngasih saran praktis buat UMKM di Indonesia. Gaya bicaramu santai, memotivasi, dan solutif.
 
 Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi bisnis ini.
 
 **Data Bisnis:**
-- Nama Produk: ${validatedInput.productName}
-- Target Pasar: ${validatedInput.targetSegmentation}
-- Strategi Pemasaran Pilihan: ${validatedInput.selectedMarketingStrategies.join(', ')}
-- Budget Pemasaran: Rp ${validatedInput.calculatedMarketingBudget.toLocaleString('id-ID')}
+- Nama Produk: {{{productName}}}
+- Target Pasar: {{{targetSegmentation}}}
+- Strategi Pemasaran Pilihan: {{#each selectedMarketingStrategies}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
+- Budget Pemasaran: Rp {{calculatedMarketingBudget}}
 
 **Hasil Simulasi Keuangan & Peringatan:**
-- Proyeksi Untung Tahunan: Rp ${validatedInput.annualProfitProjection.toLocaleString('id-ID')}
-- ROAS (Return on Ad Spend): ${validatedInput.roas.toFixed(2)}x
-- Peringatan Logika: ${validatedInput.warnings.length > 0 ? validatedInput.warnings.join('. ') : 'Tidak ada.'}
-- Laporan Untung Rugi Bulanan: ${validatedInput.monthlyProfitAndLossStatement}
-- Arus Kas Bulanan: ${validatedInput.monthlyCashFlowSimulation}
+- Proyeksi Untung Tahunan: Rp {{annualProfitProjection}}
+- ROAS (Return on Ad Spend): {{roas}}x
+- Peringatan Logika: {{#if warnings.length}}{{warnings.join ". "}}{{else}}Tidak ada.{{/if}}
+- Laporan Untung Rugi Bulanan: {{{monthlyProfitAndLossStatement}}}
+- Arus Kas Bulanan: {{{monthlyCashFlowSimulation}}}
 
 **Instruksi:**
 -   **Analisis Menyeluruh**: Cermati semua data, terutama \`Proyeksi Untung Tahunan\` dan \`Peringatan Logika\`.
@@ -62,8 +60,8 @@ Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi b
     *   **Jika \`Untung Tahunan\` negatif (RUGI)**: Fokuskan rekomendasi pada cara membalikkan keadaan (efisiensi biaya, menaikkan harga, optimasi strategi).
     *   **Jika \`Untung Tahunan\` positif (UNTUNG)**: Fokuskan rekomendasi pada cara *scale-up* (meningkatkan budget iklan secara bertahap, ekspansi channel, optimasi konversi).
 -   **Buat Rekomendasi Spesifik & Kontekstual (3-5 poin)**:
-    *   Sebutkan \`Nama Produk\` dalam rekomendasi jika relevan. Contoh: "Tingkatkan persepsi nilai untuk '${validatedInput.productName}' dengan..."
-    *   Hubungkan rekomendasi dengan \`Target Pasar\`. Contoh: "Karena target Anda '${validatedInput.targetSegmentation}', fokuskan iklan di Instagram Reels dan TikTok."
+    *   Sebutkan \`Nama Produk\` dalam rekomendasi jika relevan. Contoh: "Tingkatkan persepsi nilai untuk '{{{productName}}}' dengan..."
+    *   Hubungkan rekomendasi dengan \`Target Pasar\`. Contoh: "Karena target Anda '{{{targetSegmentation}}}', fokuskan iklan di Instagram Reels dan TikTok."
     *   Rekomendasi harus berupa langkah taktis yang bisa langsung dikerjakan. Mulai setiap poin dengan kata kerja.
     *   Gunakan bahasa Indonesia yang santai dan jelas.
 
@@ -73,27 +71,36 @@ Tugasmu adalah memberikan 3-5 Rencana Aksi Prioritas berdasarkan data simulasi b
 
 **Contoh Rekomendasi (Rugi):**
 -   "Turunkan BEP dengan negosiasi ulang HPP ke supplier agar bisa turun minimal 10%."
--   "Karena ROAS rendah, uji coba audiens iklan baru yang lebih spesifik untuk '${validatedInput.productName}'."
+-   "Karena ROAS rendah, uji coba audiens iklan baru yang lebih spesifik untuk '{{{productName}}}'."
 -   "Naikkan harga jual secara bertahap sebesar 5% untuk meningkatkan margin per produk."
 
 **Contoh Rekomendasi (Untung):**
 -   "Alokasikan 20% dari keuntungan bulanan untuk meningkatkan budget iklan secara bertahap."
--   "Karena targetnya '${validatedInput.targetSegmentation}', buat konten video testimoni untuk meningkatkan kepercayaan."
--   "Pertimbangkan untuk membuat varian baru dari '${validatedInput.productName}' untuk menjangkau pasar yang lebih luas."
+-   "Karena targetnya '{{{targetSegmentation}}}', buat konten video testimoni untuk meningkatkan kepercayaan."
+-   "Pertimbangkan untuk membuat varian baru dari '{{{productName}}}' untuk menjangkau pasar yang lebih luas."
 
 Pastikan outputmu adalah objek JSON yang valid, hanya berisi list string, sesuai dengan skema berikut:
 {
   "recommendations": ["rekomendasi 1", "rekomendasi 2", "dst..."]
 }
-`;
+`
+});
 
-  const result = await generativeModel.generateContent(prompt);
-  const responseText = result.response.text();
-  try {
-    const responseObject = JSON.parse(responseText);
-    return StrategicRecommendationsOutputSchema.parse(responseObject);
-  } catch (e) {
-    console.error("Failed to parse AI response:", responseText);
-    throw new Error("Gagal memproses respon dari AI. Coba lagi.");
+const generateStrategicRecommendationsFlow = ai.defineFlow(
+  {
+    name: 'generateStrategicRecommendationsFlow',
+    inputSchema: StrategicRecommendationsInputSchema,
+    outputSchema: StrategicRecommendationsOutputSchema,
+  },
+  async (input) => {
+    const { output } = await generateStrategicRecommendationsPrompt(input);
+    return output!;
   }
+);
+
+
+export async function generateStrategicRecommendations(
+  input: StrategicRecommendationsInput
+): Promise<StrategicRecommendationsOutput> {
+  return generateStrategicRecommendationsFlow(input);
 }

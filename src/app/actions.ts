@@ -118,7 +118,7 @@ export async function runAnalysis(data: FormData) {
   // --- WARNINGS ---
   const warnings = [];
   if ((useVideoContent || useKOL || usePromo || useOtherChannels) && calculatedMarketingBudget === 0) {
-    warnings.push("Strategi pemasaran diaktifkan tapi budget pemasaran nol. Hasil simulasi mungkin tidak akurat karena tidak ada biaya iklan yang dihitung.");
+    warnings.push("Strategi pemasaran diaktifkan tapi Budget pemasaran nol. Hasil simulasi mungkin tidak akurat karena tidak ada biaya iklan yang dihitung.");
   }
   if (calculatedMarketingBudget > 0 && roas < 1) {
     warnings.push("Iklan kamu belum balik modal (ROAS < 1). Perlu evaluasi konten atau targeting iklan.");

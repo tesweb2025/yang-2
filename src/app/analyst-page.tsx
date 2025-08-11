@@ -639,30 +639,32 @@ export default function AnalystPage() {
                           control={form.control}
                           name={strategy.id}
                           render={({ field }) => (
-                            <FormItem className="relative">
+                            <FormItem>
                               <FormControl>
-                                <Switch
-                                  id={strategy.id}
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                  className="absolute top-4 right-4 cursor-pointer"
-                                />
-                              </FormControl>
-                              <FormLabel
-                                htmlFor={strategy.id}
-                                className={cn(
-                                  "block p-4 rounded-xl border transition-all cursor-pointer h-full",
-                                  field.value
-                                    ? "bg-primary text-primary-foreground border-primary"
-                                    : "bg-muted/30 hover:bg-muted/60"
-                                )}
-                              >
-                                <div className="flex flex-col gap-1 pr-8">
-                                  <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-primary")} />
-                                  <span className="font-semibold">{strategy.title}</span>
-                                  <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
+                                <div className="relative">
+                                  <Switch
+                                    id={strategy.id}
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                    className="absolute top-4 right-4 cursor-pointer"
+                                  />
+                                  <FormLabel
+                                    htmlFor={strategy.id}
+                                    className={cn(
+                                      "block p-4 rounded-xl border transition-all cursor-pointer h-full",
+                                      field.value
+                                        ? "bg-primary text-primary-foreground border-primary"
+                                        : "bg-muted/30 hover:bg-muted/60"
+                                    )}
+                                  >
+                                    <div className="flex flex-col gap-1 pr-8">
+                                      <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-primary")} />
+                                      <span className="font-semibold">{strategy.title}</span>
+                                      <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
+                                    </div>
+                                  </FormLabel>
                                 </div>
-                              </FormLabel>
+                              </FormControl>
                             </FormItem>
                           )}
                         />

@@ -921,7 +921,6 @@ export default function AnalystPage() {
                     </CardContent>
                 </Card>
                 
-                <div className="border-t -mx-8 my-8"></div>
                 <div className="flex justify-center pt-4">
                     {!isLoading && (
                         <Button type="submit" className="h-14 text-lg rounded-full px-10" disabled={isLoading}>

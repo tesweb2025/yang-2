@@ -673,14 +673,14 @@ export default function AnalystPage() {
                                                     className={cn(
                                                         "block p-4 rounded-xl border transition-all cursor-pointer h-full",
                                                         field.value
-                                                            ? "bg-primary text-primary-foreground border-primary"
+                                                            ? "bg-primary/10 text-primary-foreground border-primary"
                                                             : "bg-muted/30 hover:bg-muted/60"
                                                     )}
                                                 >
                                                     <div className="flex flex-col gap-1 pr-8">
-                                                        <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary-foreground" : "text-primary")} />
-                                                        <span className="font-semibold">{strategy.title}</span>
-                                                        <p className={cn("text-sm", field.value ? "text-primary-foreground/80" : "text-muted-foreground")}>{strategy.description}</p>
+                                                        <strategy.icon className={cn("w-6 h-6 mb-2", field.value ? "text-primary" : "text-primary")} />
+                                                        <span className={cn("font-semibold", field.value ? "text-primary" : "text-foreground")}>{strategy.title}</span>
+                                                        <p className={cn("text-sm", field.value ? "text-primary/80" : "text-muted-foreground")}>{strategy.description}</p>
                                                     </div>
                                                 </FormLabel>
                                             </div>
